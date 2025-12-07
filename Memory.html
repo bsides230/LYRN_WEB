@@ -2,126 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>LYRN - Episodic Memory</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LYRN – Memory</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    /* ... [INSERT CSS FROM WHITEPAPER HERE] ... */
-    :root { --bg-core: #050505; --bg-panel: #0a0a0a; --brand-purple: #7c5cff; --brand-purple-dim: rgba(124, 92, 255, 0.1); --text-head: #ffffff; --text-body: #b0b0b0; --text-dim: #666666; --border-color: #222222; --code-bg: #000000; --code-border: #333333; --input-focus-bg: #111111; }
-    body[data-theme="light"] { --bg-core: #ffffff; --bg-panel: #f9f9f9; --brand-purple: #7c5cff; --brand-purple-dim: rgba(124, 92, 255, 0.08); --text-head: #000000; --text-body: #333333; --text-dim: #666666; --border-color: #e5e5e5; --code-bg: #f4f4f6; --code-border: #e0e0e0; --input-focus-bg: #ffffff; }
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; background: radial-gradient(circle at 50% 0%, #1a1233 0%, var(--bg-core) 80%); background-attachment: fixed; color: var(--text-body); font-family: "Inter", sans-serif; line-height: 1.65; transition: background 0.3s, color 0.3s; }
-    body[data-theme="light"] { background: var(--bg-core); }
-    h1, h2, h3, h4, .mono { font-family: "JetBrains Mono", monospace; color: var(--text-head); margin-top: 0; }
-    .page-container { max-width: 1000px; margin: 0 auto; padding: 40px; min-height: 100vh; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); background: var(--bg-core); position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-    .section-divider { border-bottom: 1px solid var(--border-color); margin: 40px 0; padding-bottom: 10px; display: flex; align-items: center; color: var(--brand-purple); font-family: "JetBrains Mono"; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-    .hero-title { font-size: 28px; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 8px; }
-    .meta-label { font-family: "JetBrains Mono"; font-size: 10px; color: var(--brand-purple); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 12px; }
-    p { font-size: 14px; margin-bottom: 16px; }
-    ul { font-size: 14px; padding-left: 20px; color: var(--text-body); }
-    li { margin-bottom: 8px; }
-    .callout { background: linear-gradient(90deg, var(--brand-purple-dim) 0%, transparent 100%); border-left: 3px solid var(--brand-purple); padding: 16px 20px; font-size: 13px; color: var(--text-body); margin-bottom: 20px; }
-    .callout strong { color: var(--text-head); }
-    header { position: relative; margin-top: 40px; margin-bottom: 60px; }
-    .nav-link { text-decoration: none; color: var(--text-dim); font-family: "JetBrains Mono", monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s ease; }
-    .nav-link:hover, .nav-link.active { color: var(--text-head); }
-    footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-family: "JetBrains Mono"; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
-    .theme-toggle-inline { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-    .theme-switch { position: relative; display: inline-block; width: 34px; height: 18px; }
-    .theme-switch input { opacity: 0; width: 0; height: 0; }
-    .theme-switch .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; border-radius: 999px; border: 1px solid var(--border-color); transition: .2s; }
-    .theme-switch .slider::before { content: ""; position: absolute; height: 12px; width: 12px; left: 2px; top: 2px; border-radius: 50%; background-color: #fff; transition: .2s; }
-    .theme-switch input:checked + .slider { background-color: var(--brand-purple-dim); border-color: var(--brand-purple); }
-    .theme-switch input:checked + .slider::before { transform: translateX(14px); }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body data-theme="dark">
-
-<div class="page-container">
-  
-  <header>
-    <div class="grid-2">
-      <div style="display: flex; gap: 24px;">
-        <img src="image_0.png" alt="LYRN Logo" style="height: 80px; width: auto; flex-shrink: 0;">
+<body>
+  <button id="themeButton" class="theme-button">LIGHT MODE</button>
+  <div class="page-container">
+    <header>
+      <div class="header-left">
+        <a href="index.html"><img src="assets/logo.png" alt="LYRN Logo" style="height: 80px; width: auto; flex-shrink: 0;" /></a>
         <div>
           <div class="meta-label">LYRN · EPISODIC MEMORY</div>
           <h1 class="hero-title">Solving Episodic Memory</h1>
-          <p style="color: var(--text-dim); max-width: 90%;">
-            Technical Architecture for Storing and Indexing Interactions: A framework for persistent, context-aware memory retrieval.
-          </p>
+          <p style="color: var(--text-dim); max-width: 90%;">Technical architecture for storing and indexing interactions: a framework for persistent, context‑aware memory retrieval.</p>
         </div>
       </div>
-      <div style="text-align: right; padding-top: 10px;">
-        <nav style="display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
-          <a href="index.html" class="nav-link">Home</a>
-          <a href="#" class="nav-link active">Architecture</a>
-          <a href="industry.html" class="nav-link">Industry</a>
-          <a href="kiosks.html" class="nav-link">Kiosks</a>
-          <a href="security.html" class="nav-link">Security</a>
-          <a href="space.html" class="nav-link">Space</a>
-        </nav>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <details class="details-dropdown">
+          <summary id="nav-architecture" class="nav-link">Architecture</summary>
+          <div class="dropdown-menu">
+            <a href="embodied.html" class="nav-link">Embodied</a>
+            <a href="memory.html" class="nav-link">Memory</a>
+            <a href="reflection.html" class="nav-link">Reflection</a>
+            <a href="topic.html" class="nav-link">Topic Index</a>
+          </div>
+        </details>
+        <a href="industry.html" class="nav-link">Industry</a>
+        <a href="kiosks.html" class="nav-link">Kiosks</a>
+        <a href="security.html" class="nav-link">Security</a>
+        <a href="space.html" class="nav-link">Space</a>
+      </nav>
+    </header>
+
+    <!-- Objective callout -->
+    <div class="callout">
+      <div class="meta-label" style="margin-bottom: 5px;">Objective</div>
+      This infrastructure enables rich, context‑aware retrieval and lays the groundwork for higher‑level relational memory formation.
+    </div>
+
+    <div class="section-divider">01 // System Overview</div>
+    <div class="grid-2">
+      <div>
+        <h3 class="meta-label">Chat Entry Logs</h3>
+        <p>Every user input and AI response is captured as a plain text file, timestamped for precise chronological tracking. These logs are minimal by design.</p>
+      </div>
+      <div>
+        <h3 class="meta-label">Block Indexes</h3>
+        <p>For scalability, chat entries are grouped into blocks (typically 50 entries). Each block has an SQL‑based index file storing summaries and metadata.</p>
       </div>
     </div>
-  </header>
 
-  <div class="callout">
-    <div class="meta-label" style="margin-bottom: 5px;">Objective</div>
-    This infrastructure enables rich, context-aware retrieval and lays the groundwork for higher-level relational memory formation.
+    <div class="section-divider">02 // Retrieval Workflow</div>
+    <p>Memory retrieval is initiated by a user query or an LLM trigger:</p>
+    <ul>
+      <li>A script parses block folders in reverse chronological order.</li>
+      <li>Chat entries are searched for keyword matches or metadata tags.</li>
+      <li>Matching entries are returned in order of relevance to a single text file.</li>
+    </ul>
+
+    <div class="section-divider">03 // Design Principles</div>
+    <ul>
+      <li><strong>Transparency:</strong> All memory and reasoning trails are saved as human‑readable logs.</li>
+      <li><strong>Efficiency:</strong> SQL‑based indexing allows the system to scale to years of history.</li>
+      <li><strong>Contextual Flexibility:</strong> Memory can be retrieved by time, project or topic.</li>
+    </ul>
+
+    <footer>
+      <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
+      <div class="footer-right">
+        <span>EPISODIC // EOF</span>
+        <label class="theme-toggle-inline">THEME
+          <span class="theme-switch">
+            <input type="checkbox" id="themeToggle" />
+            <span class="slider"></span>
+          </span>
+        </label>
+      </div>
+    </footer>
   </div>
-
-  <div class="section-divider">01 // System Overview</div>
-  <div class="grid-2">
-    <div>
-      <h3 class="meta-label">Chat Entry Logs</h3>
-      <p>Every user input and AI response is captured as a plain text file, timestamped for precise chronological tracking. These logs are minimal by design.</p>
-    </div>
-    <div>
-      <h3 class="meta-label">Block Indexes</h3>
-      <p>For scalability, chat entries are grouped into blocks (typically 50 entries). Each block has an SQL-based index file storing summaries and metadata.</p>
-    </div>
-  </div>
-
-  <div class="section-divider">02 // Retrieval Workflow</div>
-  <p>Memory retrieval is initiated by a user query or an LLM trigger:</p>
-  <ul>
-    <li>A script parses block folders in reverse chronological order.</li>
-    <li>Chat entries are searched for keyword matches or metadata tags.</li>
-    <li>Matching entries are returned in order of relevance to a single text file.</li>
-  </ul>
-
-  <div class="section-divider">03 // Design Principles</div>
-  <ul>
-    <li><strong>Transparency:</strong> All memory and reasoning trails are saved as human-readable logs.</li>
-    <li><strong>Efficiency:</strong> SQL-based indexing allows the system to scale to years of history.</li>
-    <li><strong>Contextual Flexibility:</strong> Memory can be retrieved by time, project, or topic.</li>
-  </ul>
-
-  <footer>
-    <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
-    <div style="display: flex; gap: 16px; align-items: center;">
-      <span>EPISODIC // EOF</span>
-      <label class="theme-toggle-inline">
-        THEME
-        <span class="theme-switch">
-          <input type="checkbox" id="themeToggle" checked onchange="toggleTheme()" />
-          <span class="slider"></span>
-        </span>
-      </label>
-    </div>
-  </footer>
-
-</div>
-
-<script>
-  function toggleTheme() {
-    const body = document.body;
-    const checkbox = document.getElementById('themeToggle');
-    body.setAttribute('data-theme', checkbox.checked ? 'dark' : 'light');
-  }
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>

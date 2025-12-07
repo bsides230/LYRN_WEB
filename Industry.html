@@ -2,255 +2,152 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>LYRN - Industry</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LYRN – Industry</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    /* CORE VARIABLES & RESET FROM STYLE GUIDE */
-    :root {
-      --bg-core: #050505; --bg-panel: #0a0a0a; --brand-purple: #7c5cff; --brand-purple-dim: rgba(124, 92, 255, 0.1);
-      --text-head: #ffffff; --text-body: #b0b0b0; --text-dim: #666666; --border-color: #222222;
-      --code-bg: #000000; --code-border: #333333; --input-focus-bg: #111111;
-    }
-    body[data-theme="light"] {
-      --bg-core: #ffffff; --bg-panel: #f9f9f9; --brand-purple: #7c5cff; --brand-purple-dim: rgba(124, 92, 255, 0.08);
-      --text-head: #000000; --text-body: #333333; --text-dim: #666666; --border-color: #e5e5e5;
-      --code-bg: #f4f4f6; --code-border: #e0e0e0; --input-focus-bg: #ffffff;
-    }
-    * { box-sizing: border-box; }
-    
-    body { 
-      margin: 0; 
-      padding: 0; 
-      background: radial-gradient(circle at 50% 0%, #1a1233 0%, var(--bg-core) 80%);
-      background-attachment: fixed;
-      color: var(--text-body); 
-      font-family: "Inter", sans-serif; 
-      line-height: 1.65; 
-      transition: background 0.3s, color 0.3s; 
-    }
-    body[data-theme="light"] { background: var(--bg-core); }
-
-    h1, h2, h3, h4, .mono { font-family: "JetBrains Mono", monospace; color: var(--text-head); margin-top: 0; }
-    
-    /* UTILITIES */
-    .page-container { 
-      max-width: 1200px; 
-      margin: 0 auto; 
-      padding: 40px; 
-      min-height: 100vh; 
-      border-left: 1px solid var(--border-color); 
-      border-right: 1px solid var(--border-color); 
-      background: var(--bg-core); 
-      position: relative;
-      box-shadow: 0 0 50px rgba(0,0,0,0.5); 
-    }
-    .section-divider { border-bottom: 1px solid var(--border-color); margin: 40px 0; padding-bottom: 10px; display: flex; align-items: center; color: var(--brand-purple); font-family: "JetBrains Mono"; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-    
-    /* COMPONENTS */
-    .hero-title { font-size: 28px; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 8px; }
-    .meta-label { font-family: "JetBrains Mono"; font-size: 10px; color: var(--brand-purple); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 12px; }
-    p { font-size: 14px; margin-bottom: 16px; }
-    code, pre { font-family: "JetBrains Mono"; font-size: 12px; background: var(--code-bg); border: 1px solid var(--code-border); padding: 2px 6px; border-radius: 4px; color: var(--brand-purple); }
-    pre { padding: 16px; overflow-x: auto; color: var(--text-body); }
-    
-    button { font-family: "JetBrains Mono"; font-size: 11px; background: transparent; border: 1px solid var(--border-color); color: var(--text-dim); padding: 10px 18px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; }
-    button:hover { border-color: var(--brand-purple); color: var(--brand-purple); }
-    button.btn-primary { background: var(--brand-purple); color: #fff; border-color: var(--brand-purple); font-weight: 600; }
-    button.btn-primary:hover { background: #6a4ce0; }
-
-    .callout { background: linear-gradient(90deg, var(--brand-purple-dim) 0%, transparent 100%); border-left: 3px solid var(--brand-purple); padding: 16px 20px; font-size: 13px; color: var(--text-body); }
-    .callout strong { color: var(--text-head); }
-    
-    /* NAV & FOOTER */
-    header { position: relative; margin-top: 40px; margin-bottom: 60px; }
-    .nav-link { text-decoration: none; color: var(--text-dim); font-family: "JetBrains Mono", monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s ease; }
-    .nav-link:hover, .nav-link.active { color: var(--text-head); }
-    
-    footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-family: "JetBrains Mono"; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
-    .footer-right { display: flex; align-items: center; gap: 16px; }
-    .theme-toggle-inline { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-    .theme-switch { position: relative; display: inline-block; width: 34px; height: 18px; }
-    .theme-switch input { opacity: 0; width: 0; height: 0; }
-    .theme-switch .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; border-radius: 999px; border: 1px solid var(--border-color); transition: .2s; }
-    .theme-switch .slider::before { content: ""; position: absolute; height: 12px; width: 12px; left: 2px; top: 2px; border-radius: 50%; background-color: #fff; transition: .2s; }
-    .theme-switch input:checked + .slider { background-color: var(--brand-purple-dim); border-color: var(--brand-purple); }
-    .theme-switch input:checked + .slider::before { transform: translateX(14px); }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body data-theme="dark">
-
-<div class="page-container">
-  
-  <header>
-    <div class="grid-2">
-      <div style="display: flex; gap: 24px;">
-        <img src="image_0.png" alt="LYRN Logo" style="height: 80px; width: auto; flex-shrink: 0;">
+<body>
+  <button id="themeButton" class="theme-button">LIGHT MODE</button>
+  <div class="page-container">
+    <header>
+      <div class="header-left">
+        <a href="index.html"><img src="assets/logo.png" alt="LYRN Logo" style="height: 80px; width: auto; flex-shrink: 0;" /></a>
         <div>
           <div class="meta-label">LYRN · IN INDUSTRY</div>
           <h1 class="hero-title">LYRN in Industry</h1>
-          <p style="color: var(--text-dim); max-width: 90%;">
-            LYRN as a spatial cognition engine for warehouses, forklifts, and machines using snapshot + delta + QR manifolds to navigate and manage physical spaces.
-          </p>
+          <p style="color: var(--text-dim); max-width: 90%;">LYRN acts as a spatial cognition engine for warehouses, forklifts and machines using snapshot + delta + QR manifolds to navigate and manage physical spaces.</p>
         </div>
       </div>
-      
-      <div style="text-align: right; padding-top: 10px;">
-        <nav style="display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
-          <a href="index.html" class="nav-link">Home</a>
-          <a href="#" class="nav-link">Architecture</a>
-          <a href="industry.html" class="nav-link active">Industry</a>
-          <a href="kiosks.html" class="nav-link">Kiosks</a>
-          <a href="security.html" class="nav-link">Security</a>
-          <a href="space.html" class="nav-link">Space</a>
-        </nav>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <details class="details-dropdown">
+          <summary id="nav-architecture" class="nav-link">Architecture</summary>
+          <div class="dropdown-menu">
+            <a href="embodied.html" class="nav-link">Embodied</a>
+            <a href="memory.html" class="nav-link">Memory</a>
+            <a href="reflection.html" class="nav-link">Reflection</a>
+            <a href="topic.html" class="nav-link">Topic Index</a>
+          </div>
+        </details>
+        <a href="industry.html" class="nav-link">Industry</a>
+        <a href="kiosks.html" class="nav-link">Kiosks</a>
+        <a href="security.html" class="nav-link">Security</a>
+        <a href="space.html" class="nav-link">Space</a>
+      </nav>
+    </header>
+
+    <div class="section-divider">01 // Overview</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Overview</div>
+        <p>LYRN acts as the “brain” for industrial agents (forklifts, AGVs, robots). Unlike traditional centralized cloud systems, LYRN uses coordinate‑based navigation, grid layouts and QR anchors to build a persistent, local mental model of the environment. It stays fully local and stateful, allowing machines to make autonomous decisions even when connectivity is lost.</p>
+      </div>
+      <div>
+        <div class="meta-label">Use Cases</div>
+        <ul style="font-size: 14px; padding-left: 20px; margin-bottom: 20px;">
+          <li>Forklift navigation in dense warehouses.</li>
+          <li>Real‑time route re‑planning when aisles are blocked.</li>
+          <li>Tracking pallets and zones as distinct topics.</li>
+          <li>Learning safe routes over time through reflection.</li>
+        </ul>
+        <div class="callout"><strong>CORE CLAIM:</strong> LYRN turns any forklift or industrial machine into a stateful, memory‑capable agent that understands its warehouse like a living environment.</div>
       </div>
     </div>
-  </header>
 
-  <div class="section-divider">01 // Overview</div>
-  <div class="grid-2">
-    <div>
-      <div class="meta-label">Overview</div>
-      <p>
-        LYRN acts as the “brain” for industrial agents (forklifts, AGVs, robots). Unlike traditional centralized cloud systems, LYRN uses coordinate-based navigation, grid layouts, and QR anchors to build a persistent, local mental model of the environment. It stays fully local and stateful, allowing machines to make autonomous decisions even when connectivity is lost.
-      </p>
-    </div>
-    <div>
-      <div class="meta-label">Use Cases</div>
-      <ul style="font-size: 14px; padding-left: 20px; margin-bottom: 20px;">
-        <li>Forklift navigation in dense warehouses.</li>
-        <li>Real-time route re-planning when aisles are blocked.</li>
-        <li>Tracking pallets and zones as distinct topics.</li>
-        <li>Learning safe routes over time through reflection.</li>
-      </ul>
-      <div class="callout">
-        <strong>CORE CLAIM:</strong> LYRN turns any forklift or industrial machine into a stateful, memory-capable agent that understands its warehouse like a living environment.
+    <div class="section-divider">02 // System Model in This Environment</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Cognitive Loop</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li><strong>Snapshot:</strong> Full warehouse state (grid, racks, pallets, aisles).</li>
+          <li><strong>Delta:</strong> Changes (moved pallets, blocked aisles, worker positions).</li>
+          <li><strong>Verbatim Memory:</strong> Log of previous routes, hazards and delays.</li>
+          <li><strong>Topic Index:</strong> Pallets, locations, hazards, machines and workers.</li>
+          <li><strong>Reflection:</strong> LYRN improves route choices and safety over time.</li>
+        </ul>
       </div>
-    </div>
-  </div>
-
-  <div class="section-divider">02 // System Model in This Environment</div>
-  <div class="grid-2">
-    <div>
-      <div class="meta-label">Cognitive Loop</div>
-      <ul style="font-size: 14px; padding-left: 20px;">
-        <li><strong>Snapshot:</strong> Full warehouse state (grid, racks, pallets, aisles).</li>
-        <li><strong>Delta:</strong> Changes (moved pallets, blocked aisles, worker positions).</li>
-        <li><strong>Verbatim Memory:</strong> Log of previous routes, hazards, delays.</li>
-        <li><strong>Topic Index:</strong> Pallets, locations, hazards, machines, workers.</li>
-        <li><strong>Reflection:</strong> LYRN improves route choices and safety over time.</li>
-      </ul>
-    </div>
-    <div>
-      <div class="meta-label">Flow Diagram</div>
-      <pre>
-[ Warehouse Sensors / QR Codes ] 
+      <div>
+        <div class="meta-label">Flow Diagram</div>
+        <pre>
+[ Warehouse Sensors / QR Codes ]
           ↓
-  [ Snapshot Builder ] 
+  [ Snapshot Builder ]
           ↓
-   [ Delta Manager ] 
+   [ Delta Manager ]
           ↓
-[ LYRN Core Loop (KV Cache + Topic Index) ] 
+[ LYRN Core Loop (KV Cache + Topic Index) ]
           ↓
 [ Navigation Commands ] → [ Verbatim Logs ]
-      </pre>
+        </pre>
+      </div>
     </div>
-  </div>
 
-  <div class="section-divider">03 // Example Scenario</div>
-  <div>
-    <div class="meta-label">Example Scenario: "Forklift Fetching a Pallet"</div>
-    <p>
-      A forklift boots near Aisle 4, scans a QR anchor, and loads the local grid snapshot. The central command issues a task: "Retrieve pallet 4B-17."
-    </p>
-    <p>
-      LYRN plans the path but detects a previously logged obstruction in Aisle 5 via its Verbatim Memory. It immediately calculates a re-route through Aisle 6.
-    </p>
-    <p style="color: var(--text-dim);">
-      The agent moves safely, avoiding the hazard, and logs the completed task and route into the Delta Manager for future reflection cycles.
-    </p>
-  </div>
-
-  <div class="section-divider">04 // Technical Highlights</div>
-  <div class="grid-2">
+    <div class="section-divider">03 // Example Scenario</div>
     <div>
-      <div class="meta-label">Inherited Features</div>
-      <ul style="font-size: 14px; padding-left: 20px;">
-        <li>Local-first; no mandatory cloud connection.</li>
-        <li>Deterministic navigation decisions.</li>
-        <li>Verbatim memory for audits and optimization.</li>
-        <li>Compatible with small edge compute hardware.</li>
-      </ul>
+      <div class="meta-label">Example Scenario: “Forklift Fetching a Pallet”</div>
+      <p>A forklift boots near Aisle 4, scans a QR anchor and loads the local grid snapshot. The central command issues a task: “Retrieve pallet 4B‑17.”</p>
+      <p>LYRN plans the path but detects a previously logged obstruction in Aisle 5 via its Verbatim Memory. It immediately calculates a re‑route through Aisle 6.</p>
+      <p style="color: var(--text-dim);">The agent moves safely, avoiding the hazard, and logs the completed task and route into the Delta Manager for future reflection cycles.</p>
     </div>
+
+    <div class="section-divider">04 // Technical Highlights</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Inherited Features</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li>Local‑first; no mandatory cloud connection.</li>
+          <li>Deterministic navigation decisions.</li>
+          <li>Verbatim memory for audits and optimization.</li>
+          <li>Compatible with small edge compute hardware.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Deployment Notes</div>
+        <p>LYRN can be embedded directly into forklift controllers or mounted as a separate cognitive appliance. It can run alongside existing WMS/ERP systems, serving as the localized cognition layer that bridges the gap between database logic and physical reality.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">05 // Deployment Targets</div>
     <div>
-      <div class="meta-label">Deployment Notes</div>
-      <p>
-        LYRN can be embedded directly into forklift controllers or mounted as a separate cognitive appliance. It can run alongside existing WMS/ERP systems, serving as the localized cognition layer that bridges the gap between database logic and physical reality.
-      </p>
+      <div class="meta-label">Where LYRN Operates</div>
+      <div class="grid-4">
+        <div class="callout" style="text-align: center;">Warehouses</div>
+        <div class="callout" style="text-align: center;">Factories</div>
+        <div class="callout" style="text-align: center;">Logistics Hubs</div>
+        <div class="callout" style="text-align: center;">Shipyards</div>
+      </div>
     </div>
+
+    <div class="section-divider">06 // Next Steps</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">For Operators &amp; Integrators</div>
+        <p>Learn how to retrofit existing fleets or integrate LYRN with your current warehouse management software.</p>
+        <button class="btn-primary">[ Discuss Industrial Deployment ]</button>
+      </div>
+      <div>
+        <div class="meta-label">For Robotics Teams</div>
+        <p>Explore how robotics engineers are using LYRN as the primary cognition layer for autonomous agents.</p>
+        <button>[ View Architecture ]</button>
+      </div>
+    </div>
+
+    <footer>
+      <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
+      <div class="footer-right">
+        <span>LYRN IN INDUSTRY // EOF</span>
+        <label class="theme-toggle-inline">THEME
+          <span class="theme-switch">
+            <input type="checkbox" id="themeToggle" />
+            <span class="slider"></span>
+          </span>
+        </label>
+      </div>
+    </footer>
   </div>
-
-  <div class="section-divider">05 // Deployment Targets</div>
-  <div>
-    <div class="meta-label">Where LYRN Operates</div>
-    <div class="grid-4">
-      <div class="callout" style="text-align: center;">Warehouses</div>
-      <div class="callout" style="text-align: center;">Factories</div>
-      <div class="callout" style="text-align: center;">Logistics Hubs</div>
-      <div class="callout" style="text-align: center;">Shipyards</div>
-    </div>
-  </div>
-
-  <div class="section-divider">06 // Next Steps</div>
-  <div class="grid-2">
-    <div>
-      <div class="meta-label">For Operators & Integrators</div>
-      <p>
-        Learn how to retrofit existing fleets or integrate LYRN with your current warehouse management software.
-      </p>
-      <button class="btn-primary">[ Discuss Industrial Deployment ]</button>
-    </div>
-    <div>
-      <div class="meta-label">For Robotics Teams</div>
-      <p>
-        Explore how robotics engineers are using LYRN as the primary cognition layer for autonomous agents.
-      </p>
-      <button>[ View Architecture ]</button>
-    </div>
-  </div>
-
-  <footer>
-    <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
-    <div class="footer-right">
-      <span>LYRN IN INDUSTRY // EOF</span>
-      <label class="theme-toggle-inline">
-        THEME
-        <span class="theme-switch">
-          <input type="checkbox" id="themeToggle" checked onchange="toggleTheme()" />
-          <span class="slider"></span>
-        </span>
-      </label>
-    </div>
-  </footer>
-
-</div>
-
-<script>
-  function toggleTheme() {
-    const body = document.body;
-    const checkbox = document.getElementById('themeToggle');
-    if (checkbox.checked) {
-      body.setAttribute('data-theme', 'dark');
-    } else {
-      body.setAttribute('data-theme', 'light');
-    }
-  }
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>

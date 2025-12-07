@@ -2,125 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>LYRN - Topic Indexing</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LYRN – Topic Indexing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    /* ... [INSERT CSS FROM WHITEPAPER HERE] ... */
-    :root { --bg-core: #050505; --bg-panel: #0a0a0a; --brand-purple: #7c5cff; --brand-purple-dim: rgba(124, 92, 255, 0.1); --text-head: #ffffff; --text-body: #b0b0b0; --text-dim: #666666; --border-color: #222222; --code-bg: #000000; --code-border: #333333; --input-focus-bg: #111111; }
-    body[data-theme="light"] { --bg-core: #ffffff; --bg-panel: #f9f9f9; --brand-purple: #7c5cff; --brand-purple-dim: rgba(124, 92, 255, 0.08); --text-head: #000000; --text-body: #333333; --text-dim: #666666; --border-color: #e5e5e5; --code-bg: #f4f4f6; --code-border: #e0e0e0; --input-focus-bg: #ffffff; }
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; background: radial-gradient(circle at 50% 0%, #1a1233 0%, var(--bg-core) 80%); background-attachment: fixed; color: var(--text-body); font-family: "Inter", sans-serif; line-height: 1.65; transition: background 0.3s, color 0.3s; }
-    body[data-theme="light"] { background: var(--bg-core); }
-    h1, h2, h3, h4, .mono { font-family: "JetBrains Mono", monospace; color: var(--text-head); margin-top: 0; }
-    .page-container { max-width: 1000px; margin: 0 auto; padding: 40px; min-height: 100vh; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); background: var(--bg-core); position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-    .section-divider { border-bottom: 1px solid var(--border-color); margin: 40px 0; padding-bottom: 10px; display: flex; align-items: center; color: var(--brand-purple); font-family: "JetBrains Mono"; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-    .hero-title { font-size: 28px; letter-spacing: -0.02em; text-transform: uppercase; margin-bottom: 8px; }
-    .meta-label { font-family: "JetBrains Mono"; font-size: 10px; color: var(--brand-purple); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 12px; }
-    p { font-size: 14px; margin-bottom: 16px; }
-    ul { font-size: 14px; padding-left: 20px; color: var(--text-body); }
-    li { margin-bottom: 8px; }
-    pre { font-family: "JetBrains Mono"; font-size: 12px; background: var(--code-bg); border: 1px solid var(--code-border); padding: 16px; border-radius: 4px; color: var(--text-head); overflow-x: auto; }
-    .code-key { color: var(--brand-purple); font-weight: 600; }
-    .code-val { color: var(--text-head); }
-    .callout { background: linear-gradient(90deg, var(--brand-purple-dim) 0%, transparent 100%); border-left: 3px solid var(--brand-purple); padding: 16px 20px; font-size: 13px; color: var(--text-body); margin-bottom: 20px; }
-    .callout strong { color: var(--text-head); }
-    header { position: relative; margin-top: 40px; margin-bottom: 60px; }
-    .nav-link { text-decoration: none; color: var(--text-dim); font-family: "JetBrains Mono", monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; transition: color 0.2s ease; }
-    .nav-link:hover, .nav-link.active { color: var(--text-head); }
-    footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-family: "JetBrains Mono"; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
-    .theme-toggle-inline { display: flex; align-items: center; gap: 6px; cursor: pointer; }
-    .theme-switch { position: relative; display: inline-block; width: 34px; height: 18px; }
-    .theme-switch input { opacity: 0; width: 0; height: 0; }
-    .theme-switch .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; border-radius: 999px; border: 1px solid var(--border-color); transition: .2s; }
-    .theme-switch .slider::before { content: ""; position: absolute; height: 12px; width: 12px; left: 2px; top: 2px; border-radius: 50%; background-color: #fff; transition: .2s; }
-    .theme-switch input:checked + .slider { background-color: var(--brand-purple-dim); border-color: var(--brand-purple); }
-    .theme-switch input:checked + .slider::before { transform: translateX(14px); }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body data-theme="dark">
-
-<div class="page-container">
-  
-  <header>
-    <div class="grid-2">
-      <div style="display: flex; gap: 24px;">
-        <img src="image_0.png" alt="LYRN Logo" style="height: 80px; width: auto; flex-shrink: 0;">
+<body>
+  <button id="themeButton" class="theme-button">LIGHT MODE</button>
+  <div class="page-container">
+    <header>
+      <div class="header-left">
+        <a href="index.html"><img src="assets/logo.png" alt="LYRN Logo" style="height: 80px; width: auto; flex-shrink: 0;" /></a>
         <div>
           <div class="meta-label">LYRN · TOPIC INDEXING</div>
-          <h1 class="hero-title">Long-Term Relational Memory</h1>
-          <p style="color: var(--text-dim); max-width: 90%;">
-            A lightweight, plain-text approach to building human-like long-term memory through topic-based indexing, reflection, and structured insight.
-          </p>
+          <h1 class="hero-title">Long‑Term Relational Memory</h1>
+          <p style="color: var(--text-dim); max-width: 90%;">A lightweight, plain‑text approach to building human‑like long‑term memory through topic‑based indexing, reflection and structured insight.</p>
         </div>
       </div>
-      <div style="text-align: right; padding-top: 10px;">
-        <nav style="display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
-          <a href="index.html" class="nav-link">Home</a>
-          <a href="#" class="nav-link active">Architecture</a>
-          <a href="industry.html" class="nav-link">Industry</a>
-          <a href="kiosks.html" class="nav-link">Kiosks</a>
-          <a href="security.html" class="nav-link">Security</a>
-          <a href="space.html" class="nav-link">Space</a>
-        </nav>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <details class="details-dropdown">
+          <summary id="nav-architecture" class="nav-link">Architecture</summary>
+          <div class="dropdown-menu">
+            <a href="embodied.html" class="nav-link">Embodied</a>
+            <a href="memory.html" class="nav-link">Memory</a>
+            <a href="reflection.html" class="nav-link">Reflection</a>
+            <a href="topic.html" class="nav-link">Topic Index</a>
+          </div>
+        </details>
+        <a href="industry.html" class="nav-link">Industry</a>
+        <a href="kiosks.html" class="nav-link">Kiosks</a>
+        <a href="security.html" class="nav-link">Security</a>
+        <a href="space.html" class="nav-link">Space</a>
+      </nav>
+    </header>
+
+    <div class="section-divider">01 // Introduction</div>
+    <p>In memory‑based AI systems, context is everything. Traditional memory implementations rely on long token windows or rigid vector embeddings. This document outlines a lightweight, scalable approach built entirely from plain text: <strong>Topic Indexing</strong>.</p>
+    <p>The core concept is simple: each time a keyword is searched, the system pulls up a topic index or creates one. This becomes a central node containing summaries and insights, allowing the LLM to reason, recall and relate over time.</p>
+
+    <div class="section-divider">02 // Creation of Indexes</div>
+    <div class="grid-2">
+      <div>
+        <h3 class="meta-label">Automated Creation</h3>
+        <p>Topic indexes are automatically created from keyword searches. These indexes are updated with all chat entries that include the keyword, along with summaries.</p>
+      </div>
+      <div>
+        <h3 class="meta-label">Lived Memory</h3>
+        <p>Over time, each topic index grows richer, containing a chronological thread of thoughts. This is not static memory; it is <strong>lived memory</strong>.</p>
       </div>
     </div>
-  </header>
 
-  <div class="section-divider">01 // Introduction</div>
-  <p>In memory-based AI systems, context is everything. Traditional memory implementations rely on long token windows or rigid vector embeddings. This document outlines a lightweight, scalable approach built entirely from plain text: <strong>Topic Indexing</strong>.</p>
-  <p>The core concept is simple: each time a keyword is searched, the system pulls up a topic index or creates one. This becomes a central node containing summaries and insights, allowing the LLM to reason, recall, and relate over time.</p>
-
-  <div class="section-divider">02 // Creation of Indexes</div>
-  <div class="grid-2">
-    <div>
-      <h3 class="meta-label">Automated Creation</h3>
-      <p>Topic indexes are automatically created from keyword searches. These indexes are updated with all chat entries that include the keyword, along with summaries.</p>
-    </div>
-    <div>
-      <h3 class="meta-label">Lived Memory</h3>
-      <p>Over time, each topic index grows richer, containing a chronological thread of thoughts. This is not static memory; it is <strong>lived memory</strong>.</p>
-    </div>
-  </div>
-
-  <div class="section-divider">03 // Propagation of Insights</div>
-  <p>The topic index framework allows the system to evolve its behavior through a structured delta mechanism.</p>
-  <pre><code><span class="code-key">insight_id:</span> <span class="code-val">52</span>
+    <div class="section-divider">03 // Propagation of Insights</div>
+    <p>The topic index framework allows the system to evolve its behaviour through a structured delta mechanism.</p>
+    <pre><code><span class="code-key">insight_id:</span> <span class="code-val">52</span>
 <span class="code-key">timestamp:</span> <span class="code-val">2025-06-18T03:20</span>
 <span class="code-key">summary:</span> <span class="code-val">Recurring dream patterns align with recent emotional tone.</span>
 <span class="code-key">source_topic:</span> <span class="code-val">dreams</span></code></pre>
 
-  <div class="callout">
-    <div class="meta-label" style="margin-bottom: 5px;">Conclusion</div>
-    This white paper demonstrates how LYRN’s topic indexing system enables scalable, human-like memory using only structured plain text. It is not just memory—it’s memory that remembers <strong>why</strong>.
-  </div>
-
-  <footer>
-    <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
-    <div style="display: flex; gap: 16px; align-items: center;">
-      <span>TOPIC INDEX // EOF</span>
-      <label class="theme-toggle-inline">
-        THEME
-        <span class="theme-switch">
-          <input type="checkbox" id="themeToggle" checked onchange="toggleTheme()" />
-          <span class="slider"></span>
-        </span>
-      </label>
+    <div class="callout">
+      <div class="meta-label" style="margin-bottom: 5px;">Conclusion</div>
+      This white paper demonstrates how LYRN’s topic indexing system enables scalable, human‑like memory using only structured plain text. It is not just memory — it’s memory that remembers <strong>why</strong>.
     </div>
-  </footer>
 
-</div>
-
-<script>
-  function toggleTheme() {
-    const body = document.body;
-    const checkbox = document.getElementById('themeToggle');
-    body.setAttribute('data-theme', checkbox.checked ? 'dark' : 'light');
-  }
-</script>
-
+    <footer>
+      <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
+      <div class="footer-right">
+        <span>TOPIC INDEX // EOF</span>
+        <label class="theme-toggle-inline">THEME
+          <span class="theme-switch">
+            <input type="checkbox" id="themeToggle" />
+            <span class="slider"></span>
+          </span>
+        </label>
+      </div>
+    </footer>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>

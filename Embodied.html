@@ -2,314 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>LYRN Embodied - Cognition Inside a Body</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LYRN – Embodied</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-
-  <style>
-    /* =========================================
-       1. CORE VARIABLES (THEME ENGINE)
-       ========================================= */
-    :root {
-      /* DARK MODE (DEFAULT/VOID) */
-      --bg-core: #050505;
-      --bg-panel: #0a0a0a;
-      --brand-purple: #7c5cff;
-      --brand-purple-dim: rgba(124, 92, 255, 0.1);
-      
-      --text-head: #ffffff;
-      --text-body: #b0b0b0;
-      --text-dim: #666666;
-      
-      --border-color: #222222;
-      --code-bg: #000000;
-      --code-border: #333333;
-      --input-focus-bg: #111111;
-    }
-
-    /* LIGHT MODE OVERRIDES */
-    body[data-theme="light"] {
-      --bg-core: #ffffff;
-      --bg-panel: #f9f9f9;
-      --brand-purple: #7c5cff;
-      --brand-purple-dim: rgba(124, 92, 255, 0.08);
-      
-      --text-head: #000000;
-      --text-body: #333333;
-      --text-dim: #666666;
-      
-      --border-color: #e5e5e5;
-      --code-bg: #f4f4f6;
-      --code-border: #e0e0e0;
-      --input-focus-bg: #ffffff;
-    }
-
-    /* =========================================
-       2. GLOBAL RESET & TYPOGRAPHY
-       ========================================= */
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      
-      /* Gradient Background matching Homepage */
-      background: radial-gradient(circle at 50% 0%, #1a1233 0%, var(--bg-core) 80%);
-      background-attachment: fixed;
-      
-      color: var(--text-body);
-      font-family: "Inter", system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.65;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    /* Reset background to solid for light mode */
-    body[data-theme="light"] {
-        background: var(--bg-core);
-    }
-
-    h1, h2, h3, h4, .mono {
-      font-family: "JetBrains Mono", monospace;
-      color: var(--text-head);
-      margin-top: 0;
-    }
-
-    /* =========================================
-       3. LAYOUT UTILITIES
-       ========================================= */
-    .page-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px;
-      min-height: 100vh;
-      border-right: 1px solid var(--border-color);
-      border-left: 1px solid var(--border-color);
-      
-      /* Container keeps solid core color */
-      background-color: var(--bg-core);
-      
-      position: relative;
-      box-shadow: 0 0 50px rgba(0,0,0,0.5);
-    }
-
-    .section-divider {
-      border-bottom: 1px solid var(--border-color);
-      margin: 40px 0;
-      padding-bottom: 10px;
-      display: flex;
-      align-items: center;
-      color: var(--brand-purple);
-      font-family: "JetBrains Mono", monospace;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-    
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-
-    /* =========================================
-       4. TYPOGRAPHY COMPONENTS
-       ========================================= */
-    .hero-title {
-      font-size: 28px;
-      letter-spacing: -0.02em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .meta-label {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 10px;
-      color: var(--brand-purple);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      font-weight: 600;
-      display: block;
-      margin-bottom: 12px;
-    }
-
-    p { font-size: 14px; margin-bottom: 16px; }
-
-    code {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 12px;
-      background: var(--code-bg);
-      border: 1px solid var(--code-border);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: var(--brand-purple);
-    }
-
-    /* =========================================
-       5. BUTTONS & INPUTS
-       ========================================= */
-    button {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 11px;
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-dim);
-      padding: 10px 18px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      transition: all 0.2s ease;
-    }
-
-    button:hover {
-      border-color: var(--brand-purple);
-      color: var(--brand-purple);
-    }
-
-    button.btn-primary {
-      background: var(--brand-purple);
-      color: #ffffff;
-      border-color: var(--brand-purple);
-      font-weight: 600;
-    }
-    button.btn-primary:hover { background: #6a4ce0; }
-
-    /* =========================================
-       6. CALLOUTS & DATA BLOCKS
-       ========================================= */
-    .callout {
-      background: linear-gradient(90deg, var(--brand-purple-dim) 0%, transparent 100%);
-      border-left: 3px solid var(--brand-purple);
-      padding: 16px 20px;
-      font-size: 13px;
-      color: var(--text-body);
-    }
-    .callout strong { color: var(--text-head); }
-
-    .tag-container { display: flex; gap: 10px; }
-    .tag {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 10px;
-      border: 1px solid var(--border-color);
-      padding: 4px 8px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-    }
-    .tag span { color: var(--text-head); font-weight: 600; }
-
-    /* =========================================
-       7. UTILITIES & NAV
-       ========================================= */
-    .theme-toggle {
-      position: absolute;
-      top: 20px; right: 20px;
-    }
-    footer {
-      margin-top: 60px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    /* Navigation Links */
-    .nav-link {
-        text-decoration: none;
-        color: var(--text-dim);
-        font-family: "JetBrains Mono", monospace;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        transition: color 0.2s ease;
-    }
-    .nav-link:hover, .nav-link.active {
-        color: var(--text-head);
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body data-theme="dark">
-
-<div class="page-container">
-
-  <button class="theme-toggle" onclick="toggleTheme()">[ Toggle Theme ]</button>
-
-  <header style="margin-top: 40px; margin-bottom: 60px;">
-    <div class="grid-2">
-      <div style="display: flex; gap: 24px;">
-        <img src="image_0.png" alt="LYRN Logo" style="height: 80px; width: auto; flex-shrink: 0;">
+<body>
+  <button id="themeButton" class="theme-button">LIGHT MODE</button>
+  <div class="page-container">
+    <header>
+      <div class="header-left">
+        <a href="index.html"><img src="assets/logo.png" alt="LYRN Logo" style="height: 80px; width: auto; flex-shrink: 0;" /></a>
         <div>
-            <div class="meta-label">LYRN · EMBODIED</div>
-            <h1 class="hero-title">Cognition Inside a Body</h1>
-            <p style="color: var(--text-body); max-width: 90%;">
-              LYRN becomes an embodied mind when running inside a machine — a forklift, a robot, a drone, or an experimental humanoid. Snapshot, delta, verbatim memory, and topic indexes combine to create continuity, stable behavior, and grounded physical awareness inside any physical form factor.
-            </p>
+          <div class="meta-label">LYRN · EMBODIED</div>
+          <h1 class="hero-title">Cognition Inside a Body</h1>
+          <p style="max-width: 90%;">LYRN becomes an embodied mind when running inside a machine — a forklift, a robot, a drone or an experimental humanoid. Snapshot, delta, verbatim memory and topic indexes combine to create continuity, stable behaviour and grounded physical awareness inside any physical form factor.</p>
         </div>
       </div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <details class="details-dropdown">
+          <summary id="nav-architecture" class="nav-link">Architecture</summary>
+          <div class="dropdown-menu">
+            <a href="embodied.html" class="nav-link">Embodied</a>
+            <a href="memory.html" class="nav-link">Memory</a>
+            <a href="reflection.html" class="nav-link">Reflection</a>
+            <a href="topic.html" class="nav-link">Topic Index</a>
+          </div>
+        </details>
+        <a href="industry.html" class="nav-link">Industry</a>
+        <a href="kiosks.html" class="nav-link">Kiosks</a>
+        <a href="security.html" class="nav-link">Security</a>
+        <a href="space.html" class="nav-link">Space</a>
+      </nav>
+    </header>
 
-      <div style="text-align: right; padding-top: 10px;">
-        <nav style="display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
-          <a href="index.html" class="nav-link">Home</a>
-          <a href="#" class="nav-link">Architecture</a>
-          <a href="#" class="nav-link">Industry</a>
-          <a href="#" class="nav-link">Kiosks</a>
-          <a href="#" class="nav-link">Security</a>
-          <a href="#" class="nav-link active">Embodied</a>
-        </nav>
+    <div class="section-divider">01 // Overview</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Overview</div>
+        <p>Embodiment is LYRN equipped with sensors, actuators and a body schema. The system builds a <em>persistent internal model</em> of its own body and environment.</p>
+        <p>Because there is no cloud dependency, embodied agents retain continuity even across reboots or periods of network isolation.</p>
+        <div class="callout" style="margin-top: 20px;">
+          <div class="meta-label" style="margin-bottom: 4px;">Concept Note</div>
+          <strong>LYRN Embodied gives machines a stable inner world — not just commands or tasks.</strong>
+        </div>
+      </div>
+      <div>
+        <div class="meta-label">Embodied Use Cases</div>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Autonomous warehouse / field robots</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Mobile kiosks / robotic attendants</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Human‑interaction units (assistive)</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Manipulation tasks (arms, grippers)</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Physical NPCs in sim‑to‑reality</li>
+        </ul>
       </div>
     </div>
-  </header>
 
-  <div class="section-divider">01 // Overview</div>
-  <div class="grid-2">
-    <div>
-      <div class="meta-label">Overview</div>
-      <p>
-        Embodiment is LYRN equipped with sensors, actuators, and a body schema. The system builds a <em>persistent internal model</em> of its own body and environment.
-      </p>
-      <p>
-        Because there is no cloud dependency, embodied agents retain continuity even across reboots or periods of network isolation.
-      </p>
-      
-      <div class="callout" style="margin-top: 20px;">
-        <div class="meta-label" style="margin-bottom: 4px;">Concept Note</div>
-        <strong>LYRN Embodied gives machines a stable inner world — not just commands or tasks.</strong>
+    <div class="section-divider">02 // System Model in Embodiment</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Cognitive Loop</div>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+          <li style="margin-bottom: 12px;"><strong>Snapshot:</strong> Body position, joint states, sensor readings, proprioception and environment.</li>
+          <li style="margin-bottom: 12px;"><strong>Delta:</strong> Micro‑movement changes, torque shifts, contact points and hazard signals.</li>
+          <li style="margin-bottom: 12px;"><strong>Verbatim Memory:</strong> Every movement, failure, adjustment and boundary learned.</li>
+          <li style="margin-bottom: 12px;"><strong>Topic Index:</strong> Limbs, tools, people, objects, spatial zones and internal body schema.</li>
+          <li style="margin-bottom: 12px;"><strong>Reflection:</strong> Movement optimization, safety reinforcement and task learning.</li>
+          <li style="margin-bottom: 12px;"><strong>Actuation Layer:</strong> Commands sent to motors, limbs, wheels and manipulators.</li>
+        </ul>
       </div>
-    </div>
-    
-    <div>
-      <div class="meta-label">Embodied Use Cases</div>
-      <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono'; font-size: 13px; color: var(--text-body);">
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Autonomous warehouse / field robots</li>
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Mobile kiosks / robotic attendants</li>
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Human-interaction units (assistive)</li>
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Manipulation tasks (arms, grippers)</li>
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Physical NPCs in sim-to-reality</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="section-divider">02 // System Model in Embodiment</div>
-  <div class="grid-2">
-    <div>
-      <div class="meta-label">Cognitive Loop</div>
-      <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono'; font-size: 13px; color: var(--text-body);">
-        <li style="margin-bottom: 12px;"><strong>Snapshot:</strong> Body position, joint states, sensor readings, proprioception, environment.</li>
-        <li style="margin-bottom: 12px;"><strong>Delta:</strong> Micro-movement changes, torque shifts, contact points, hazard signals.</li>
-        <li style="margin-bottom: 12px;"><strong>Verbatim Memory:</strong> Every movement, failure, adjustment, boundary learned.</li>
-        <li style="margin-bottom: 12px;"><strong>Topic Index:</strong> Limbs, tools, people, objects, spatial zones, internal body schema.</li>
-        <li style="margin-bottom: 12px;"><strong>Reflection:</strong> Movement optimization, safety reinforcement, task learning.</li>
-        <li style="margin-bottom: 12px;"><strong>Actuation Layer:</strong> Commands sent to motors, limbs, wheels, manipulators.</li>
-      </ul>
-    </div>
-    
-    <div>
-      <div class="meta-label">Textual Diagram</div>
-      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-body); line-height: 1.4; border: 1px solid var(--border-color); padding: 20px; background: var(--bg-panel);">
+      <div>
+        <div class="meta-label">Textual Diagram</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-body); line-height: 1.4; border: 1px solid var(--border-color); padding: 20px; background: var(--bg-panel);">
 <pre style="margin:0;">
 [ Sensors / Proprioception / Vision ]
                  ↓
@@ -323,90 +91,82 @@
                  ↓
  [ Verbatim Memory + Body Schema Updates ]
 </pre>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="section-divider">03 // Example Scenario</div>
-  <div style="border: 1px solid var(--border-color); padding: 30px; background: var(--bg-panel);">
-    <div class="meta-label">Example Scenario</div>
-    <h3 style="margin-bottom: 20px;">Object Retrieval with Continuity</h3>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+    <div class="section-divider">03 // Example Scenario</div>
+    <div style="border: 1px solid var(--border-color); padding: 30px; background: var(--bg-panel);">
+      <div class="meta-label">Example Scenario</div>
+      <h3 style="margin-bottom: 20px;">Object Retrieval with Continuity</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+        <div>
+          <p>A LYRN‑embodied agent receives the task to pick up a box. The Snapshot builds an instant picture of position, arm extension, object location and weight estimate.</p>
+          <p>As it moves, Delta events are fired: grip slippage, centre‑of‑mass shift or a new obstacle detected.</p>
+        </div>
+        <div>
+          <p>LYRN updates internal topics instantly: “object,” “grip,” “surface” and “movement vector.” Reflection evaluates movement safety and optimization in real‑time.</p>
+          <p>Once the agent completes the task, it logs the attempt in verbatim memory. The next attempt starts from these improved priors — no retraining pipeline needed.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider">04 // Technical Highlights</div>
+    <div class="grid-2">
       <div>
-        <p>A LYRN-embodied agent receives the task to pick up a box. The Snapshot builds an instant picture of position, arm extension, object location, and weight estimate.</p>
-        <p>As it moves, Delta events are fired: grip slippage, center-of-mass shift, or a new obstacle detected.</p>
+        <div class="meta-label">Inherited Features</div>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ No cloud compute required.</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Deterministic behaviour.</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Continuous self‑modelling (prevents catastrophic forgetting).</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Real‑time memory of micro‑failures.</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ No RL loop required — learning happens through narrative accumulation.</li>
+        </ul>
       </div>
       <div>
-        <p>LYRN updates internal topics instantly: “object,” “grip,” “surface,” and “movement vector.” Reflection evaluates movement safety and optimization in real-time.</p>
-        <p>Once the agent completes the task, it logs the attempt in verbatim memory. The next attempt starts from these improved priors — no retraining pipeline needed.</p>
+        <div class="meta-label">Deployment Notes</div>
+        <p>Runs on standard embedded PCs inside robots, drones, forklifts or humanoids. Works with standard sensor packs including LIDAR, depth cams, encoders, accelerometers and microphones. Embodied agents inherit <strong>bounded behaviour guarantees</strong> natively.</p>
       </div>
     </div>
-  </div>
 
-  <div class="section-divider">04 // Technical Highlights</div>
-  <div class="grid-2">
-    <div>
-      <div class="meta-label">Inherited Features</div>
-      <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono'; font-size: 13px; color: var(--text-body);">
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ No cloud compute required.</li>
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Deterministic behavior.</li>
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Continuous self-modeling (prevents catastrophic forgetting).</li>
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Real-time memory of micro-failures.</li>
-        <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ No RL loop required — learning happens through narrative accumulation.</li>
-      </ul>
+    <div class="section-divider">05 // Deployment Targets</div>
+    <div class="tag-container" style="flex-wrap: wrap;">
+      <div class="tag"><span>Indoor Mobile Robots</span></div>
+      <div class="tag"><span>Service Robots</span></div>
+      <div class="tag"><span>Warehouse &amp; Logistics</span></div>
+      <div class="tag"><span>Telepresence Units</span></div>
+      <div class="tag"><span>Autonomous Manipulators</span></div>
+      <div class="tag"><span>Android Prototypes</span></div>
+      <div class="tag"><span>Drone Inspection Agents</span></div>
     </div>
-    
-    <div>
-      <div class="meta-label">Deployment Notes</div>
-      <p>
-        Runs on standard embedded PCs inside robots, drones, forklifts, or humanoids.
-      </p>
-      <p>
-        Works with standard sensor packs including LIDAR, depth cams, encoders, accelerometers, and microphones. Embodied agents inherit <strong>bounded behavior guarantees</strong> natively.
-      </p>
+
+    <div class="section-divider">06 // Next Steps</div>
+    <div class="grid-2">
+      <div style="background: var(--bg-panel); padding: 30px; border: 1px solid var(--border-color); text-align: center;">
+        <div class="meta-label" style="margin-bottom: 20px;">For Robotics Teams</div>
+        <p style="margin-bottom: 20px;">Integrate LYRN as a full embodied cognition system with proprioception.</p>
+        <button class="btn-primary">[ Integrate LYRN Embodied ]</button>
+      </div>
+      <div style="background: var(--bg-panel); padding: 30px; border: 1px solid var(--border-color); text-align: center;">
+        <div class="meta-label" style="margin-bottom: 20px;">For Hardware Builders</div>
+        <p style="margin-bottom: 20px;">Pair LYRN with custom sensors or humanoid platforms.</p>
+        <button>[ View Embodiment Architecture ]</button>
+      </div>
     </div>
+
+    <footer>
+      <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
+      <div class="footer-right">
+        <span>EMBODIED // EOF</span>
+        <label class="theme-toggle-inline">THEME
+          <span class="theme-switch">
+            <input type="checkbox" id="themeToggle" />
+            <span class="slider"></span>
+          </span>
+        </label>
+      </div>
+    </footer>
   </div>
-
-  <div class="section-divider">05 // Deployment Targets</div>
-  <div class="tag-container" style="flex-wrap: wrap;">
-    <div class="tag"><span>Indoor Mobile Robots</span></div>
-    <div class="tag"><span>Service Robots</span></div>
-    <div class="tag"><span>Warehouse & Logistics</span></div>
-    <div class="tag"><span>Telepresence Units</span></div>
-    <div class="tag"><span>Autonomous Manipulators</span></div>
-    <div class="tag"><span>Android Prototypes</span></div>
-    <div class="tag"><span>Drone Inspection Agents</span></div>
-  </div>
-
-  <div class="section-divider">06 // Next Steps</div>
-  <div class="grid-2">
-    <div style="background: var(--bg-panel); padding: 30px; border: 1px solid var(--border-color); text-align: center;">
-      <div class="meta-label" style="margin-bottom: 20px;">For Robotics Teams</div>
-      <p style="margin-bottom: 20px;">Integrate LYRN as a full embodied cognition system with proprioception.</p>
-      <button class="btn-primary">[ Integrate LYRN Embodied ]</button>
-    </div>
-    <div style="background: var(--bg-panel); padding: 30px; border: 1px solid var(--border-color); text-align: center;">
-      <div class="meta-label" style="margin-bottom: 20px;">For Hardware Builders</div>
-      <p style="margin-bottom: 20px;">Pair LYRN with custom sensors or humanoid platforms.</p>
-      <button>[ View Embodiment Architecture ]</button>
-    </div>
-  </div>
-
-  <footer>
-    <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
-    <span>EMBODIED // EOF</span>
-  </footer>
-
-</div>
-
-<script>
-    // Simple theme toggler
-    function toggleTheme() {
-      const body = document.body;
-      const currentTheme = body.getAttribute('data-theme');
-      body.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
-    }
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
