@@ -51,8 +51,14 @@ body[data-theme="light"] {
 body {
   margin: 0;
   padding: 0;
-  /* radial backdrop reminiscent of the prototype */
-  background: radial-gradient(circle at 50% 0%, #1a1233 0%, var(--bg-core) 80%);
+  /* Cyberpunk Starburst / Grid Background */
+  background:
+      radial-gradient(circle at 50% 0%, rgba(124, 92, 255, 0.15) 0%, transparent 60%),
+      radial-gradient(circle at 0% 50%, rgba(124, 92, 255, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 100% 50%, rgba(124, 92, 255, 0.05) 0%, transparent 40%),
+      repeating-linear-gradient(transparent, transparent 49px, rgba(255, 255, 255, 0.02) 50px),
+      repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255, 255, 255, 0.02) 50px),
+      var(--bg-core);
   background-attachment: fixed;
   color: var(--text-body);
   font-family: 'Inter', system-ui, sans-serif;
@@ -256,6 +262,64 @@ button.btn-primary:hover {
   font-size: 13px;
   color: var(--text-body);
   margin-bottom: 20px;
+}
+
+/* Cyberpunk Spacer */
+.purple-spacer {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--brand-purple), transparent);
+  margin: 40px auto;
+  width: 100%;
+  opacity: 0.6;
+  position: relative;
+}
+
+.purple-spacer::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 4px;
+  background: var(--brand-purple);
+  box-shadow: 0 0 10px var(--brand-purple);
+}
+
+/* Content Box Outline */
+.text-box-outline {
+  border: 1px solid var(--border-color);
+  padding: 25px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.01);
+  margin-bottom: 30px;
+  transition: border-color 0.3s ease;
+}
+
+.text-box-outline:hover {
+  border-color: var(--brand-purple-dim);
+}
+
+.text-box-outline::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid var(--brand-purple);
+  border-left: 1px solid var(--brand-purple);
+}
+
+.text-box-outline::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-bottom: 1px solid var(--brand-purple);
+  border-right: 1px solid var(--brand-purple);
 }
 
 .callout strong {
