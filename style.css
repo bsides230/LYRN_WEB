@@ -29,8 +29,8 @@ body[data-theme="light"] {
   --bg-core: #c0c2c5;  /* Silver Gray */
   --bg-panel: #d1d3d6; /* Slightly lighter silver for panels */
   
-  /* FIXED: Darker grey input background instead of blinding white */
-  --bg-input: #e0e0e0; 
+  /* FIXED: Inputs are now light grey/white in light mode (was black) */
+  --bg-input: #f4f4f6; 
   
   --brand-purple: #6a4ce0; /* Darker purple for contrast against silver */
   --brand-purple-dim: rgba(106, 76, 224, 0.1);
@@ -235,8 +235,10 @@ header {
     align-items: center;
 }
 
+/* FIXED: Strict max-width prevents logo explosion in production */
 .hero-logo-large {
-    width: 180px;
+    width: 100%;
+    max-width: 180px; 
     height: auto;
     filter: drop-shadow(0 0 20px var(--brand-purple-dim));
     transition: filter 0.3s ease;
@@ -570,6 +572,7 @@ button.btn-primary:hover {
   font-weight: 600;
 }
 
+/* FIXED: Use variable so background toggles between dark/light correctly */
 .rwi-wrapper input[type="text"], 
 .rwi-wrapper textarea {
   width: 100%;
