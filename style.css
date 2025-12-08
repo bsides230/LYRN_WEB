@@ -42,6 +42,12 @@ body[data-theme="light"] {
   --code-bg: #e0e0e0;
   --code-border: #999999;
   --input-focus-bg: #ffffff;
+
+  /* FIX: Override body background to match light theme (from Screenshot 1) */
+  background-color: #c0c2c5;
+  background-image:
+      linear-gradient(rgba(106, 76, 224, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(106, 76, 224, 0.08) 1px, transparent 1px);
 }
 
 /* =========================================
@@ -51,12 +57,25 @@ body[data-theme="light"] {
   box-sizing: border-box;
 }
 
-body {
+/* FIX: Polish Recommendation - Add 500ms theme fade to body + container (from Screenshot 3) */
+body, .page-container {
   margin: 0;
   padding: 0;
   
-  /* --- BACKGROUND CONFIGURATION --- */
+  /* --- BACKGROUND CONFIGURATION (Default Dark) --- */
   background-color: #080412;
+  
+  /* Note: Background image for dark mode is set on body specifically below to allow overrides */
+  color: var(--text-body);
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.65;
+  
+  /* Smooth transition for theme toggle */
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Default Dark Mode Background Image */
+body {
   background-image:
       linear-gradient(rgba(124, 92, 255, 0.15) 1px, transparent 1px),
       linear-gradient(90deg, rgba(124, 92, 255, 0.15) 1px, transparent 1px),
@@ -64,11 +83,6 @@ body {
       radial-gradient(circle at 100% 100%, rgba(50, 180, 255, 0.1) 0%, transparent 50%);
   background-size: 30px 30px, 30px 30px, 100% 100%, 100% 100%;
   background-attachment: fixed;
-  
-  color: var(--text-body);
-  font-family: 'Inter', system-ui, sans-serif;
-  line-height: 1.65;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5 {
@@ -88,9 +102,10 @@ h1, h2, h3, h4, h5 {
 }
 
 /* Title becomes purple in Light Mode for visibility */
+/* FIX: Reduced glow strength for better readability (from Screenshot 2) */
 body[data-theme="light"] .hero-title {
     color: var(--brand-purple); 
-    text-shadow: 0 0 15px rgba(106, 76, 224, 0.3);
+    text-shadow: 0 0 10px rgba(106, 76, 224, 0.25);
 }
 
 /* Section Headings */
@@ -160,6 +175,7 @@ h2 {
   align-items: center;
   height: 60px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  transition: background-color 0.5s ease;
 }
 
 #sticky-nav .logo {
@@ -192,6 +208,11 @@ h2 {
 #sticky-nav .nav-link:hover,
 #sticky-nav .nav-link.active {
   color: var(--brand-purple);
+}
+
+/* FIX: Boost nav hover color in Light Mode (from Screenshot 3) */
+body[data-theme="light"] #sticky-nav .nav-link:hover {
+    color: #593bd9;
 }
 
 .theme-button {
@@ -241,12 +262,14 @@ header {
     max-width: 180px; 
     height: auto;
     filter: drop-shadow(0 0 20px var(--brand-purple-dim));
-    transition: filter 0.3s ease;
+    transition: filter 0.3s ease, max-width 0.3s ease;
 }
 
 /* Logo gets a strong purple glow in Light Mode */
+/* FIX: Restrict logo size slightly in light mode (from Screenshot 3) */
 body[data-theme="light"] .hero-logo-large {
     filter: drop-shadow(0 0 20px var(--brand-purple));
+    max-width: 150px;
 }
 
 /* =========================================
@@ -450,311 +473,4 @@ button.btn-primary:hover {
 
 .rwi-wrapper .main-grid {
   display: grid;
-  grid-template-columns: 280px 1fr; 
-  gap: 0; 
-  flex: 1;
-  min-height: 0; 
-  overflow: hidden;
-}
-
-/* PANELS */
-.rwi-wrapper .panel {
-  background: var(--bg-core);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  height: 100%;
-  position: relative;
-}
-
-.rwi-wrapper .panel.left-panel {
-  border-right: 1px solid var(--border-color);
-  background: var(--bg-panel);
-}
-
-.rwi-wrapper .panel-header {
-  padding: 12px 15px;
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--bg-panel);
-  flex-shrink: 0;
-}
-
-.rwi-wrapper .panel-title {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin: 0;
-  letter-spacing: 0.1em;
-}
-
-/* COMPONENT LIST */
-.rwi-wrapper #components-list {
-  overflow-y: auto;
-  overflow-x: hidden; 
-  flex: 1;
-  padding: 10px;
-}
-
-.rwi-wrapper .component-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  border: 1px solid transparent;
-  margin-bottom: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  background: transparent;
-  transition: all 0.2s;
-  max-width: 100%;
-}
-
-.rwi-wrapper .component-item:hover {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--border-color);
-}
-
-.rwi-wrapper .component-item.selected {
-  border-color: var(--brand-purple);
-  background: var(--brand-purple-dim);
-}
-
-.rwi-wrapper .component-handle {
-    color: var(--text-dim);
-    margin-right: 8px;
-    font-size: 10px;
-    cursor: grab;
-}
-
-.rwi-wrapper .pin-btn {
-  opacity: 0.3;
-  padding: 0;
-  margin: 0 8px 0 0;
-  border: none;
-  background: none;
-  font-size: 12px;
-}
-.rwi-wrapper .pin-btn:hover { opacity: 1; color: var(--brand-purple); }
-
-.rwi-wrapper .component-name {
-  flex: 1;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-  color: var(--text-head);
-  white-space: nowrap;      
-  overflow: hidden;         
-  text-overflow: ellipsis;  
-  margin-right: 10px;
-}
-
-/* EDITOR */
-.rwi-wrapper .editor-scroll {
-  overflow-y: auto;
-  flex: 1;
-  padding: 20px;
-}
-
-.rwi-wrapper .form-group {
-  margin-bottom: 20px;
-}
-
-.rwi-wrapper label {
-  display: block;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  color: var(--brand-purple); 
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
-
-/* FIXED: Use variable so background toggles between dark/light correctly */
-.rwi-wrapper input[type="text"], 
-.rwi-wrapper textarea {
-  width: 100%;
-  background: var(--bg-input); 
-  border: 1px solid var(--border-color);
-  color: var(--text-body);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-  padding: 12px;
-  outline: none;
-  border-radius: 4px;
-  transition: border 0.2s;
-}
-
-.rwi-wrapper input[type="text"]:focus, 
-.rwi-wrapper textarea:focus {
-    border-color: var(--brand-purple);
-    background: var(--input-focus-bg);
-}
-
-.rwi-wrapper textarea {
-  min-height: 120px;
-  resize: vertical;
-  line-height: 1.5;
-}
-
-/* UTILS */
-.rwi-wrapper button.btn-icon {
-    padding: 4px 8px;
-    font-size: 14px;
-    line-height: 1;
-}
-
-.rwi-wrapper .btn-group {
-    display: flex;
-    gap: 8px;
-}
-
-/* RWI Switch */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 28px; 
-  height: 16px;
-  flex-shrink: 0;
-}
-
-.switch input { opacity: 0; width: 0; height: 0; }
-
-.switch .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: var(--border-color);
-  transition: .4s;
-  border-radius: 34px;
-}
-
-.switch .slider:before {
-  position: absolute;
-  content: "";
-  height: 10px; width: 10px;
-  left: 3px; bottom: 3px;
-  background-color: var(--text-dim);
-  transition: .4s;
-  border-radius: 50%;
-}
-
-.switch input:checked + .slider { background-color: var(--brand-purple); }
-.switch input:checked + .slider:before {
-  transform: translateX(12px);
-  background-color: #fff;
-}
-
-/* Toast Notification */
-#rwi-toast {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: var(--bg-core);
-    border: 1px solid var(--brand-purple);
-    box-shadow: 0 0 20px rgba(0,0,0,0.8);
-    color: var(--text-head);
-    padding: 12px 20px;
-    border-radius: 4px;
-    font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    z-index: 100;
-}
-#rwi-toast.show { opacity: 1; }
-
-/* =========================================
-   FOOTER & RESPONSIVE
-   ========================================= */
-footer {
-  margin-top: 60px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  flex-wrap: wrap;
-}
-
-.footer-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* Footer Theme Switch */
-.theme-toggle-inline {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Responsive Media Queries */
-@media (max-width: 768px) {
-  .page-container {
-    padding: 15px; 
-  }
-
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
-  .grid-4 {
-    grid-template-columns: 1fr 1fr;
-  }
-  
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .header-right {
-      margin-top: 20px;
-      width: 100%;
-      justify-content: flex-start;
-  }
-
-  #sticky-nav {
-    overflow-x: auto;
-    white-space: nowrap;
-    justify-content: flex-start;
-    gap: 20px;
-    padding: 0 20px;
-  }
-  
-  .content-shape {
-    display: none;
-  }
-
-  .rwi-wrapper {
-    height: auto; 
-    overflow: visible;
-  }
-  
-  .rwi-wrapper .main-grid {
-    grid-template-columns: 1fr; 
-    gap: 0;
-  }
-
-  .rwi-wrapper .panel.left-panel {
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-    max-height: 300px;
-  }
-  
-  .rwi-wrapper .panel {
-    min-height: 500px;
-  }
-  
-  .rwi-wrapper #components-list {
-    max-height: 250px;
-  }
-}
+  grid
