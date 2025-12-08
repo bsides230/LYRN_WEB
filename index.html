@@ -5,34 +5,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LYRN – Living Yield Relational Network</title>
-  <!-- Preconnect for Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
-  <!-- Shared site stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Layout overrides injected by ChatGPT -->
   <style>
-    /* Center nav links while keeping logo on the left. Theme button is fixed top-right. */
+    /* Updated Header Layout:
+       Uses Flexbox to space items: Logo (Left) - Links (Center) - Theme Button (Right)
+    */
     #sticky-nav {
-      justify-content: center;
+      justify-content: space-between;
+      align-items: center;
     }
-    #sticky-nav .logo {
-      margin-right: 40px;
+    /* Ensure the nav links wrap nicely on smaller screens */
+    #sticky-nav .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
     }
   </style>
 
 </head>
 <body>
-  <button id="themeButton" class="theme-button">LIGHT MODE</button>
 
-  <!-- Sticky Nav -->
   <nav id="sticky-nav">
      <a href="#home" class="logo">
        <img src="assets/logo.png" alt="LYRN" style="height: 30px; width: auto;">
        LYRN
      </a>
+
      <div class="nav-links">
         <a href="#home" class="nav-link">Home</a>
         <a href="#embodied" class="nav-link">Embodied</a>
@@ -45,12 +48,12 @@
         <a href="#security" class="nav-link">Security</a>
         <a href="#space" class="nav-link">Space</a>
      </div>
+
+     <button id="themeButton" class="theme-button">LIGHT MODE</button>
   </nav>
 
   <div class="page-container">
-     <!-- Home Section -->
      <section id="home">
-        <!-- Re-adding Hero Header manually because we skipped original header -->
         <header style="margin-top: 40px; margin-bottom: 40px;">
           <div class="header-left">
              <div>
@@ -59,10 +62,12 @@
               <p style="max-width: 90%;">LYRN is a local‑first cognitive operating system built on snapshot, delta, verbatim memory and topic indexes.</p>
             </div>
           </div>
+          <div class="header-right">
+              <img src="assets/logo.png" alt="LYRN Logo" class="hero-logo-large">
+          </div>
         </header>
         
 
-    <!-- Section 01: What LYRN Is -->
     <div class="section-divider">01 // What LYRN Is</div>
     <div class="grid-2">
       <div class="text-box-outline">
@@ -85,7 +90,6 @@
 
     <div class="purple-spacer"></div>
 
-    <!-- Section 02: Why LYRN Matters -->
     <div class="section-divider">02 // Why LYRN Matters</div>
     <div class="grid-2">
       <div class="text-box-outline">
@@ -105,7 +109,6 @@
       </div>
     </div>
 
-    <!-- Section 03: LYRN in the World -->
     <div class="section-divider">03 // LYRN in the World</div>
     <div class="grid-4">
       <div style="border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
@@ -140,7 +143,6 @@
 
     <div class="purple-spacer"></div>
 
-    <!-- Section 04: Architecture Preview -->
     <div class="section-divider">04 // Architecture Preview</div>
     <div class="grid-2">
       <div class="text-box-outline">
@@ -168,7 +170,6 @@
       </div>
     </div>
 
-    <!-- Section 05: Deployment Modes -->
     <div class="section-divider">05 // Deployment Modes</div>
     <div class="grid-2">
       <div>
@@ -192,15 +193,10 @@
       </div>
     </div>
 
-    <!-- Footer with theme switch -->
-    
-     </section>
+    </section>
 
      <div class="decoration-line"></div>
      <section id="embodied">
-        <!-- Decorative Shapes -->
-        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
-        
         <div class="placeholder-image"></div>
         <h2>Embodied</h2>
         
@@ -308,23 +304,14 @@
       <div class="tag"><span>Drone Inspection Agents</span></div>
     </div>
 
-    
-        
-        <div class="text-box">
-             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Embodied documentation module.
-        </div>
      </section>
 
      <div class="decoration-line"></div>
      <section id="memory">
-        <!-- Decorative Shapes -->
-        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
-        
         <div class="placeholder-image"></div>
         <h2>Memory</h2>
         
 
-    <!-- Objective callout -->
     <div class="callout">
       <div class="meta-label" style="margin-bottom: 5px;">Objective</div>
       This infrastructure enables rich, context‑aware retrieval and lays the groundwork for higher‑level relational memory formation.
@@ -357,18 +344,10 @@
       <li><strong>Contextual Flexibility:</strong> Memory can be retrieved by time, project or topic.</li>
     </ul>
 
-    
-        
-        <div class="text-box">
-             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Memory documentation module.
-        </div>
      </section>
 
      <div class="decoration-line"></div>
      <section id="reflection">
-        <!-- Decorative Shapes -->
-        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
-        
         <div class="placeholder-image"></div>
         <h2>Reflection</h2>
         
@@ -413,18 +392,10 @@
       <li><strong>Snapshot/Delta:</strong> updates core identity and behavioural fields.</li>
     </ul>
 
-    
-        
-        <div class="text-box">
-             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Reflection documentation module.
-        </div>
      </section>
 
      <div class="decoration-line"></div>
      <section id="topic">
-        <!-- Decorative Shapes -->
-        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
-        
         <div class="placeholder-image"></div>
         <h2>Indexing</h2>
         
@@ -459,11 +430,6 @@
       This white paper demonstrates how LYRN’s topic indexing system enables scalable, human‑like memory using only structured plain text. It is not just memory — it’s memory that remembers <strong>why</strong>.
     </div>
 
-    
-        
-        <div class="text-box">
-             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Topic documentation module.
-        </div>
      </section>
 
 
@@ -487,7 +453,7 @@
         </header>
 
         <div class="main-grid">
-            <div class="panel">
+            <div class="panel left-panel">
                 <div class="panel-header">
                     <h3 class="panel-title">Components</h3>
                     <button class="btn-icon" onclick="rwiAddNew()">+</button>
@@ -515,31 +481,10 @@
 
         <div id="rwi-toast">Operation Successful</div>
         </div>
-
-    <div class="text-box-outline" style="margin-top: 24px;">
-      <div class="meta-label">Snapshot Layout · Current RWI</div>
-      <p style="margin-bottom: 8px;">The live RWI on the dashboard tracks these core components inside the master prompt:</p>
-      <pre style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; white-space: pre-wrap;">###RWI_INSTRUCTIONS_START###
-This is the Relational Web Index (RWI). It provides the LLM with a list of active components and how to interpret them. Each line represents an active component and its associated brackets and purpose. **You must read through the following components listed in the RWI before each response.**
-
-- system_instructions: [###SYSTEM_INSTRUCTIONS.START###]...[###SYSTEM_INSTRUCTIONS.END###] Core system instructions.
-
-- system_rules: [###SYSTEM_RULES.START###]...[###SYSTEM_RULES.END###] Hard constraints on behavior.
-
-- ai_preferences: [###AI_PREFERENCES_START###][###AI_PREFERENCES_END###]: AI-specific preferences.
-
-- personality: [###PERSONALITY.START###]...[###PERSONALITY.END###] AI identity traits and behavioral biases.
-
-- jobs_instructions: [###JI_START###][###JI_END###]: This block contains a list of job instructions.</pre>
-    </div>
-
-     </section>
+        </section>
 
      <div class="decoration-line"></div>
      <section id="industry">
-        <!-- Decorative Shapes -->
-        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
-        
         <div class="placeholder-image"></div>
         <h2>Industry</h2>
         
@@ -628,18 +573,10 @@ This is the Relational Web Index (RWI). It provides the LLM with a list of activ
       </div>
     </div>
 
-    
-        
-        <div class="text-box">
-             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Industry documentation module.
-        </div>
      </section>
 
      <div class="decoration-line"></div>
      <section id="kiosks">
-        <!-- Decorative Shapes -->
-        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
-        
         <div class="placeholder-image"></div>
         <h2>Kiosks</h2>
         
@@ -725,18 +662,10 @@ This is the Relational Web Index (RWI). It provides the LLM with a list of activ
       </div>
     </div>
 
-    
-        
-        <div class="text-box">
-             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Kiosks documentation module.
-        </div>
      </section>
 
      <div class="decoration-line"></div>
      <section id="security">
-        <!-- Decorative Shapes -->
-        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
-        
         <div class="placeholder-image"></div>
         <h2>Security</h2>
         
@@ -822,18 +751,10 @@ This is the Relational Web Index (RWI). It provides the LLM with a list of activ
       </div>
     </div>
 
-    
-        
-        <div class="text-box">
-             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Security documentation module.
-        </div>
      </section>
 
      <div class="decoration-line"></div>
      <section id="space">
-        <!-- Decorative Shapes -->
-        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
-        
         <div class="placeholder-image"></div>
         <h2>Space</h2>
         
@@ -921,14 +842,8 @@ This is the Relational Web Index (RWI). It provides the LLM with a list of activ
       </div>
     </div>
 
-    
-        
-        <div class="text-box">
-             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Space documentation module.
-        </div>
      </section>
 
-     <!-- Footer -->
      <footer>
       <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
       <div class="footer-right">
