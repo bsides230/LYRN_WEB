@@ -235,9 +235,8 @@ header {
     align-items: center;
 }
 
-/* FIXED: Strict max-width prevents logo explosion in production */
+/* FIXED: Removed width:100% so it respects natural size */
 .hero-logo-large {
-    width: 100%;
     max-width: 180px; 
     height: auto;
     filter: drop-shadow(0 0 20px var(--brand-purple-dim));
