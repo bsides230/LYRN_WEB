@@ -148,7 +148,7 @@ h2 {
   gap: 20px;
 }
 
-/* NEW: Accent Card for View Cases */
+/* Accent Card for View Cases */
 .view-case-card {
     border: 1px solid var(--border-color);
     border-top: 4px solid var(--brand-purple); /* Purple Accent */
@@ -432,7 +432,7 @@ footer {
 }
 
 /* =========================================
-   RWI BUILDER STYLES (Fixed)
+   RWI BUILDER STYLES
    ========================================= */
 
 .rwi-wrapper {
@@ -465,11 +465,10 @@ footer {
   margin: 0; 
 }
 
-/* Fixed Layout for RWI */
 .rwi-wrapper .main-grid {
   display: grid;
-  grid-template-columns: 280px 1fr; /* Sidebar width | Editor width */
-  flex: 1; /* Fill remaining height */
+  grid-template-columns: 280px 1fr;
+  flex: 1; 
   overflow: hidden;
 }
 
@@ -509,7 +508,6 @@ footer {
     line-height: 1;
 }
 
-/* List Components */
 .component-item {
     display: flex;
     align-items: center;
@@ -555,7 +553,7 @@ footer {
     background: var(--input-focus-bg);
 }
 
-/* Switch (Needed for RWI) */
+/* Switch */
 .switch { position: relative; display: inline-block; width: 30px; height: 16px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
@@ -582,3 +580,73 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
     box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 100;
 }
 #rwi-toast.show { opacity: 1; }
+
+/* =========================================
+   MODAL STYLES (NEW)
+   ========================================= */
+.hidden { display: none !important; }
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(2px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-box {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    width: 90%;
+    max-width: 800px;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-header h3 { margin: 0; color: var(--text-head); }
+.modal-header button { border: none; font-size: 16px; padding: 5px; }
+
+.modal-body {
+    flex: 1;
+    padding: 0;
+    overflow: hidden;
+}
+
+.modal-body textarea {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-core);
+    color: var(--text-body);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    border: none;
+    padding: 20px;
+    resize: none;
+}
+.modal-body textarea:focus { outline: none; }
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+}

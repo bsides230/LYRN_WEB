@@ -13,10 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function initTheme() {
   const body = document.body;
   const themeButton = document.getElementById('themeButton'); 
-  const themeToggle = document.getElementById('themeToggle'); // Footer toggle
-
+  // No footer toggle anymore
+  
   const storedTheme = localStorage.getItem('lyrn-theme');
-  // UPDATED: Default to 'dark' if no storage found.
   let currentTheme = storedTheme || 'dark';
   applyTheme(currentTheme);
 
@@ -25,31 +24,14 @@ function initTheme() {
     themeButton.addEventListener('click', () => {
       currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
       applyTheme(currentTheme);
-      // Sync footer toggle if present
-      if (themeToggle) {
-        themeToggle.checked = currentTheme === 'dark';
-      }
-    });
-  }
-
-  // Footer Toggle
-  if (themeToggle) {
-    themeToggle.checked = currentTheme === 'dark';
-    themeToggle.addEventListener('change', () => {
-      currentTheme = themeToggle.checked ? 'dark' : 'light';
-      applyTheme(currentTheme);
     });
   }
 
   function applyTheme(theme) {
-    // UPDATED: Use setAttribute to match the CSS selector body[data-theme="light"]
     body.setAttribute('data-theme', theme);
-    
-    // Update button text
     if(themeButton) {
         themeButton.innerText = theme === 'dark' ? 'LIGHT MODE' : 'DARK MODE';
     }
-    
     localStorage.setItem('lyrn-theme', theme);
   }
 }
@@ -62,7 +44,6 @@ function initScrollSpy() {
   const sections = Array.from(navLinks)
     .map(link => {
       const href = link.getAttribute('href');
-      // Only track internal links
       if (!href || !href.startsWith('#')) return null;
       const id = href.substring(1);
       const section = document.getElementById(id);
@@ -118,10 +99,8 @@ function initScrollSpy() {
 // --- RWI Builder Demo (Client-Side Logic) ---
 
 function initRWIBuilder() {
-    // Only run if elements exist
     if (!document.getElementById('components-list')) return;
 
-    // Components now mirror the real RWI stack
     let components = [
         {
             name: "rwi",
@@ -133,7 +112,6 @@ function initRWIBuilder() {
                 end_bracket: "###RWI_INSTRUCTIONS_END###",
                 rwi_text: "Relational Web Index header. Lists all active components and how to interpret them."
             },
-            // Content is dynamic for RWI
             content: "" 
         },
         {
@@ -231,15 +209,12 @@ Baseline_Emotional_State: Natural`
 
     let selectedComponent = null;
 
-    // Helper: Regenerate the text inside the "rwi" component (index 0)
-    // This creates the "Table of Contents" based on what is currently active.
     function updateRWITableOfContents() {
         const rwiComp = components.find(c => c.name === 'rwi');
         if(!rwiComp) return;
 
         let txt = "This is the Relational Web Index (RWI). It provides the LLM with a list of active components. **You must read through the following components listed in the RWI before each response.**\n\n";
         
-        // Loop through all OTHER components
         components.forEach(c => {
             if (c.name !== 'rwi' && c.active) {
                 txt += `- ${c.name}: [${c.config.begin_bracket}]...[${c.config.end_bracket}] ${c.config.rwi_text}\n\n`;
@@ -248,31 +223,25 @@ Baseline_Emotional_State: Natural`
 
         rwiComp.content = txt;
         
-        // If we are currently editing the RWI component, refresh the textarea
         if(selectedComponent === 'rwi') {
              const editContent = document.getElementById('edit-content');
              if(editContent) editContent.value = txt;
         }
     }
 
-    // Initialize content once
     updateRWITableOfContents();
 
-    // --- Render List ---
     function renderList() {
         const listEl = document.getElementById('components-list');
         listEl.innerHTML = '';
 
-        // Sort: Pinned first, then order
         components.sort((a, b) => {
             if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
             return (a.order || 0) - (b.order || 0);
         });
 
         components.forEach((comp, index) => {
-            // Update order index
             comp.order = index;
-
             const item = document.createElement('div');
             item.className = `component-item ${selectedComponent === comp.name ? 'selected' : ''}`;
 
@@ -290,13 +259,11 @@ Baseline_Emotional_State: Natural`
 
             item.onclick = () => selectComponent(comp.name);
 
-            // Pin handler
             item.querySelector('.pin-btn').onclick = (e) => {
                 e.stopPropagation();
                 togglePin(comp.name);
             };
 
-            // Toggle handler
             item.querySelector('input').onchange = (e) => {
                 toggleActive(comp.name, e.target.checked);
             };
@@ -317,7 +284,6 @@ Baseline_Emotional_State: Natural`
         const c = components.find(x => x.name === name);
         if (c) {
             c.active = val;
-            // UPDATED: Sync the RWI list whenever something is toggled
             updateRWITableOfContents();
             showToast(val ? `${name} Activated` : `${name} Deactivated`);
         }
@@ -332,7 +298,6 @@ Baseline_Emotional_State: Natural`
 
         titleEl.innerText = name === '_NEW_' ? 'New Component' : `Editing: ${name}`;
 
-        // UPDATED: Added RWI Instructions field to _NEW_ block
         if (name === '_NEW_') {
             container.innerHTML = `
                 <div class="form-group">
@@ -355,7 +320,6 @@ Baseline_Emotional_State: Natural`
             `;
         }
 
-        // Delete disabled for RWI + new component
         const delBtn = document.getElementById('delete-btn');
         if (delBtn) delBtn.style.display = (name === '_NEW_' || name === 'rwi') ? 'none' : 'block';
     }
@@ -403,9 +367,7 @@ Baseline_Emotional_State: Natural`
             }
         }
         
-        // Refresh the index if we changed RWI instructions
         updateRWITableOfContents();
-        
         showToast("Component Saved");
         renderList();
         if (isNew) selectComponent(name);
@@ -434,6 +396,7 @@ Baseline_Emotional_State: Natural`
         }, 800);
     };
 
+    // UPDATED: Use In-Page Modal
     window.rwiPreview = () => {
         let text = "";
         components
@@ -441,15 +404,44 @@ Baseline_Emotional_State: Natural`
             .forEach(c => {
                 text += `${c.config.begin_bracket}\n${c.content}\n${c.config.end_bracket}\n\n`;
             });
-        const win = window.open("", "_blank");
-        win.document.write(`<pre style="font-family:monospace; padding:20px;">${escapeHtml(text)}</pre>`);
+        
+        const modal = document.getElementById('preview-modal');
+        const content = document.getElementById('modal-content');
+        if(modal && content) {
+            content.value = text;
+            modal.classList.remove('hidden');
+        }
     };
+    
+    // Modal Helpers
+    window.closeModal = () => {
+        const modal = document.getElementById('preview-modal');
+        if(modal) modal.classList.add('hidden');
+    }
 
-    // Initial selection: show RWI like in the real builder
+    window.copyModalContent = () => {
+         const content = document.getElementById('modal-content');
+         if(content) {
+             content.select();
+             document.execCommand('copy');
+             const btn = document.getElementById('copy-btn');
+             const orig = btn.innerText;
+             btn.innerText = "Copied!";
+             setTimeout(() => btn.innerText = orig, 1500);
+         }
+    }
+    
+    // Close modal on outside click
+    window.onclick = (event) => {
+        const modal = document.getElementById('preview-modal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
     selectComponent("rwi");
 }
 
-// --- RWI Toast ---
 function showToast(msg, error=false) {
     const t = document.getElementById('rwi-toast');
     if(!t) return;
