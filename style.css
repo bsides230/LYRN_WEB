@@ -764,3 +764,101 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
     display: flex;
     justify-content: flex-end;
 }
+
+/* =========================================
+   MOBILE RESPONSIVENESS FIXES
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* 1. Container & Global Spacing */
+    .page-container {
+        padding: 15px; /* Reduce from 40px to save space */
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* 2. Collapse Grids to Single Column */
+    .grid-2, .grid-4 {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    /* 3. Navigation Bar Adjustments */
+    #sticky-nav {
+        height: auto;
+        padding: 10px 15px;
+        flex-direction: column;
+        gap: 15px;
+        position: relative; /* Optional: un-stick on mobile if it takes too much screen space */
+    }
+
+    /* Make nav links swipeable/scrollable horizontally */
+    #sticky-nav .nav-links {
+        display: flex;
+        flex-wrap: nowrap !important; /* Override inline styles */
+        overflow-x: auto;
+        width: 100%;
+        justify-content: flex-start;
+        padding-bottom: 10px; /* Space for scrollbar touch target */
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        gap: 20px;
+    }
+    
+    /* Hide scrollbar for a cleaner look */
+    #sticky-nav .nav-links::-webkit-scrollbar {
+        height: 0px;
+        background: transparent;
+    }
+
+    .nav-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* 4. Hero Section */
+    header {
+        flex-direction: column-reverse; /* Text on top, logo on bottom */
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .header-left {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .hero-title {
+        font-size: 2.2rem; /* Smaller font for mobile */
+    }
+
+    /* 5. RWI Builder / Snapshot Demo Mobile Layout */
+    .rwi-wrapper {
+        height: auto; /* Allow height to expand */
+        min-height: 800px;
+    }
+
+    .rwi-wrapper .main-grid {
+        grid-template-columns: 1fr; /* Stack panels */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .rwi-wrapper .left-panel {
+        width: 100%;
+        height: 300px; /* Fixed height scrollable area for component list */
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    /* 6. Footer Stacking */
+    footer {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        text-align: center;
+    }
+    
+    .footer-left, .footer-center, .footer-right {
+        justify-self: center;
+    }
+}
