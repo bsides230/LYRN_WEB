@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function initTheme() {
   const body = document.body;
   const themeButton = document.getElementById('themeButton'); 
-  // No footer toggle anymore
   
   const storedTheme = localStorage.getItem('lyrn-theme');
   let currentTheme = storedTheme || 'dark';
@@ -395,8 +394,54 @@ Baseline_Emotional_State: Natural`
             showToast("Master Prompt Rebuilt (Simulation)");
         }, 800);
     };
+    
+    // --- SNS File Handling ---
+    window.rwiSaveSNS = () => {
+        let filename = prompt("Enter filename for snapshot:", "lyrn_snapshot");
+        if (!filename) return;
+        if (!filename.endsWith('.sns')) filename += '.sns';
 
-    // UPDATED: Use In-Page Modal
+        const dataStr = JSON.stringify(components, null, 2);
+        const blob = new Blob([dataStr], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("Snapshot Saved");
+    };
+
+    window.rwiLoadSNS = (input) => {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const loadedComponents = JSON.parse(e.target.result);
+                if (Array.isArray(loadedComponents)) {
+                    components = loadedComponents;
+                    selectedComponent = 'rwi'; 
+                    updateRWITableOfContents(); 
+                    renderList();
+                    selectComponent('rwi');
+                    showToast("Snapshot Loaded Successfully");
+                } else {
+                    showToast("Invalid SNS File", true);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Error Parsing File", true);
+            }
+        };
+        reader.readAsText(file);
+        input.value = '';
+    };
+
+    // --- Modal Logic (Updated for Help) ---
     window.rwiPreview = () => {
         let text = "";
         components
@@ -407,8 +452,45 @@ Baseline_Emotional_State: Natural`
         
         const modal = document.getElementById('preview-modal');
         const content = document.getElementById('modal-content');
+        const htmlContent = document.getElementById('modal-html-content');
+        const title = document.getElementById('modal-title');
+        const copyBtn = document.getElementById('copy-btn');
+        
         if(modal && content) {
+            title.innerText = "Final RWI Prompt";
             content.value = text;
+            content.classList.remove('hidden');
+            htmlContent.classList.add('hidden');
+            copyBtn.classList.remove('btn-hidden'); // Show Copy button
+            modal.classList.remove('hidden');
+        }
+    };
+    
+    window.rwiShowHelp = () => {
+        const modal = document.getElementById('preview-modal');
+        const content = document.getElementById('modal-content');
+        const htmlContent = document.getElementById('modal-html-content');
+        const title = document.getElementById('modal-title');
+        const copyBtn = document.getElementById('copy-btn');
+
+        if(modal && htmlContent) {
+            title.innerText = "RWI Builder Guide";
+            htmlContent.innerHTML = `
+                <p><strong>Welcome to the LYRN Relational Web Index (RWI) Builder.</strong></p>
+                <p>This tool allows you to construct and manage context windows for local-first LLMs. Here is how to use it:</p>
+                <ul>
+                    <li><strong>Edit Components:</strong> Select any item on the left list to modify its content and bracket configuration.</li>
+                    <li><strong>Toggle Switches:</strong> Enable or disable components to include or exclude them from the final prompt.</li>
+                    <li><strong>Pinning:</strong> Use the pin icon to keep important components at the top of the list.</li>
+                    <li><strong>Save .SNS:</strong> Download your current configuration as a .SNS (Snapshot) file. This saves all your text, toggles, and ordering.</li>
+                    <li><strong>Load .SNS:</strong> Upload a previously saved snapshot to restore your workspace.</li>
+                </ul>
+                <p style="margin-top:20px; color:var(--brand-purple);"><strong>Tip:</strong> The 'rwi' component automatically updates its Table of Contents based on which other components are active.</p>
+            `;
+            
+            content.classList.add('hidden');
+            htmlContent.classList.remove('hidden');
+            copyBtn.classList.add('btn-hidden'); // Hide Copy button
             modal.classList.remove('hidden');
         }
     };
@@ -421,7 +503,7 @@ Baseline_Emotional_State: Natural`
 
     window.copyModalContent = () => {
          const content = document.getElementById('modal-content');
-         if(content) {
+         if(content && !content.classList.contains('hidden')) {
              content.select();
              document.execCommand('copy');
              const btn = document.getElementById('copy-btn');
@@ -431,7 +513,6 @@ Baseline_Emotional_State: Natural`
          }
     }
     
-    // Close modal on outside click
     window.onclick = (event) => {
         const modal = document.getElementById('preview-modal');
         if (event.target == modal) {

@@ -585,6 +585,7 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
    MODAL STYLES (NEW)
    ========================================= */
 .hidden { display: none !important; }
+.btn-hidden { display: none !important; }
 
 .modal-overlay {
     position: fixed;
@@ -629,6 +630,7 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
     flex: 1;
     padding: 0;
     overflow: hidden;
+    position: relative;
 }
 
 .modal-body textarea {
@@ -643,6 +645,20 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
     resize: none;
 }
 .modal-body textarea:focus { outline: none; }
+
+/* New Text Display Div for Help Menu */
+.modal-text-display {
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-body);
+}
+.modal-text-display strong { color: var(--text-head); }
+.modal-text-display ul { padding-left: 20px; margin-bottom: 20px; }
+.modal-text-display li { margin-bottom: 8px; }
 
 .modal-footer {
     padding: 15px 20px;
