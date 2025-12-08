@@ -74,10 +74,19 @@ body, .page-container {
   /* Note: Background image for dark mode is set on body specifically below to allow overrides */
   color: var(--text-body);
   font-family: 'Inter', system-ui, sans-serif;
-  line-height: 1.65;
+  
+  /* UPDATED: Increased line height for better readability per feedback */
+  line-height: 1.75; 
   
   /* Smooth transition for theme toggle */
   transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Ensure images never overflow horizontally on mobile */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* Default Dark Mode Background: Cyberpunk Scanlines & Data Columns */
@@ -115,8 +124,8 @@ h1, h2, h3, h4, h5 {
 .hero-title {
     font-size: 3rem; 
     line-height: 1.1;
-    margin-bottom: 15px;
-    color: var(--brand-purple); /* UPDATED: Always purple */
+    margin-bottom: 25px; /* Added spacing */
+    color: var(--brand-purple); 
     text-shadow: 0 0 25px rgba(124, 92, 255, 0.6); 
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
@@ -134,7 +143,7 @@ h2 {
     background: linear-gradient(90deg, rgba(124, 92, 255, 0.1) 0%, transparent 80%);
     padding-top: 10px;
     padding-bottom: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 40px; /* Increased from 30px for breathing room */
     letter-spacing: -0.02em;
     display: flex;
     align-items: center;
@@ -187,13 +196,40 @@ h2 {
 
 .section-divider {
   border-bottom: 1px solid var(--border-color);
-  margin: 40px 0;
+  margin: 50px 0 30px 0; /* Increased top margin for hierarchy */
   padding-bottom: 10px;
   color: var(--brand-purple);
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+}
+
+/* NEW: Meta Label for subtitles (Fixes Hierarchy Issue) */
+.meta-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 600;
+}
+/* Highlight meta labels inside callouts or specific contexts */
+.callout .meta-label, .text-box-outline .meta-label {
+    color: var(--brand-purple);
+}
+
+/* NEW: Standardized Image Aspect Ratio (Fixes Image Rhythm) */
+.section-header-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin-bottom: 30px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-panel);
 }
 
 /* =========================================
@@ -225,7 +261,6 @@ h2 {
   gap: 10px;
 }
 
-/* UPDATED: Add glow to the small nav logo */
 #sticky-nav .logo img {
   filter: drop-shadow(0 0 8px var(--brand-purple));
   transition: filter 0.3s ease;
@@ -303,6 +338,33 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
 .theme-button:hover {
   background: var(--brand-purple);
   color: #ffffff;
+}
+
+/* NEW: Back To Top Button */
+#back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 45px;
+    height: 45px;
+    background: var(--bg-panel);
+    border: 1px solid var(--brand-purple);
+    color: var(--brand-purple);
+    border-radius: 50%;
+    display: none; /* JS toggles this */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    font-size: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+#back-to-top:hover {
+    background: var(--brand-purple);
+    color: #ffffff;
+    box-shadow: 0 0 20px var(--brand-purple-glow);
+    transform: translateY(-3px);
 }
 
 /* Header (Hero) */
@@ -389,7 +451,7 @@ button.btn-primary:hover {
 .purple-spacer {
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--brand-purple), transparent);
-  margin: 40px auto;
+  margin: 50px auto; /* Increased from 40px */
   width: 100%;
   opacity: 0.6;
   position: relative;
@@ -409,7 +471,7 @@ button.btn-primary:hover {
 .decoration-line {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--brand-purple), transparent);
-  margin: 60px 0;
+  margin: 80px 0; /* Increased from 60px */
   opacity: 0.3;
 }
 
@@ -772,16 +834,28 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
 
     /* 1. Container & Global Spacing */
     .page-container {
-        padding: 15px; /* Reduce from 40px to save space */
+        padding: 20px; /* Adjusted padding */
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
+    }
+
+    /* Fix for cramped Headers */
+    h2 {
+        font-size: 24px;
+        margin-top: 20px;
+        margin-bottom: 30px;
     }
 
     /* 2. Collapse Grids to Single Column */
     .grid-2, .grid-4 {
         grid-template-columns: 1fr;
         gap: 30px;
+    }
+    
+    /* Ensure padding inside boxes isn't too huge on mobile */
+    .text-box-outline, .view-case-card {
+        padding: 20px;
     }
 
     /* 3. Navigation Bar Adjustments */
@@ -790,7 +864,7 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
         padding: 10px 15px;
         flex-direction: column;
         gap: 15px;
-        position: relative; /* Optional: un-stick on mobile if it takes too much screen space */
+        position: relative; 
     }
 
     /* Make nav links swipeable/scrollable horizontally */

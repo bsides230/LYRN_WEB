@@ -7,7 +7,29 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initScrollSpy();
   initRWIBuilder();
+  initBackToTop(); // Added init for Back To Top
 });
+
+// --- Back To Top Logic ---
+function initBackToTop() {
+    const btn = document.getElementById('back-to-top');
+    if (!btn) return;
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            btn.style.display = 'flex';
+        } else {
+            btn.style.display = 'none';
+        }
+    });
+
+    btn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
 
 // --- Theme Engine ---
 function initTheme() {
