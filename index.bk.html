@@ -12,24 +12,11 @@
   <!-- Shared site stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Layout overrides injected by ChatGPT -->
-  <style>
-    /* Center nav links while keeping logo on the left. Theme button is fixed top-right. */
-    #sticky-nav {
-      justify-content: center;
-    }
-    #sticky-nav .logo {
-      margin-right: 40px;
-    }
-  </style>
-
 </head>
 <body>
-  <button id="themeButton" class="theme-button">LIGHT MODE</button>
-
   <!-- Sticky Nav -->
   <nav id="sticky-nav">
-     <a href="#home" class="logo">
+     <a href="#" class="logo">
        <img src="assets/logo.png" alt="LYRN" style="height: 30px; width: auto;">
        LYRN
      </a>
@@ -113,28 +100,28 @@
           <h4 style="margin-bottom: 10px;">LYRN in Industry</h4>
           <p style="font-size: 12px; color: var(--text-dim);">Automated logistics and factory floor coordination with persistent state tracking.</p>
         </div>
-        <button onclick="window.location.href='#industry'" style="width: 100%; margin-top: 10px;">View Case</button>
+        <button onclick="window.location.href='industry.html'" style="width: 100%; margin-top: 10px;">View Case</button>
       </div>
       <div style="border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <h4 style="margin-bottom: 10px;">LYRN in Kiosks</h4>
           <p style="font-size: 12px; color: var(--text-dim);">Customer service interfaces that remember returning users and context history.</p>
         </div>
-        <button onclick="window.location.href='#kiosks'" style="width: 100%; margin-top: 10px;">View Case</button>
+        <button onclick="window.location.href='kiosks.html'" style="width: 100%; margin-top: 10px;">View Case</button>
       </div>
       <div style="border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <h4 style="margin-bottom: 10px;">LYRN in Security</h4>
           <p style="font-size: 12px; color: var(--text-dim);">Private, air‑gapped monitoring agents that detect anomalies without cloud leaks.</p>
         </div>
-        <button onclick="window.location.href='#security'" style="width: 100%; margin-top: 10px;">View Case</button>
+        <button onclick="window.location.href='security.html'" style="width: 100%; margin-top: 10px;">View Case</button>
       </div>
       <div style="border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <h4 style="margin-bottom: 10px;">LYRN in Space</h4>
           <p style="font-size: 12px; color: var(--text-dim);">High‑latency, low‑bandwidth habitat controllers for autonomous operation.</p>
         </div>
-        <button onclick="window.location.href='#space'" style="width: 100%; margin-top: 10px;">View Case</button>
+        <button onclick="window.location.href='space.html'" style="width: 100%; margin-top: 10px;">View Case</button>
       </div>
     </div>
 
@@ -514,23 +501,6 @@
         </div>
 
         <div id="rwi-toast">Operation Successful</div>
-        </div>
-
-    <div class="text-box-outline" style="margin-top: 24px;">
-      <div class="meta-label">Snapshot Layout · Current RWI</div>
-      <p style="margin-bottom: 8px;">The live RWI on the dashboard tracks these core components inside the master prompt:</p>
-      <pre style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; white-space: pre-wrap;">###RWI_INSTRUCTIONS_START###
-This is the Relational Web Index (RWI). It provides the LLM with a list of active components and how to interpret them. Each line represents an active component and its associated brackets and purpose. **You must read through the following components listed in the RWI before each response.**
-
-- system_instructions: [###SYSTEM_INSTRUCTIONS.START###]...[###SYSTEM_INSTRUCTIONS.END###] Core system instructions.
-
-- system_rules: [###SYSTEM_RULES.START###]...[###SYSTEM_RULES.END###] Hard constraints on behavior.
-
-- ai_preferences: [###AI_PREFERENCES_START###][###AI_PREFERENCES_END###]: AI-specific preferences.
-
-- personality: [###PERSONALITY.START###]...[###PERSONALITY.END###] AI identity traits and behavioral biases.
-
-- jobs_instructions: [###JI_START###][###JI_END###]: This block contains a list of job instructions.</pre>
     </div>
 
      </section>
