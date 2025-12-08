@@ -441,7 +441,7 @@ Baseline_Emotional_State: Natural`
         input.value = '';
     };
 
-    // --- Modal Logic (Updated for Help) ---
+    // --- Modal Logic ---
     window.rwiPreview = () => {
         let text = "";
         components
@@ -461,7 +461,7 @@ Baseline_Emotional_State: Natural`
             content.value = text;
             content.classList.remove('hidden');
             htmlContent.classList.add('hidden');
-            copyBtn.classList.remove('btn-hidden'); // Show Copy button
+            copyBtn.classList.remove('btn-hidden'); 
             modal.classList.remove('hidden');
         }
     };
@@ -490,12 +490,11 @@ Baseline_Emotional_State: Natural`
             
             content.classList.add('hidden');
             htmlContent.classList.remove('hidden');
-            copyBtn.classList.add('btn-hidden'); // Hide Copy button
+            copyBtn.classList.add('btn-hidden'); 
             modal.classList.remove('hidden');
         }
     };
     
-    // Modal Helpers
     window.closeModal = () => {
         const modal = document.getElementById('preview-modal');
         if(modal) modal.classList.add('hidden');

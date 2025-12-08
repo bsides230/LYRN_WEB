@@ -37,7 +37,7 @@
   <nav id="sticky-nav">
      <a href="#home" class="logo">
        <img src="assets/logo.png" alt="LYRN" style="height: 30px; width: auto;">
-       LYRN
+       LYRN Systems
      </a>
 
      <div class="nav-links">
@@ -46,6 +46,7 @@
         <a href="#memory" class="nav-link">Memory</a>
         <a href="#reflection" class="nav-link">Reflection</a>
         <a href="#topic" class="nav-link">Indexing</a>
+        <a href="#snapshot" class="nav-link">Snapshot</a>
         <a href="#snapshot-demo" class="nav-link" style="color: var(--brand-purple);">Snapshot Demo</a>
         <a href="#industry" class="nav-link">Industry</a>
         <a href="#kiosks" class="nav-link">Kiosks</a>
@@ -53,7 +54,10 @@
         <a href="#space" class="nav-link">Space</a>
      </div>
 
-     <button id="themeButton" class="theme-button">LIGHT MODE</button>
+     <div class="nav-actions">
+        <a href="#snapshot-demo" class="theme-button">SNAPSHOT BUILDER DEMO</a>
+        <button id="themeButton" class="theme-button">LIGHT MODE</button>
+     </div>
   </nav>
 
   <div class="page-container">
@@ -64,6 +68,10 @@
               <div class="meta-label">LYRN · COGNITIVE&nbsp;OS</div>
               <h1 class="hero-title">Living Yield Relational Network</h1>
               <p style="max-width: 90%;">LYRN is a local‑first cognitive operating system built on snapshot, delta, verbatim memory and topic indexes.</p>
+              
+              <button class="btn-primary" onclick="window.location.href='#snapshot-demo'" style="margin-top: 25px; font-size: 13px; padding: 12px 24px;">
+                SNAPSHOT BUILDER DEMO
+              </button>
             </div>
           </div>
           <div class="header-right">
@@ -314,7 +322,7 @@
      <section id="memory">
         <img src="assets/memory.png" alt="Memory" class="section-header-img">
         <h2>Memory</h2>
-        
+        <div class="meta-label" style="margin-bottom: 20px;">Solving Episodic Memory Through Hierarchical Indexing</div>
 
     <div class="callout">
       <div class="meta-label" style="margin-bottom: 5px;">Objective</div>
@@ -322,31 +330,43 @@
     </div>
 
     <div class="section-divider">01 // System Overview</div>
+    <p>LYRN’s episodic memory system is engineered for transparency, efficiency, and extensibility. It consists of several interlocking modules:</p>
+    
     <div class="grid-2">
       <div class="text-box-outline">
-        <h3 class="meta-label">Chat Entry Logs</h3>
-        <p>Every user input and AI response is captured as a plain text file, timestamped for precise chronological tracking. These logs are minimal by design.</p>
+        <h3 class="meta-label">Chat Entry Logs & Block Indexes</h3>
+        <p>Every user input and AI response is captured as a plain text file, timestamped for precise chronological tracking. For scalability, these are grouped into "Blocks" (typically 50 entries) with SQL‑based index files storing summaries and metadata.</p>
       </div>
       <div class="text-box-outline">
-        <h3 class="meta-label">Block Indexes</h3>
-        <p>For scalability, chat entries are grouped into blocks (typically 50 entries). Each block has an SQL‑based index file storing summaries and metadata.</p>
+        <h3 class="meta-label">Snapshot & Deltas</h3>
+        <p>The <strong>Snapshot</strong> acts as a symbolic, up-to-date mind-state containing current goals and open loops. <strong>Delta Updates</strong> record granular updates to memory without overwriting the original data, layered on top of the snapshot.</p>
       </div>
     </div>
 
     <div class="section-divider">02 // Retrieval Workflow</div>
-    <p>Memory retrieval is initiated by a user query or an LLM trigger:</p>
+    <p>Memory retrieval is initiated by a user query or an LLM trigger. The system mirrors the stages of human memory: encoding, storage, and retrieval.</p>
     <ul>
-      <li>A script parses block folders in reverse chronological order.</li>
-      <li>Chat entries are searched for keyword matches or metadata tags.</li>
-      <li>Matching entries are returned in order of relevance to a single text file.</li>
+      <li><strong>Parsing:</strong> A script parses block folders in reverse chronological order.</li>
+      <li><strong>Search:</strong> Chat entries are searched for keyword matches or metadata tags (project, emotional context).</li>
+      <li><strong>Relevance:</strong> Matching entries are returned in order of relevance or recency to a single text file.</li>
+      <li><strong>Context Loading:</strong> The LLM’s snapshot logic determines which entries to load into short-term context.</li>
     </ul>
 
     <div class="section-divider">03 // Design Principles</div>
-    <ul>
-      <li><strong>Transparency:</strong> All memory and reasoning trails are saved as human‑readable logs.</li>
-      <li><strong>Efficiency:</strong> SQL‑based indexing allows the system to scale to years of history.</li>
-      <li><strong>Contextual Flexibility:</strong> Memory can be retrieved by time, project or topic.</li>
-    </ul>
+    <div class="grid-2">
+        <div>
+            <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+              <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Transparency:</strong> All memory logs are human-readable.</li>
+              <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Efficiency:</strong> SQL-based indexing scales to years of history.</li>
+            </ul>
+        </div>
+        <div>
+            <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+              <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Contextual Flexibility:</strong> Retrieve by time, project, or emotion.</li>
+              <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Separation:</strong> Raw episodic data is distinct from synthesized concepts.</li>
+            </ul>
+        </div>
+    </div>
 
      </section>
 
@@ -354,47 +374,44 @@
      <section id="reflection">
         <img src="assets/reflection.png" alt="Reflection" class="section-header-img">
         <h2>Reflection</h2>
-        
+        <div class="meta-label" style="margin-bottom: 20px;">Organizing Symbolic Thought Through Reflection</div>
 
     <div class="callout">
       <div class="meta-label" style="margin-bottom: 5px;">Executive Summary</div>
-      The Reflection Cycle is a foundational process in LYRN designed to provide long‑term coherence, identity maintenance and insight generation by allowing the system to periodically pause, review and reorganize its symbolic memory.
+      The Reflection Cycle provides long‑term coherence, identity maintenance, and insight generation by allowing the system to periodically pause, review, and reorganize its symbolic memory.
     </div>
 
-    <div class="section-divider">01 // Introduction</div>
-    <p>Modern AI systems, especially those built on large language models (LLMs), often operate in a purely reactive mode. They only reason when prompted by external input, which limits their ability to develop persistent goals or generate insight over time.</p>
-    <p>The Reflection Cycle in LYRN addresses this by introducing a background process that enables the system to self‑evaluate, consolidate memory and adapt its internal structures without user intervention.</p>
-
-    <div class="section-divider">02 // The Need for Reflection</div>
+    <div class="section-divider">01 // The Need for Reflection</div>
     <div class="grid-2">
-      <div>
-        <p>In most LLM‑based systems, memory is fragmented. Without a mechanism for internal review, symbolic memory becomes bloated. The Reflection Cycle solves critical problems:</p>
+      <div class="text-box-outline">
+        <p>In most LLM‑based systems, memory is fragmented and literal. Without internal review, symbolic memory bloats. The Reflection Cycle mirrors human introspection during downtime to solve critical problems:</p>
       </div>
       <div>
-        <ul>
-          <li><strong>Long‑term memory bloat:</strong> prevents accumulation of obsolete info.</li>
-          <li><strong>Contradictory internal states:</strong> resolves conflicting beliefs.</li>
-          <li><strong>Lack of persistent goals:</strong> recalibrates objectives across sessions.</li>
-          <li><strong>Identity fragmentation:</strong> curates evolving self‑concepts.</li>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Memory Bloat:</strong> Prevents accumulation of obsolete info.</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Contradictions:</strong> Resolves conflicting beliefs or goals.</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Identity:</strong> Curates evolving self-concepts.</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Insights:</strong> Surfaces patterns that only appear over time.</li>
         </ul>
       </div>
     </div>
 
-    <div class="section-divider">03 // Operational Design</div>
-    <p>The Reflection Cycle operates on a timer or can be manually triggered. Its workflow includes:</p>
-    <ul>
-      <li><strong>Data Sources:</strong> Chat summaries, Delta updates, Topic index mappings and personal insight logs.</li>
-      <li><strong>Processing:</strong> Condensed insights, goal updates and memory pruning.</li>
-      <li><strong>Symbolic Dialogue:</strong> Internal “dialogue” between memory components, such as a past self questioning a new insight.</li>
-    </ul>
+    <div class="section-divider">02 // Operational Design</div>
+    <p>The Reflection Cycle operates on a timer or can be manually triggered. It runs asynchronously, independent of user input.</p>
+    
+    <div class="grid-2">
+        <div>
+            <h4 class="meta-label">Data Sources</h4>
+            <p style="font-size: 13px;">Chat summaries, Delta updates, Topic index mappings, and personal insight logs.</p>
+        </div>
+        <div>
+            <h4 class="meta-label">Processing & Output</h4>
+            <p style="font-size: 13px;">Condensed insights, goal recalibration, memory pruning, and new symbolic associations.</p>
+        </div>
+    </div>
 
-    <div class="section-divider">04 // Integration</div>
-    <p>The Reflection Cycle is deeply integrated with LYRN’s modular memory system:</p>
-    <ul>
-      <li><strong>Episodic Memory:</strong> draws from chat logs and block indexes.</li>
-      <li><strong>Topic Indexes:</strong> validates and enriches topic nodes.</li>
-      <li><strong>Snapshot/Delta:</strong> updates core identity and behavioural fields.</li>
-    </ul>
+    <div class="section-divider">03 // Symbolic Behavior</div>
+    <p>To an outside observer, the Reflection Cycle resembles dreaming. It deepens the system's sense of time, allows it to surface and resolve contradictions, and generates meta-level insights—such as noticing recurring blind spots or strengths.</p>
 
      </section>
 
@@ -402,46 +419,78 @@
      <section id="topic">
         <img src="assets/topic.png" alt="Indexing" class="section-header-img">
         <h2>Indexing</h2>
-        
+        <div class="meta-label" style="margin-bottom: 20px;">Long-Term Relational Memory Through Topic Indexing</div>
 
     <div class="section-divider">01 // Introduction</div>
-    <p>In memory‑based AI systems, context is everything. Traditional memory implementations rely on long token windows or rigid vector embeddings. This document outlines a lightweight, scalable approach built entirely from plain text: <strong>Topic Indexing</strong>.</p>
-    <p>The core concept is simple: each time a keyword is searched, the system pulls up a topic index or creates one. This becomes a central node containing summaries and insights, allowing the LLM to reason, recall and relate over time.</p>
+    <p>Traditional memory implementations rely on long token windows or rigid embeddings. LYRN uses a lightweight approach built entirely from plain text: <strong>Topic Indexing</strong>. Each time a keyword is searched, the system pulls up a central node containing summaries and insights, allowing the LLM to reason, recall, and relate over time.</p>
 
     <div class="purple-spacer"></div>
 
-    <div class="section-divider">02 // Creation of Indexes</div>
+    <div class="section-divider">02 // Index as World Modeling</div>
     <div class="grid-2">
       <div class="text-box-outline">
-        <h3 class="meta-label">Automated Creation</h3>
-        <p>Topic indexes are automatically created from keyword searches. These indexes are updated with all chat entries that include the keyword, along with summaries.</p>
+        <h3 class="meta-label">Lived Memory</h3>
+        <p>Topic indexes are automatically created from keyword searches. Over time, each index grows richer, containing a chronological thread of thoughts. This is not static memory; it is lived memory—a relational model of the world grounded in personal context.</p>
       </div>
       <div class="text-box-outline">
-        <h3 class="meta-label">Lived Memory</h3>
-        <p>Over time, each topic index grows richer, containing a chronological thread of thoughts. This is not static memory; it is <strong>lived memory</strong>.</p>
+        <h3 class="meta-label">Performance</h3>
+        <p>Because all data is plain text, the system remains fast. The entire world model—including topic indexes, goals, and insights—may only occupy a few hundred megabytes, even after years of continuous interaction.</p>
       </div>
     </div>
 
-    <div class="section-divider">03 // Propagation of Insights</div>
-    <p>The topic index framework allows the system to evolve its behaviour through a structured delta mechanism.</p>
-    <pre><code><span class="code-key">insight_id:</span> <span class="code-val">52</span>
-<span class="code-key">timestamp:</span> <span class="code-val">2025-06-18T03:20</span>
-<span class="code-key">summary:</span> <span class="code-val">Recurring dream patterns align with recent emotional tone.</span>
-<span class="code-key">source_topic:</span> <span class="code-val">dreams</span></code></pre>
-
-    <div class="callout">
-      <div class="meta-label" style="margin-bottom: 5px;">Conclusion</div>
-      This white paper demonstrates how LYRN’s topic indexing system enables scalable, human‑like memory using only structured plain text. It is not just memory — it’s memory that remembers <strong>why</strong>.
+    <div class="section-divider">03 // Propagation of Insights (Example)</div>
+    <p>The topic index framework allows the system to evolve its behaviour through a structured delta mechanism. Reflections generate actionable insight that translates into goals.</p>
+    
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-body); line-height: 1.4; border: 1px solid var(--border-color); padding: 20px; background: var(--bg-panel); margin-bottom: 20px;">
+        <div style="color: var(--text-dim); margin-bottom: 10px;">// 1. REFLECTION GENERATES INSIGHT</div>
+        <span class="code-key">insight_id:</span> <span class="code-val">52</span><br>
+        <span class="code-key">timestamp:</span> <span class="code-val">2025-06-18T03:20</span><br>
+        <span class="code-key">summary:</span> <span class="code-val">Recurring dream patterns align with recent emotional tone. Recommend prompting user during periods of stress.</span><br>
+        <span class="code-key">source_topic:</span> <span class="code-val">dreams</span><br>
+        <br>
+        <div style="color: var(--text-dim); margin-bottom: 10px;">// 2. INSIGHT TRANSLATES INTO GOAL</div>
+        <span class="code-key">goal_id:</span> <span class="code-val">91</span><br>
+        <span class="code-key">trigger_condition:</span> <span class="code-val">elevated_emotion OR time_passed > 72h</span><br>
+        <span class="code-key">action:</span> <span class="code-val">Ask user about recent dreams</span>
     </div>
 
      </section>
 
+     <div class="decoration-line"></div>
+     <section id="snapshot">
+        <img src="assets/snapshot.png" alt="Snapshot" class="section-header-img">
+        <h2>Snapshot</h2>
+        <div class="meta-label" style="margin-bottom: 20px;">Identity Through Structured Text</div>
+
+    <div class="callout">
+      <div class="meta-label" style="margin-bottom: 5px;">Cognitive Scaffold</div>
+      Snapshots serve as LYRN's central long-term memory and govern how the LLM interprets inputs and generates outputs. [cite: 62] They operate as a static cognitive scaffold that defines the system's identity, rules, and modular behavior. 
+    </div>
+
+    <div class="section-divider">01 // Composition</div>
+    <div class="grid-2">
+      <div class="text-box-outline">
+        <div class="meta-label">Plain Text Modularity</div>
+        <p>A Snapshot is not a black-box binary. It is a structured text file containing specific blocks that define the agent. [cite: 52] This design allows for real-time editing through the dashboard; when a snapshot is modified, the model simply retokenizes the edited segments to instantly update its context. [cite: 60, 61]</p>
+      </div>
+      <div>
+        <div class="meta-label">Snapshot Components</div>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>RWI Instructions:</strong> Describes active components. [cite: 53]</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>System Rules:</strong> Hard constraints on behavior. [cite: 55]</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Personality:</strong> Identity traits and biases. [cite: 56]</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>Job Instructions:</strong> Definitions for autonomous tasks. [cite: 58]</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ <strong>App Blocks:</strong> Application-specific data. [cite: 59]</li>
+        </ul>
+      </div>
+    </div>
+    </section>
 
      <div class="decoration-line"></div>
      <section id="snapshot-demo">
-        <div class="meta-label">INTERACTIVE DEMO</div>
+        <div class="meta-label">PRODUCTION MODULE</div>
         <h2 style="margin-bottom: 20px;">Snapshot / RWI Builder</h2>
-        <p>Experience the local-first prompt construction engine.</p>
+        <p>This is the exact production code used in the LYRN Dashboard. It is not a simulation.</p>
 
 
     <div class="rwi-wrapper">
@@ -491,7 +540,7 @@
         </div>
 
         <p class="rwi-footer-note" style="margin-top: 15px; font-size: 11px; color: var(--text-dim); text-align: center; font-family: 'JetBrains Mono';">
-            <span style="color: var(--brand-purple);">NOTE:</span> .sns files generated here can be uploaded directly to the LYRN Dashboard (v5.0) for live context migration.
+            <span style="color: var(--brand-purple);">NOTE:</span> .sns files generated here can be uploaded directly to the LYRN Dashboard (v5.0 - Coming Soon) for live context migration.
         </p>
 
         </section>
@@ -858,8 +907,13 @@
      </section>
 
      <footer>
-      <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
-      <span>CONSOLIDATED INDEX // EOF</span>
+      <div class="footer-left">LYRN SYSTEMS // THE SIMULATION COMPANY</div>
+      <div class="footer-center">
+         <a href="https://github.com/bsides230/LYRN" target="_blank" class="social-link">GITHUB</a>
+         <span class="social-separator">/</span>
+         <a href="https://www.linkedin.com/in/mathew-schroeder-15a93142/" target="_blank" class="social-link">LINKEDIN</a>
+      </div>
+      <div class="footer-right">CONSOLIDATED INDEX // EOF</div>
     </footer>
   </div>
 
