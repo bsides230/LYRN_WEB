@@ -11,27 +11,23 @@
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    /* Updated Header Layout:
-       Uses Flexbox to space items: Logo (Left) - Links (Center) - Theme Button (Right)
-    */
+    /* Updated Header Layout */
     #sticky-nav {
       justify-content: space-between;
       align-items: center;
     }
-    /* Ensure the nav links wrap nicely on smaller screens */
     #sticky-nav .nav-links {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
     }
-    /* Helper class for the new header images */
     .section-header-img {
         width: 100%;
         height: auto;
         display: block;
         margin-bottom: 20px;
-        border-radius: 4px; /* Optional: adds slight rounding to match UI vibe */
+        border-radius: 4px;
     }
   </style>
 
@@ -119,28 +115,28 @@
 
     <div class="section-divider">03 // LYRN in the World</div>
     <div class="grid-4">
-      <div style="border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="view-case-card">
         <div>
           <h4 style="margin-bottom: 10px;">LYRN in Industry</h4>
           <p style="font-size: 12px; color: var(--text-dim);">Automated logistics and factory floor coordination with persistent state tracking.</p>
         </div>
         <button onclick="window.location.href='#industry'" style="width: 100%; margin-top: 10px;">View Case</button>
       </div>
-      <div style="border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="view-case-card">
         <div>
           <h4 style="margin-bottom: 10px;">LYRN in Kiosks</h4>
           <p style="font-size: 12px; color: var(--text-dim);">Customer service interfaces that remember returning users and context history.</p>
         </div>
         <button onclick="window.location.href='#kiosks'" style="width: 100%; margin-top: 10px;">View Case</button>
       </div>
-      <div style="border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="view-case-card">
         <div>
           <h4 style="margin-bottom: 10px;">LYRN in Security</h4>
           <p style="font-size: 12px; color: var(--text-dim);">Private, air‑gapped monitoring agents that detect anomalies without cloud leaks.</p>
         </div>
         <button onclick="window.location.href='#security'" style="width: 100%; margin-top: 10px;">View Case</button>
       </div>
-      <div style="border: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="view-case-card">
         <div>
           <h4 style="margin-bottom: 10px;">LYRN in Space</h4>
           <p style="font-size: 12px; color: var(--text-dim);">High‑latency, low‑bandwidth habitat controllers for autonomous operation.</p>
@@ -854,15 +850,7 @@
 
      <footer>
       <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
-      <div class="footer-right">
-        <span>CONSOLIDATED INDEX // EOF</span>
-        <label class="theme-toggle-inline">THEME
-          <span class="switch" id="footer-theme-switch">
-            <input type="checkbox" id="themeToggle" />
-            <span class="slider"></span>
-          </span>
-        </label>
-      </div>
+      <span>CONSOLIDATED INDEX // EOF</span>
     </footer>
   </div>
   <script src="script.js"></script>

@@ -29,7 +29,7 @@ body[data-theme="light"] {
   --bg-core: #c0c2c5;  /* Silver Gray */
   --bg-panel: #d1d3d6; /* Slightly lighter silver for panels */
   
-  /* FIXED: Inputs are now light grey/white in light mode (was black) */
+  /* Inputs are light grey/white in light mode */
   --bg-input: #f4f4f6; 
   
   --brand-purple: #6a4ce0; /* Darker purple for contrast against silver */
@@ -43,7 +43,7 @@ body[data-theme="light"] {
   --code-border: #999999;
   --input-focus-bg: #ffffff;
 
-  /* FIX: Override body background to match light theme (from Screenshot 1) */
+  /* Override body background to match light theme */
   background-color: #c0c2c5;
   background-image:
       linear-gradient(rgba(106, 76, 224, 0.08) 1px, transparent 1px),
@@ -57,7 +57,6 @@ body[data-theme="light"] {
   box-sizing: border-box;
 }
 
-/* FIX: Polish Recommendation - Add 500ms theme fade to body + container (from Screenshot 3) */
 body, .page-container {
   margin: 0;
   padding: 0;
@@ -102,7 +101,6 @@ h1, h2, h3, h4, h5 {
 }
 
 /* Title becomes purple in Light Mode for visibility */
-/* FIX: Reduced glow strength for better readability (from Screenshot 2) */
 body[data-theme="light"] .hero-title {
     color: var(--brand-purple); 
     text-shadow: 0 0 10px rgba(106, 76, 224, 0.25);
@@ -135,6 +133,7 @@ h2 {
   background-color: var(--bg-core);
   position: relative;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  padding-bottom: 60px;
 }
 
 .grid-2 {
@@ -147,6 +146,23 @@ h2 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+}
+
+/* NEW: Accent Card for View Cases */
+.view-case-card {
+    border: 1px solid var(--border-color);
+    border-top: 4px solid var(--brand-purple); /* Purple Accent */
+    padding: 20px;
+    background: var(--bg-panel);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.view-case-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--brand-purple-dim);
 }
 
 .section-divider {
@@ -210,7 +226,6 @@ h2 {
   color: var(--brand-purple);
 }
 
-/* FIX: Boost nav hover color in Light Mode (from Screenshot 3) */
 body[data-theme="light"] #sticky-nav .nav-link:hover {
     color: #593bd9;
 }
@@ -256,7 +271,6 @@ header {
     align-items: center;
 }
 
-/* FIXED: Strict max-width prevents logo explosion in production */
 .hero-logo-large {
     width: 100%;
     max-width: 180px; 
@@ -265,8 +279,6 @@ header {
     transition: filter 0.3s ease, max-width 0.3s ease;
 }
 
-/* Logo gets a strong purple glow in Light Mode */
-/* FIX: Restrict logo size slightly in light mode (from Screenshot 3) */
 body[data-theme="light"] .hero-logo-large {
     filter: drop-shadow(0 0 20px var(--brand-purple));
     max-width: 150px;
@@ -344,30 +356,6 @@ button.btn-primary:hover {
   opacity: 0.3;
 }
 
-.placeholder-image {
-  width: 100%;
-  height: 300px;
-  background-color: var(--bg-panel);
-  border: 1px dashed var(--border-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--text-dim);
-  font-family: 'JetBrains Mono', monospace;
-  margin: 30px 0;
-  position: relative;
-  overflow: hidden;
-  border-radius: 4px;
-}
-.placeholder-image::after {
-  content: "VISUAL PLACEHOLDER";
-  position: absolute;
-  font-size: 24px;
-  opacity: 0.05;
-  transform: rotate(-45deg);
-  white-space: nowrap;
-}
-
 /* Text Box Outline */
 .text-box-outline {
   border: 1px solid var(--brand-purple-glow);
@@ -429,14 +417,29 @@ button.btn-primary:hover {
 }
 
 /* =========================================
-   RWI BUILDER STYLES (Optimized)
+   FOOTER
+   ========================================= */
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 40px;
+    margin-top: 60px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+}
+
+/* =========================================
+   RWI BUILDER STYLES (Fixed)
    ========================================= */
 
 .rwi-wrapper {
   background: var(--bg-core);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  height: 680px;
+  height: 700px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -445,20 +448,11 @@ button.btn-primary:hover {
   overflow: hidden; 
 }
 
-.rwi-wrapper ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-.rwi-wrapper ::-webkit-scrollbar-track {
-  background: transparent;
-}
-.rwi-wrapper ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 3px;
-}
-.rwi-wrapper ::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-purple);
-}
+/* Scrollbar Styling */
+.rwi-wrapper ::-webkit-scrollbar { width: 6px; height: 6px; }
+.rwi-wrapper ::-webkit-scrollbar-track { background: transparent; }
+.rwi-wrapper ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+.rwi-wrapper ::-webkit-scrollbar-thumb:hover { background: var(--brand-purple); }
 
 .rwi-wrapper header {
   border-bottom: 1px solid var(--border-color);
@@ -471,6 +465,120 @@ button.btn-primary:hover {
   margin: 0; 
 }
 
+/* Fixed Layout for RWI */
 .rwi-wrapper .main-grid {
   display: grid;
-  grid
+  grid-template-columns: 280px 1fr; /* Sidebar width | Editor width */
+  flex: 1; /* Fill remaining height */
+  overflow: hidden;
+}
+
+.rwi-wrapper .panel {
+    overflow-y: auto;
+    height: 100%;
+    position: relative;
+}
+
+.rwi-wrapper .left-panel {
+    border-right: 1px solid var(--border-color);
+    background: rgba(0,0,0,0.2);
+}
+
+.rwi-wrapper .panel-header {
+    padding: 10px 15px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.rwi-wrapper .panel-title {
+    font-size: 12px;
+    margin: 0;
+    color: var(--text-head);
+    font-weight: 600;
+}
+
+.rwi-wrapper .btn-icon {
+    padding: 4px 8px;
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* List Components */
+.component-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+}
+
+.component-item:hover { background: var(--bg-panel); }
+.component-item.selected { 
+    background: var(--brand-purple-dim); 
+    border-left: 3px solid var(--brand-purple);
+}
+
+.component-handle { color: var(--text-dim); margin-right: 8px; cursor: grab; }
+.component-name { flex: 1; color: var(--text-body); margin: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Form Styles inside Editor */
+.editor-scroll { padding: 20px; }
+.form-group { margin-bottom: 15px; }
+.form-group label {
+    display: block; font-size: 10px; color: var(--text-dim);
+    text-transform: uppercase; margin-bottom: 5px; font-family: 'JetBrains Mono';
+}
+.rwi-wrapper input[type="text"],
+.rwi-wrapper textarea {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-head);
+    padding: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    border-radius: 4px;
+}
+.rwi-wrapper input[type="text"]:focus,
+.rwi-wrapper textarea:focus {
+    border-color: var(--brand-purple);
+    outline: none;
+    background: var(--input-focus-bg);
+}
+
+/* Switch (Needed for RWI) */
+.switch { position: relative; display: inline-block; width: 30px; height: 16px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--bg-input);
+  transition: .4s; border-radius: 16px; border: 1px solid var(--border-color);
+}
+.slider:before {
+  position: absolute; content: "";
+  height: 10px; width: 10px; left: 2px; bottom: 2px;
+  background-color: var(--text-dim); transition: .4s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--brand-purple); border-color: var(--brand-purple); }
+input:checked + .slider:before { transform: translateX(14px); background-color: #fff; }
+
+/* Toast */
+#rwi-toast {
+    position: absolute; bottom: 20px; right: 20px;
+    background: var(--bg-panel); border: 1px solid var(--brand-purple);
+    color: var(--text-head); padding: 10px 20px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 100;
+}
+#rwi-toast.show { opacity: 1; }
