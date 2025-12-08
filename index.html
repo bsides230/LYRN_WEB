@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LYRN – Living Yield Relational Network</title>
@@ -10,40 +11,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   <!-- Shared site stylesheet -->
   <link rel="stylesheet" href="style.css" />
+
 </head>
 <body>
-  <!-- Top theme switcher; the script populates the text based on current theme -->
-  <button id="themeButton" class="theme-button">LIGHT MODE</button>
+  <!-- Sticky Nav -->
+  <nav id="sticky-nav">
+     <a href="#" class="logo">
+       <img src="assets/logo.png" alt="LYRN" style="height: 30px; width: auto;">
+       LYRN
+     </a>
+     <div class="nav-links">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#embodied" class="nav-link">Embodied</a>
+        <a href="#memory" class="nav-link">Memory</a>
+        <a href="#reflection" class="nav-link">Reflection</a>
+        <a href="#topic" class="nav-link">Topic</a>
+        <a href="#industry" class="nav-link">Industry</a>
+        <a href="#kiosks" class="nav-link">Kiosks</a>
+        <a href="#security" class="nav-link">Security</a>
+        <a href="#space" class="nav-link">Space</a>
+        <a href="#snapshot-demo" class="nav-link" style="color: var(--brand-purple);">Snapshot Demo</a>
+     </div>
+  </nav>
+
   <div class="page-container">
-    <header>
-      <div class="header-left">
-        <a href="index.html"><img src="assets/logo.png" alt="LYRN Logo" style="height: 80px; width: auto; flex-shrink: 0;" /></a>
-        <div>
-          <div class="meta-label">LYRN · COGNITIVE&nbsp;OS</div>
-          <h1 class="hero-title">Living Yield Relational Network</h1>
-          <p style="max-width: 90%;">LYRN is a local‑first cognitive operating system built on snapshot, delta, verbatim memory and topic indexes. It creates stateful, self‑reflective agents capable of operating in physical, digital and hybrid environments with deterministic continuity.</p>
-        </div>
-      </div>
-      <!-- Main navigation with dropdown for Architecture -->
-      <nav class="main-nav">
-        <a href="index.html" class="nav-link">Home</a>
-        <details class="details-dropdown">
-          <summary id="nav-architecture" class="nav-link">Architecture</summary>
-          <div class="dropdown-menu">
-            <a href="embodied.html" class="nav-link">Embodied</a>
-            <a href="memory.html" class="nav-link">Memory</a>
-            <a href="reflection.html" class="nav-link">Reflection</a>
-            <a href="topic.html" class="nav-link">Topic Index</a>
+     <!-- Home Section -->
+     <section id="home">
+        <!-- Re-adding Hero Header manually because we skipped original header -->
+        <header style="margin-top: 40px; margin-bottom: 40px;">
+          <div class="header-left">
+             <div>
+              <div class="meta-label">LYRN · COGNITIVE&nbsp;OS</div>
+              <h1 class="hero-title">Living Yield Relational Network</h1>
+              <p style="max-width: 90%;">LYRN is a local‑first cognitive operating system built on snapshot, delta, verbatim memory and topic indexes.</p>
+            </div>
           </div>
-        </details>
-        <a href="industry.html" class="nav-link">Industry</a>
-        <a href="kiosks.html" class="nav-link">Kiosks</a>
-        <a href="security.html" class="nav-link">Security</a>
-        <a href="space.html" class="nav-link">Space</a>
-        <!-- Added link to snapshot demo page -->
-        <a href="snapshot_demo.html" class="nav-link">Snapshot Demo</a>
-      </nav>
-    </header>
+        </header>
+        
 
     <!-- Section 01: What LYRN Is -->
     <div class="section-divider">01 // What LYRN Is</div>
@@ -188,12 +192,788 @@
     </div>
 
     <!-- Footer with theme switch -->
-    <footer>
+    
+     </section>
+
+     <div class="decoration-line"></div>
+     <section id="embodied">
+        <!-- Decorative Shapes -->
+        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
+        
+        <div class="placeholder-image"></div>
+        
+        
+
+    <div class="section-divider">01 // Overview</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Overview</div>
+        <p>Embodiment is LYRN equipped with sensors, actuators and a body schema. The system builds a <em>persistent internal model</em> of its own body and environment.</p>
+        <p>Because there is no cloud dependency, embodied agents retain continuity even across reboots or periods of network isolation.</p>
+        <div class="callout" style="margin-top: 20px;">
+          <div class="meta-label" style="margin-bottom: 4px;">Concept Note</div>
+          <strong>LYRN Embodied gives machines a stable inner world — not just commands or tasks.</strong>
+        </div>
+      </div>
+      <div>
+        <div class="meta-label">Embodied Use Cases</div>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Autonomous warehouse / field robots</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Mobile kiosks / robotic attendants</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Human‑interaction units (assistive)</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Manipulation tasks (arms, grippers)</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Physical NPCs in sim‑to‑reality</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-divider">02 // System Model in Embodiment</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Cognitive Loop</div>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+          <li style="margin-bottom: 12px;"><strong>Snapshot:</strong> Body position, joint states, sensor readings, proprioception and environment.</li>
+          <li style="margin-bottom: 12px;"><strong>Delta:</strong> Micro‑movement changes, torque shifts, contact points and hazard signals.</li>
+          <li style="margin-bottom: 12px;"><strong>Verbatim Memory:</strong> Every movement, failure, adjustment and boundary learned.</li>
+          <li style="margin-bottom: 12px;"><strong>Topic Index:</strong> Limbs, tools, people, objects, spatial zones and internal body schema.</li>
+          <li style="margin-bottom: 12px;"><strong>Reflection:</strong> Movement optimization, safety reinforcement and task learning.</li>
+          <li style="margin-bottom: 12px;"><strong>Actuation Layer:</strong> Commands sent to motors, limbs, wheels and manipulators.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Textual Diagram</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-body); line-height: 1.4; border: 1px solid var(--border-color); padding: 20px; background: var(--bg-panel);">
+<pre style="margin:0;">
+[ Sensors / Proprioception / Vision ]
+                 ↓
+      [ Snapshot Builder ]
+                 ↓
+       [ Delta Manager ]
+                 ↓
+[ LYRN Core Cognitive Loop ]
+                 ↓
+      [ Embodied Action Layer ]
+                 ↓
+ [ Verbatim Memory + Body Schema Updates ]
+</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider">03 // Example Scenario</div>
+    <div style="border: 1px solid var(--border-color); padding: 30px; background: var(--bg-panel);">
+      <div class="meta-label">Example Scenario</div>
+      <h3 style="margin-bottom: 20px;">Object Retrieval with Continuity</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+        <div>
+          <p>A LYRN‑embodied agent receives the task to pick up a box. The Snapshot builds an instant picture of position, arm extension, object location and weight estimate.</p>
+          <p>As it moves, Delta events are fired: grip slippage, centre‑of‑mass shift or a new obstacle detected.</p>
+        </div>
+        <div>
+          <p>LYRN updates internal topics instantly: “object,” “grip,” “surface” and “movement vector.” Reflection evaluates movement safety and optimization in real‑time.</p>
+          <p>Once the agent completes the task, it logs the attempt in verbatim memory. The next attempt starts from these improved priors — no retraining pipeline needed.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider">04 // Technical Highlights</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Inherited Features</div>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ No cloud compute required.</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Deterministic behaviour.</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Continuous self‑modelling (prevents catastrophic forgetting).</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ Real‑time memory of micro‑failures.</li>
+          <li style="margin-bottom: 8px; border-left: 1px solid var(--border-color); padding-left: 10px;">+ No RL loop required — learning happens through narrative accumulation.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Deployment Notes</div>
+        <p>Runs on standard embedded PCs inside robots, drones, forklifts or humanoids. Works with standard sensor packs including LIDAR, depth cams, encoders, accelerometers and microphones. Embodied agents inherit <strong>bounded behaviour guarantees</strong> natively.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">05 // Deployment Targets</div>
+    <div class="tag-container" style="flex-wrap: wrap;">
+      <div class="tag"><span>Indoor Mobile Robots</span></div>
+      <div class="tag"><span>Service Robots</span></div>
+      <div class="tag"><span>Warehouse &amp; Logistics</span></div>
+      <div class="tag"><span>Telepresence Units</span></div>
+      <div class="tag"><span>Autonomous Manipulators</span></div>
+      <div class="tag"><span>Android Prototypes</span></div>
+      <div class="tag"><span>Drone Inspection Agents</span></div>
+    </div>
+
+    <div class="section-divider">06 // Next Steps</div>
+    <div class="grid-2">
+      <div style="background: var(--bg-panel); padding: 30px; border: 1px solid var(--border-color); text-align: center;">
+        <div class="meta-label" style="margin-bottom: 20px;">For Robotics Teams</div>
+        <p style="margin-bottom: 20px;">Integrate LYRN as a full embodied cognition system with proprioception.</p>
+        <button class="btn-primary">[ Integrate LYRN Embodied ]</button>
+      </div>
+      <div style="background: var(--bg-panel); padding: 30px; border: 1px solid var(--border-color); text-align: center;">
+        <div class="meta-label" style="margin-bottom: 20px;">For Hardware Builders</div>
+        <p style="margin-bottom: 20px;">Pair LYRN with custom sensors or humanoid platforms.</p>
+        <button>[ View Embodiment Architecture ]</button>
+      </div>
+    </div>
+
+    
+        
+        <div class="text-box">
+             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Embodied documentation module.
+        </div>
+     </section>
+
+     <div class="decoration-line"></div>
+     <section id="memory">
+        <!-- Decorative Shapes -->
+        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
+        
+        <div class="placeholder-image"></div>
+        
+        
+
+    <!-- Objective callout -->
+    <div class="callout">
+      <div class="meta-label" style="margin-bottom: 5px;">Objective</div>
+      This infrastructure enables rich, context‑aware retrieval and lays the groundwork for higher‑level relational memory formation.
+    </div>
+
+    <div class="section-divider">01 // System Overview</div>
+    <div class="grid-2">
+      <div>
+        <h3 class="meta-label">Chat Entry Logs</h3>
+        <p>Every user input and AI response is captured as a plain text file, timestamped for precise chronological tracking. These logs are minimal by design.</p>
+      </div>
+      <div>
+        <h3 class="meta-label">Block Indexes</h3>
+        <p>For scalability, chat entries are grouped into blocks (typically 50 entries). Each block has an SQL‑based index file storing summaries and metadata.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">02 // Retrieval Workflow</div>
+    <p>Memory retrieval is initiated by a user query or an LLM trigger:</p>
+    <ul>
+      <li>A script parses block folders in reverse chronological order.</li>
+      <li>Chat entries are searched for keyword matches or metadata tags.</li>
+      <li>Matching entries are returned in order of relevance to a single text file.</li>
+    </ul>
+
+    <div class="section-divider">03 // Design Principles</div>
+    <ul>
+      <li><strong>Transparency:</strong> All memory and reasoning trails are saved as human‑readable logs.</li>
+      <li><strong>Efficiency:</strong> SQL‑based indexing allows the system to scale to years of history.</li>
+      <li><strong>Contextual Flexibility:</strong> Memory can be retrieved by time, project or topic.</li>
+    </ul>
+
+    
+        
+        <div class="text-box">
+             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Memory documentation module.
+        </div>
+     </section>
+
+     <div class="decoration-line"></div>
+     <section id="reflection">
+        <!-- Decorative Shapes -->
+        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
+        
+        <div class="placeholder-image"></div>
+        
+        
+
+    <div class="callout">
+      <div class="meta-label" style="margin-bottom: 5px;">Executive Summary</div>
+      The Reflection Cycle is a foundational process in LYRN designed to provide long‑term coherence, identity maintenance and insight generation by allowing the system to periodically pause, review and reorganize its symbolic memory.
+    </div>
+
+    <div class="section-divider">01 // Introduction</div>
+    <p>Modern AI systems, especially those built on large language models (LLMs), often operate in a purely reactive mode. They only reason when prompted by external input, which limits their ability to develop persistent goals or generate insight over time.</p>
+    <p>The Reflection Cycle in LYRN addresses this by introducing a background process that enables the system to self‑evaluate, consolidate memory and adapt its internal structures without user intervention.</p>
+
+    <div class="section-divider">02 // The Need for Reflection</div>
+    <div class="grid-2">
+      <div>
+        <p>In most LLM‑based systems, memory is fragmented. Without a mechanism for internal review, symbolic memory becomes bloated. The Reflection Cycle solves critical problems:</p>
+      </div>
+      <div>
+        <ul>
+          <li><strong>Long‑term memory bloat:</strong> prevents accumulation of obsolete info.</li>
+          <li><strong>Contradictory internal states:</strong> resolves conflicting beliefs.</li>
+          <li><strong>Lack of persistent goals:</strong> recalibrates objectives across sessions.</li>
+          <li><strong>Identity fragmentation:</strong> curates evolving self‑concepts.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-divider">03 // Operational Design</div>
+    <p>The Reflection Cycle operates on a timer or can be manually triggered. Its workflow includes:</p>
+    <ul>
+      <li><strong>Data Sources:</strong> Chat summaries, Delta updates, Topic index mappings and personal insight logs.</li>
+      <li><strong>Processing:</strong> Condensed insights, goal updates and memory pruning.</li>
+      <li><strong>Symbolic Dialogue:</strong> Internal “dialogue” between memory components, such as a past self questioning a new insight.</li>
+    </ul>
+
+    <div class="section-divider">04 // Integration</div>
+    <p>The Reflection Cycle is deeply integrated with LYRN’s modular memory system:</p>
+    <ul>
+      <li><strong>Episodic Memory:</strong> draws from chat logs and block indexes.</li>
+      <li><strong>Topic Indexes:</strong> validates and enriches topic nodes.</li>
+      <li><strong>Snapshot/Delta:</strong> updates core identity and behavioural fields.</li>
+    </ul>
+
+    
+        
+        <div class="text-box">
+             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Reflection documentation module.
+        </div>
+     </section>
+
+     <div class="decoration-line"></div>
+     <section id="topic">
+        <!-- Decorative Shapes -->
+        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
+        
+        <div class="placeholder-image"></div>
+        
+        
+
+    <div class="section-divider">01 // Introduction</div>
+    <p>In memory‑based AI systems, context is everything. Traditional memory implementations rely on long token windows or rigid vector embeddings. This document outlines a lightweight, scalable approach built entirely from plain text: <strong>Topic Indexing</strong>.</p>
+    <p>The core concept is simple: each time a keyword is searched, the system pulls up a topic index or creates one. This becomes a central node containing summaries and insights, allowing the LLM to reason, recall and relate over time.</p>
+
+    <div class="section-divider">02 // Creation of Indexes</div>
+    <div class="grid-2">
+      <div>
+        <h3 class="meta-label">Automated Creation</h3>
+        <p>Topic indexes are automatically created from keyword searches. These indexes are updated with all chat entries that include the keyword, along with summaries.</p>
+      </div>
+      <div>
+        <h3 class="meta-label">Lived Memory</h3>
+        <p>Over time, each topic index grows richer, containing a chronological thread of thoughts. This is not static memory; it is <strong>lived memory</strong>.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">03 // Propagation of Insights</div>
+    <p>The topic index framework allows the system to evolve its behaviour through a structured delta mechanism.</p>
+    <pre><code><span class="code-key">insight_id:</span> <span class="code-val">52</span>
+<span class="code-key">timestamp:</span> <span class="code-val">2025-06-18T03:20</span>
+<span class="code-key">summary:</span> <span class="code-val">Recurring dream patterns align with recent emotional tone.</span>
+<span class="code-key">source_topic:</span> <span class="code-val">dreams</span></code></pre>
+
+    <div class="callout">
+      <div class="meta-label" style="margin-bottom: 5px;">Conclusion</div>
+      This white paper demonstrates how LYRN’s topic indexing system enables scalable, human‑like memory using only structured plain text. It is not just memory — it’s memory that remembers <strong>why</strong>.
+    </div>
+
+    
+        
+        <div class="text-box">
+             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Topic documentation module.
+        </div>
+     </section>
+
+     <div class="decoration-line"></div>
+     <section id="industry">
+        <!-- Decorative Shapes -->
+        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
+        
+        <div class="placeholder-image"></div>
+        
+        
+
+    <div class="section-divider">01 // Overview</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Overview</div>
+        <p>LYRN acts as the “brain” for industrial agents (forklifts, AGVs, robots). Unlike traditional centralized cloud systems, LYRN uses coordinate‑based navigation, grid layouts and QR anchors to build a persistent, local mental model of the environment. It stays fully local and stateful, allowing machines to make autonomous decisions even when connectivity is lost.</p>
+      </div>
+      <div>
+        <div class="meta-label">Use Cases</div>
+        <ul style="font-size: 14px; padding-left: 20px; margin-bottom: 20px;">
+          <li>Forklift navigation in dense warehouses.</li>
+          <li>Real‑time route re‑planning when aisles are blocked.</li>
+          <li>Tracking pallets and zones as distinct topics.</li>
+          <li>Learning safe routes over time through reflection.</li>
+        </ul>
+        <div class="callout"><strong>CORE CLAIM:</strong> LYRN turns any forklift or industrial machine into a stateful, memory‑capable agent that understands its warehouse like a living environment.</div>
+      </div>
+    </div>
+
+    <div class="section-divider">02 // System Model in This Environment</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Cognitive Loop</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li><strong>Snapshot:</strong> Full warehouse state (grid, racks, pallets, aisles).</li>
+          <li><strong>Delta:</strong> Changes (moved pallets, blocked aisles, worker positions).</li>
+          <li><strong>Verbatim Memory:</strong> Log of previous routes, hazards and delays.</li>
+          <li><strong>Topic Index:</strong> Pallets, locations, hazards, machines and workers.</li>
+          <li><strong>Reflection:</strong> LYRN improves route choices and safety over time.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Flow Diagram</div>
+        <pre>
+    [ Warehouse Sensors / QR Codes ]
+              ↓
+      [ Snapshot Builder ]
+              ↓
+       [ Delta Manager ]
+              ↓
+    [ LYRN Core Loop (KV Cache + Topic Index) ]
+              ↓
+    [ Navigation Commands ] → [ Verbatim Logs ]
+        </pre>
+      </div>
+    </div>
+
+    <div class="section-divider">03 // Example Scenario</div>
+    <div>
+      <div class="meta-label">Example Scenario: “Forklift Fetching a Pallet”</div>
+      <p>A forklift boots near Aisle 4, scans a QR anchor and loads the local grid snapshot. The central command issues a task: “Retrieve pallet 4B‑17.”</p>
+      <p>LYRN plans the path but detects a previously logged obstruction in Aisle 5 via its Verbatim Memory. It immediately calculates a re‑route through Aisle 6.</p>
+      <p style="color: var(--text-dim);">The agent moves safely, avoiding the hazard, and logs the completed task and route into the Delta Manager for future reflection cycles.</p>
+    </div>
+
+    <div class="section-divider">04 // Technical Highlights</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Inherited Features</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li>Local‑first; no mandatory cloud connection.</li>
+          <li>Deterministic navigation decisions.</li>
+          <li>Verbatim memory for audits and optimization.</li>
+          <li>Compatible with small edge compute hardware.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Deployment Notes</div>
+        <p>LYRN can be embedded directly into forklift controllers or mounted as a separate cognitive appliance. It can run alongside existing WMS/ERP systems, serving as the localized cognition layer that bridges the gap between database logic and physical reality.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">05 // Deployment Targets</div>
+    <div>
+      <div class="meta-label">Where LYRN Operates</div>
+      <div class="grid-4">
+        <div class="callout" style="text-align: center;">Warehouses</div>
+        <div class="callout" style="text-align: center;">Factories</div>
+        <div class="callout" style="text-align: center;">Logistics Hubs</div>
+        <div class="callout" style="text-align: center;">Shipyards</div>
+      </div>
+    </div>
+
+    <div class="section-divider">06 // Next Steps</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">For Operators &amp; Integrators</div>
+        <p>Learn how to retrofit existing fleets or integrate LYRN with your current warehouse management software.</p>
+        <button class="btn-primary">[ Discuss Industrial Deployment ]</button>
+      </div>
+      <div>
+        <div class="meta-label">For Robotics Teams</div>
+        <p>Explore how robotics engineers are using LYRN as the primary cognition layer for autonomous agents.</p>
+        <button>[ View Architecture ]</button>
+      </div>
+    </div>
+
+    
+        
+        <div class="text-box">
+             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Industry documentation module.
+        </div>
+     </section>
+
+     <div class="decoration-line"></div>
+     <section id="kiosks">
+        <!-- Decorative Shapes -->
+        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
+        
+        <div class="placeholder-image"></div>
+        
+        
+
+    <div class="section-divider">01 // Overview</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Overview</div>
+        <p>Most kiosks are stateless, generic interfaces that forget you the moment you walk away. LYRN changes this by allowing a kiosk to maintain an internal memory of returning visitors (using tokens like QR codes, device IDs or configured biometrics). It creates an experience of continuity and recognition while keeping all data local.</p>
+      </div>
+      <div>
+        <div class="meta-label">Use Cases</div>
+        <ul style="font-size: 14px; padding-left: 20px; margin-bottom: 20px;">
+          <li>Museum information kiosks that remember returning visitors’ interests.</li>
+          <li>Airport help kiosks that recall previous assistance inquiries.</li>
+          <li>Hospital check‑in kiosks that adapt to patient needs over multiple visits.</li>
+        </ul>
+        <div class="callout"><strong>CORE CLAIM:</strong> LYRN kiosks feel like a character in the building — they remember you, adapt to you and stay entirely local.</div>
+      </div>
+    </div>
+
+    <div class="section-divider">02 // System Model in This Environment</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Cognitive Loop</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li><strong>Snapshot:</strong> Kiosk surroundings, current user presence, time, basic context.</li>
+          <li><strong>Delta:</strong> When a specific visitor reappears, events change or environment shifts.</li>
+          <li><strong>Verbatim Memory:</strong> Past conversations, preferences and history of questions.</li>
+          <li><strong>Topic Index:</strong> Visitors, sessions, locations, events, FAQs and special tags.</li>
+          <li><strong>Reflection:</strong> Kiosk refines how it greets and helps each person.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Flow Diagram</div>
+        <pre>
+[ User Token / Input ]
+         ↓
+[ Identity Resolution (Local) ]
+         ↓
+[ LYRN Query: "Have we met?" ]
+         ↓
+[ Retrieve Verbatim History ] → [ Generate Response ]
+        </pre>
+      </div>
+    </div>
+
+    <div class="section-divider">03 // Example Scenario</div>
+    <div>
+      <div class="meta-label">Example Scenario: “The Museum Guide”</div>
+      <p>You approach a kiosk at a modern art museum for the second time. The kiosk scans your ticket QR code.</p>
+      <p>Recognizing your token, LYRN accesses the Topic Index for your previous session.</p>
+      <div class="callout" style="border: 1px solid var(--border-color); border-left: 3px solid var(--brand-purple); background: var(--bg-panel);">“Welcome back. Last time you were exploring the modern wing; there’s a new exhibit that matches what you liked. Would you like directions?”</div>
+      <p style="color: var(--text-dim); margin-top: 10px;">It offers directions and remembers your previous accessibility setting (large text), creating a seamless continuation of your visit.</p>
+    </div>
+
+    <div class="section-divider">04 // Technical Highlights</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Inherited Features</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li>Local‑only memory storage possible.</li>
+          <li>No external profiling or ad tech required.</li>
+          <li>Stable “personality” over time.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Deployment Notes</div>
+        <p>LYRN can be implemented on standard kiosk PCs. It works offline; synchronization with other kiosks is optional if the environment allows it, enabling a “hive mind” within the building without leaking data to the internet.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">05 // Deployment Targets</div>
+    <div>
+      <div class="meta-label">Where LYRN Operates</div>
+      <div class="grid-4">
+        <div class="callout" style="text-align: center;">Airports</div>
+        <div class="callout" style="text-align: center;">Museums</div>
+        <div class="callout" style="text-align: center;">Hospitals</div>
+        <div class="callout" style="text-align: center;">Gov Centers</div>
+      </div>
+    </div>
+
+    <div class="section-divider">06 // Next Steps</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">For Venue Operators</div>
+        <p>Focus on guest experience and retention by adding memory to your touchpoints.</p>
+        <button class="btn-primary">[ Deploy LYRN Kiosks ]</button>
+      </div>
+      <div>
+        <div class="meta-label">For Integrators</div>
+        <p>Build custom conversational flows and UI layers on top of the LYRN engine.</p>
+        <button>[ View Integration Guide ]</button>
+      </div>
+    </div>
+
+    
+        
+        <div class="text-box">
+             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Kiosks documentation module.
+        </div>
+     </section>
+
+     <div class="decoration-line"></div>
+     <section id="security">
+        <!-- Decorative Shapes -->
+        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
+        
+        <div class="placeholder-image"></div>
+        
+        
+
+    <div class="section-divider">01 // Overview</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Overview</div>
+        <p>Many security systems are either “dumb” (simple rule‑based alerts) or opaque (cloud‑based ML black boxes). LYRN offers a third way: local, inspectable intelligence with long‑term memory. It sits in the secure zone, monitoring patterns over weeks or months without ever sending data out.</p>
+      </div>
+      <div>
+        <div class="meta-label">Use Cases</div>
+        <ul style="font-size: 14px; padding-left: 20px; margin-bottom: 20px;">
+          <li>Monitoring badge access patterns over extended timeframes.</li>
+          <li>Anomaly detection in secure zones (e.g., unusual timing).</li>
+          <li>Intelligent event correlation across disconnected sensors.</li>
+        </ul>
+        <div class="callout"><strong>CORE CLAIM:</strong> LYRN gives security teams an airgapped mind that never forgets and never hallucinates.</div>
+      </div>
+    </div>
+
+    <div class="section-divider">02 // System Model in This Environment</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Cognitive Loop</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li><strong>Snapshot:</strong> Doors, sensors, cameras (meta‑data), badge events and system health.</li>
+          <li><strong>Delta:</strong> Each new badge event, alarm trigger or sensor anomaly.</li>
+          <li><strong>Verbatim Memory:</strong> Full log of security‑relevant events in human‑readable narrative.</li>
+          <li><strong>Topic Index:</strong> Personnel IDs, zones, devices, incidents and time windows.</li>
+          <li><strong>Reflection:</strong> Periodic reviews of patterns (“this badge repeatedly pings restricted area”).</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Flow Diagram</div>
+        <pre>
+[ Badge/Sensor Input ]
+         ↓
+[ Delta Trigger ] → [ Anomaly Check ]
+         ↓
+[ LYRN Context Lookback ]
+   (Compare vs. User History)
+         ↓
+[ Risk Score Calculation ] → [ Alert/Log ]
+        </pre>
+      </div>
+    </div>
+
+    <div class="section-divider">03 // Example Scenario</div>
+    <div>
+      <div class="meta-label">Example Scenario: “The After‑Hours Access”</div>
+      <p>Badge ID 742 attempts access to a restricted server room at 03:00 AM.</p>
+      <p>LYRN recalls previous attempts and notes a complete lack of history for this user in this zone at this time.</p>
+      <p>It flags the event with a high severity score and generates a short incident narrative. Later, during a security review, the officer uses LYRN’s Verbatim Memory to replay the sequence of events in clear text, rather than parsing raw database logs.</p>
+    </div>
+
+    <div class="section-divider">04 // Technical Highlights</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Inherited Features</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li>No cloud requirement (airgapped safe).</li>
+          <li>Fully deterministic logic.</li>
+          <li>Verbatim, replayable memory.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Deployment Notes</div>
+        <p>LYRN runs on secure servers behind firewalls. It can integrate with existing access control systems (ACS) via local APIs or by consuming log streams, adding a layer of intelligence without replacing certified infrastructure.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">05 // Deployment Targets</div>
+    <div>
+      <div class="meta-label">Where LYRN Operates</div>
+      <div class="grid-4">
+        <div class="callout" style="text-align: center;">Defense</div>
+        <div class="callout" style="text-align: center;">Nuclear Fac.</div>
+        <div class="callout" style="text-align: center;">Bank Vaults</div>
+        <div class="callout" style="text-align: center;">Power Plants</div>
+      </div>
+    </div>
+
+    <div class="section-divider">06 // Next Steps</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">For CISOs</div>
+        <p>Focus on auditability, control and reducing the attack surface by keeping intelligence local.</p>
+        <button class="btn-primary">[ Request Security Brief ]</button>
+      </div>
+      <div>
+        <div class="meta-label">For Engineers</div>
+        <p>View the integration plan for connecting LYRN to legacy access control systems.</p>
+        <button>[ View Integration Architecture ]</button>
+      </div>
+    </div>
+
+    
+        
+        <div class="text-box">
+             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Security documentation module.
+        </div>
+     </section>
+
+     <div class="decoration-line"></div>
+     <section id="space">
+        <!-- Decorative Shapes -->
+        <div class="content-shape shape-circle" style="right: -50px; top: 0;"></div>
+        
+        <div class="placeholder-image"></div>
+        
+        
+
+    <div class="section-divider">01 // Overview</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Overview</div>
+        <p>Space operations suffer from extreme latency, blackouts and harsh conditions. You cannot depend on cloud computing or constant guidance from Earth. LYRN provides a local cognition engine that runs on satellites, probes and habitats, allowing them to reason about their state and mission objectives in real‑time.</p>
+      </div>
+      <div>
+        <div class="meta-label">Use Cases</div>
+        <ul style="font-size: 14px; padding-left: 20px; margin-bottom: 20px;">
+          <li>Deep‑space probes operating with minutes or hours of light‑lag.</li>
+          <li>Planetary orbiters managing data prioritization.</li>
+          <li>Lunar and Mars habitats with automated life support.</li>
+          <li>Autonomous landers and rovers.</li>
+        </ul>
+        <div class="callout"><strong>CORE CLAIM:</strong> LYRN lets spacecraft carry a mind with them — one that remembers, reflects and adapts without waiting for Earth.</div>
+      </div>
+    </div>
+
+    <div class="section-divider">02 // System Model in This Environment</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Cognitive Loop</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li><strong>Snapshot:</strong> Spacecraft status (power, orientation, sensors, mission stage).</li>
+          <li><strong>Delta:</strong> Anomalies (power spikes, sensor failures, course deviations).</li>
+          <li><strong>Verbatim Memory:</strong> Continuous mission log in narrative form.</li>
+          <li><strong>Topic Index:</strong> Mission phases, subsystems, environmental hazards and crew.</li>
+          <li><strong>Reflection:</strong> Periodic autosummaries and self‑checks during blackout periods.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Flow Diagram</div>
+        <pre>
+[ Telemetry Stream ]
+         ↓
+[ Anomaly Detection ] → [ Delta Event ]
+         ↓
+[ LYRN Core: "Is this critical?" ]
+         ↓
+[ Autonomous Decision ] → [ Action ]
+         ↓
+[ Generate Summary for Earth Uplink ]
+        </pre>
+      </div>
+    </div>
+
+    <div class="section-divider">03 // Example Scenario</div>
+    <div>
+      <div class="meta-label">Example Scenario: “The Blackout”</div>
+      <p>A probe enters a pre‑known communications blackout behind a planet.</p>
+      <p>During the blackout, a power dip occurs. LYRN assesses the situation against mission parameters, shuts down non‑critical scientific instruments to conserve energy and adjusts orientation.</p>
+      <p>It logs the decision logic in Verbatim Memory. When contact returns, instead of sending raw chaotic data, LYRN produces a concise narrative summary of the incident for mission control.</p>
+    </div>
+
+    <div class="section-divider">04 // Technical Highlights</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">Inherited Features</div>
+        <ul style="font-size: 14px; padding-left: 20px;">
+          <li>Fully local operation.</li>
+          <li>Stable over long durations.</li>
+          <li>Deterministic mechanisms for mission‑critical tasks.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta-label">Deployment Notes</div>
+        <p>LYRN is designed to run on constrained onboard compute. It works with intermittent uplinks by prioritizing high‑value “narrative” data and state summaries over raw telemetry dumps, optimizing bandwidth usage.</p>
+      </div>
+    </div>
+
+    <div class="section-divider">05 // Deployment Targets</div>
+    <div>
+      <div class="meta-label">Where LYRN Operates</div>
+      <div class="grid-4">
+        <div class="callout" style="text-align: center;">LEO Satellites</div>
+        <div class="callout" style="text-align: center;">Deep Space</div>
+        <div class="callout" style="text-align: center;">Lunar Stations</div>
+        <div class="callout" style="text-align: center;">Mars Rovers</div>
+      </div>
+    </div>
+
+    <div class="section-divider">06 // Next Steps</div>
+    <div class="grid-2">
+      <div>
+        <div class="meta-label">For Aerospace</div>
+        <p>Partner with LYRN Systems to integrate cognitive autonomy into your next mission.</p>
+        <button class="btn-primary">[ Explore Space Integration ]</button>
+      </div>
+      <div>
+        <div class="meta-label">For Research</div>
+        <p>See how our simulation loop handles high‑latency decision making.</p>
+        <button>[ View Simulation Loop ]</button>
+      </div>
+    </div>
+
+    
+        
+        <div class="text-box">
+             <strong>ARCHITECTURE NOTE:</strong> This section has been consolidated from the Space documentation module.
+        </div>
+     </section>
+
+     <div class="decoration-line"></div>
+     <section id="snapshot-demo">
+        <div class="meta-label">INTERACTIVE DEMO</div>
+        <h2 style="margin-bottom: 20px;">Snapshot / RWI Builder</h2>
+        <p>Experience the local-first prompt construction engine.</p>
+        
+        
+    <div class="rwi-wrapper">
+        <header>
+            <div>
+                <div class="meta-label">LYRN SYSTEM MODULE</div>
+                <h1 class="panel-title" style="font-size: 20px;">RWI Prompt Builder</h1>
+            </div>
+            <div class="btn-group" style="align-items: center;">
+                <button onclick="rwiPreview()">View Final Prompt</button>
+                <button class="btn-primary" id="rebuild-btn" onclick="rwiBuild()">Rebuild Master Prompt</button>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">Components</h3>
+                    <button class="btn-icon" onclick="rwiAddNew()">+</button>
+                </div>
+                <div id="components-list"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title" id="editor-title">Editor</h3>
+                    <div class="btn-group">
+                        <button class="btn-delete" id="delete-btn" style="display: none;" onclick="rwiDelete()">Delete</button>
+                        <button class="btn-primary" id="save-btn" onclick="rwiSave()">Save</button>
+                    </div>
+                </div>
+                <div id="editor-container" class="editor-scroll">
+                    <p style="color: var(--text-dim); padding: 20px; text-align: center;">Select a component to edit.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel);">
+             <span style="font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono';">RWI SYSTEM // V1.1</span>
+        </div>
+        
+        <div id="rwi-toast">Operation Successful</div>
+    </div>
+
+     </section>
+
+     <!-- Footer -->
+     <footer>
       <span>LYRN SYSTEMS // THE SIMULATION COMPANY</span>
       <div class="footer-right">
-        <span>INDEX // EOF</span>
+        <span>CONSOLIDATED INDEX // EOF</span>
         <label class="theme-toggle-inline">THEME
-          <span class="theme-switch">
+          <span class="switch" id="footer-theme-switch">
             <input type="checkbox" id="themeToggle" />
             <span class="slider"></span>
           </span>
@@ -201,7 +981,6 @@
       </div>
     </footer>
   </div>
-  <!-- Shared script for theme and nav interactions -->
   <script src="script.js"></script>
 </body>
 </html>
