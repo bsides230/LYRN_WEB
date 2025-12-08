@@ -24,15 +24,12 @@
   --error-color: #EF4444;
 }
 
-/* Light mode overrides - UPDATED: Silver Gray */
+/* Light mode overrides - Silver Gray */
 body[data-theme="light"] {
-  --bg-core: #c0c2c5;  /* Silver Gray */
-  --bg-panel: #d1d3d6; /* Slightly lighter silver for panels */
-  
-  /* Inputs are light grey/white in light mode */
+  --bg-core: #c0c2c5;  
+  --bg-panel: #d1d3d6; 
   --bg-input: #f4f4f6; 
-  
-  --brand-purple: #6a4ce0; /* Darker purple for contrast against silver */
+  --brand-purple: #6a4ce0;
   --brand-purple-dim: rgba(106, 76, 224, 0.1);
   --brand-purple-glow: rgba(106, 76, 224, 0.3);
   --text-head: #000000;
@@ -43,7 +40,6 @@ body[data-theme="light"] {
   --code-border: #999999;
   --input-focus-bg: #ffffff;
 
-  /* Override body background to match light theme: Techy Diagonal Lines */
   background-color: #c0c2c5;
   background-image:
       repeating-linear-gradient(
@@ -67,41 +63,21 @@ body[data-theme="light"] {
 body, .page-container {
   margin: 0;
   padding: 0;
-  
-  /* --- BACKGROUND CONFIGURATION (Default Dark) --- */
-  background-color: #030208; /* Deep purple-black */
-  
-  /* Note: Background image for dark mode is set on body specifically below to allow overrides */
+  background-color: #030208;
   color: var(--text-body);
   font-family: 'Inter', system-ui, sans-serif;
   line-height: 1.65;
-  
-  /* Smooth transition for theme toggle */
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Default Dark Mode Background: Cyberpunk Scanlines & Data Columns */
+/* Default Dark Mode Background */
 body {
   background-image:
-      /* 1. Horizontal Scanlines (CRT TV feel) */
       linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      
-      /* 2. Vertical "Data Columns" (HUD/Server look) */
       linear-gradient(90deg, transparent 96%, rgba(124, 92, 255, 0.06) 96%),
-      
-      /* 3. Main Atmospheric Glow (Top) */
       radial-gradient(circle at 50% 0%, rgba(124, 92, 255, 0.35) 0%, transparent 65%),
-      
-      /* 4. Secondary Deep Blue Glow (Bottom) */
       radial-gradient(circle at 100% 100%, rgba(50, 180, 255, 0.08) 0%, transparent 50%);
-
-  /* Sizes for the patterns above */
-  background-size: 
-      100% 3px,      /* Scanline frequency */
-      40px 100%,     /* Column width */
-      100% 100%,     /* Glow 1 */
-      100% 100%;     /* Glow 2 */
-      
+  background-size: 100% 3px, 40px 100%, 100% 100%, 100% 100%;
   background-attachment: fixed;
 }
 
@@ -111,22 +87,27 @@ h1, h2, h3, h4, h5 {
   margin-top: 0;
 }
 
+/* Images Safety Net */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
 /* --- HERO TITLE --- */
 .hero-title {
     font-size: 3rem; 
     line-height: 1.1;
     margin-bottom: 15px;
-    color: var(--brand-purple); /* UPDATED: Always purple */
+    color: var(--brand-purple);
     text-shadow: 0 0 25px rgba(124, 92, 255, 0.6); 
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-/* Title shadow adjustment for Light Mode */
 body[data-theme="light"] .hero-title {
     text-shadow: 0 0 10px rgba(106, 76, 224, 0.25);
 }
 
-/* Section Headings */
 h2 {
     font-size: 28px;
     padding-left: 20px;
@@ -168,10 +149,9 @@ h2 {
   gap: 20px;
 }
 
-/* Accent Card for View Cases */
 .view-case-card {
     border: 1px solid var(--border-color);
-    border-top: 4px solid var(--brand-purple); /* Purple Accent */
+    border-top: 4px solid var(--brand-purple);
     padding: 20px;
     background: var(--bg-panel);
     display: flex;
@@ -225,7 +205,6 @@ h2 {
   gap: 10px;
 }
 
-/* UPDATED: Add glow to the small nav logo */
 #sticky-nav .logo img {
   filter: drop-shadow(0 0 8px var(--brand-purple));
   transition: filter 0.3s ease;
@@ -256,30 +235,10 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
     color: #593bd9;
 }
 
-/* Grouping container for Right Nav items */
 .nav-actions {
   display: flex;
   align-items: center;
   gap: 15px;
-}
-
-/* New Nav CTA Button */
-.nav-cta {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 600;
-  background-color: var(--brand-purple);
-  color: #ffffff;
-  padding: 8px 16px;
-  text-decoration: none;
-  text-transform: uppercase;
-  border: 1px solid var(--brand-purple);
-  transition: background-color 0.2s ease;
-  white-space: nowrap;
-}
-
-.nav-cta:hover {
-  background-color: #6a4ce0;
 }
 
 .theme-button {
@@ -294,8 +253,6 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
   letter-spacing: 0.1em;
   transition: background-color 0.2s ease, color 0.2s ease;
   white-space: nowrap;
-  
-  /* Updated for Links */
   text-decoration: none;
   display: inline-block;
 }
@@ -327,18 +284,12 @@ header {
     align-items: center;
 }
 
-/* UPDATED: Matched Dark Mode size and glow to Light Mode */
 .hero-logo-large {
     width: 100%;
-    max-width: 150px; /* Reduced from 180px */
-    height: auto;
-    filter: drop-shadow(0 0 20px var(--brand-purple)); /* Stronger purple glow */
-    transition: filter 0.3s ease, max-width 0.3s ease;
-}
-
-body[data-theme="light"] .hero-logo-large {
-    filter: drop-shadow(0 0 20px var(--brand-purple));
     max-width: 150px;
+    height: auto;
+    filter: drop-shadow(0 0 20px var(--brand-purple));
+    transition: filter 0.3s ease, max-width 0.3s ease;
 }
 
 /* =========================================
@@ -385,7 +336,6 @@ button.btn-primary:hover {
   color: var(--text-head);
 }
 
-/* Spacers */
 .purple-spacer {
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--brand-purple), transparent);
@@ -413,7 +363,6 @@ button.btn-primary:hover {
   opacity: 0.3;
 }
 
-/* Text Box Outline */
 .text-box-outline {
   border: 1px solid var(--brand-purple-glow);
   padding: 25px;
@@ -440,21 +389,6 @@ button.btn-primary:hover {
   border-bottom: 1px solid var(--brand-purple); border-right: 1px solid var(--brand-purple);
 }
 
-.text-box {
-  border: 1px solid var(--border-color);
-  padding: 20px;
-  background: var(--bg-panel);
-  margin-top: 20px;
-  position: relative;
-}
-.text-box::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; width: 4px; height: 100%;
-  background: var(--brand-purple);
-}
-
-/* Tags */
 .tag-container {
   display: flex;
   gap: 10px;
@@ -474,11 +408,11 @@ button.btn-primary:hover {
 }
 
 /* =========================================
-   FOOTER (Updated)
+   FOOTER
    ========================================= */
 footer {
     display: grid;
-    grid-template-columns: 1fr auto 1fr; /* Left | Center | Right */
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     border-top: 1px solid var(--border-color);
     padding-top: 40px;
@@ -488,46 +422,17 @@ footer {
     color: var(--text-dim);
 }
 
-.footer-left {
-  justify-self: start;
-}
+.footer-left { justify-self: start; }
+.footer-center { justify-self: center; display: flex; gap: 15px; align-items: center; }
+.footer-right { justify-self: end; }
 
-.footer-center {
-  justify-self: center;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-.footer-right {
-  justify-self: end;
-}
-
-/* Social Links */
 .social-link {
     color: var(--text-dim);
     text-decoration: none;
     transition: color 0.2s;
 }
-.social-link:hover {
-    color: var(--brand-purple);
-}
-.social-separator {
-    color: var(--border-color);
-}
-
-/* Mobile Footer Stack */
-@media (max-width: 768px) {
-    footer {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-        gap: 20px;
-        text-align: center;
-    }
-    .footer-left, .footer-center, .footer-right {
-        justify-self: center;
-    }
-}
+.social-link:hover { color: var(--brand-purple); }
+.social-separator { color: var(--border-color); }
 
 /* =========================================
    RWI BUILDER STYLES
@@ -537,7 +442,7 @@ footer {
   background: var(--bg-core);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  height: 700px;
+  height: 700px; /* Default desktop height */
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -545,12 +450,6 @@ footer {
   margin-top: 20px;
   overflow: hidden; 
 }
-
-/* Scrollbar Styling */
-.rwi-wrapper ::-webkit-scrollbar { width: 6px; height: 6px; }
-.rwi-wrapper ::-webkit-scrollbar-track { background: transparent; }
-.rwi-wrapper ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-.rwi-wrapper ::-webkit-scrollbar-thumb:hover { background: var(--brand-purple); }
 
 .rwi-wrapper header {
   border-bottom: 1px solid var(--border-color);
@@ -600,13 +499,7 @@ footer {
     font-weight: 600;
 }
 
-.rwi-wrapper .btn-icon {
-    padding: 4px 8px;
-    font-size: 14px;
-    line-height: 1;
-}
-
-/* --- RWI Component List Styles --- */
+/* RWI Component List Styles */
 .component-item {
     display: flex;
     align-items: center;
@@ -616,7 +509,7 @@ footer {
     transition: background 0.2s;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-    background: var(--bg-core); /* Default Dark Mode BG */
+    background: var(--bg-core);
 }
 
 .component-item:hover { background: var(--bg-panel); }
@@ -626,47 +519,36 @@ footer {
     border-left: 3px solid var(--brand-purple);
 }
 
-/* Light Mode Overrides for RWI Builder */
+/* Light Mode RWI Overrides */
 body[data-theme="light"] .component-item {
-    background: #ffffff; /* Clean white background for list items */
+    background: #ffffff;
     border-bottom: 1px solid #e0e0e0;
     color: #000000;
 }
-
-body[data-theme="light"] .component-item:hover {
-    background: #f4f4f6;
-}
-
+body[data-theme="light"] .component-item:hover { background: #f4f4f6; }
 body[data-theme="light"] .component-item.selected {
-    /* Darker purple selection for better visibility */
     background: rgba(106, 76, 224, 0.25) !important; 
     border-left: 3px solid #6a4ce0;
 }
+body[data-theme="light"] .component-name { color: #000000; font-weight: 500; }
 
-body[data-theme="light"] .component-name {
-    color: #000000;
-    font-weight: 500;
-}
-
-/* Move Buttons (Arrows) */
+/* Move Buttons */
 .move-btn-group {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    margin-right: 8px;
+    gap: 4px;
+    margin-right: 12px;
 }
-
 .move-btn {
     border: 1px solid var(--border-color);
     background: transparent;
     color: var(--text-dim);
-    font-size: 8px;
-    padding: 2px 6px;
+    font-size: 10px;
+    padding: 4px 8px; /* Larger touch target */
     line-height: 1;
     cursor: pointer;
     border-radius: 2px;
 }
-
 .move-btn:hover {
     background: var(--brand-purple);
     color: #fff;
@@ -676,7 +558,7 @@ body[data-theme="light"] .component-name {
 .component-handle { color: var(--text-dim); margin-right: 8px; cursor: grab; }
 .component-name { flex: 1; color: var(--text-body); margin: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Form Styles inside Editor */
+/* Editor Styles */
 .editor-scroll { padding: 20px; }
 .form-group { margin-bottom: 15px; }
 .form-group label {
@@ -701,7 +583,7 @@ body[data-theme="light"] .component-name {
     background: var(--input-focus-bg);
 }
 
-/* Switch */
+/* Switch & Toggle */
 .switch { position: relative; display: inline-block; width: 30px; height: 16px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
@@ -729,9 +611,7 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
 }
 #rwi-toast.show { opacity: 1; }
 
-/* =========================================
-   MODAL STYLES (NEW)
-   ========================================= */
+/* Modal Styles */
 .hidden { display: none !important; }
 .btn-hidden { display: none !important; }
 
@@ -793,19 +673,104 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
     resize: none;
 }
 .modal-body textarea:focus { outline: none; }
-
-/* New Text Display Div for Help Menu */
 .modal-text-display {
-    width: 100%;
-    height: 100%;
-    padding: 30px;
-    overflow-y: auto;
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--text-body);
+    width: 100%; height: 100%; padding: 30px; overflow-y: auto;
+    font-size: 14px; line-height: 1.6; color: var(--text-body);
 }
-.modal-text-display strong { color: var(--text-head); }
-.modal-text-display ul { padding-left: 20px; margin-bottom: 20px; }
-.modal-text-display li { margin-bottom: 8px; }
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+}
 
-.
+/* =========================================
+   MOBILE RESPONSIVENESS (Safety Fixes)
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* 1. Container Safety */
+    .page-container {
+        padding: 15px; 
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* 2. Grid Collapsing (Nuclear Option) */
+    .grid-2, .grid-4 {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    /* 3. Navigation Wrapping (No scrolling) */
+    #sticky-nav {
+        height: auto;
+        padding: 15px;
+        flex-direction: column;
+        gap: 15px;
+        position: relative; /* Prevent overlapping issues */
+    }
+
+    #sticky-nav .nav-links {
+        display: flex;
+        flex-wrap: wrap; /* WRAP items for safety */
+        justify-content: center;
+        width: 100%;
+        gap: 15px 20px;
+    }
+
+    .nav-actions {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 5px;
+    }
+
+    /* 4. Hero Section */
+    header {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .header-left { width: 100%; }
+    .hero-title { font-size: 2.0rem; }
+
+    /* 5. RWI Builder Mobile Layout (Vertical Stack, No Fixed Height) */
+    .rwi-wrapper {
+        height: auto !important; /* Force growth */
+        overflow: visible;
+        border: none;
+    }
+
+    .rwi-wrapper .main-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .rwi-wrapper .left-panel {
+        width: 100%;
+        height: auto;
+        max-height: 400px; /* Optional cap so it doesn't take whole screen */
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .rwi-wrapper .panel {
+        overflow-y: visible; /* Let page scroll handle it */
+    }
+    
+    /* Make editor taller on mobile */
+    #edit-content {
+        min-height: 300px; 
+    }
+
+    /* 6. Footer Stacking */
+    footer {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        text-align: center;
+    }
+    .footer-left, .footer-center, .footer-right { justify-self: center; }
+}
