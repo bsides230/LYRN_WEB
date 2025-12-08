@@ -230,36 +230,6 @@ Baseline_Emotional_State: Natural`
 
     updateRWITableOfContents();
 
-    // -- Function to move components (Up/Down) --
-    function moveComponent(name, direction) {
-        // 1. Get all unpinned components sorted by current order
-        const unpinned = components.filter(c => !c.pinned).sort((a, b) => a.order - b.order);
-        
-        // 2. Find the index of the target component within the UNPINNED list
-        const currentIndex = unpinned.findIndex(c => c.name === name);
-        if (currentIndex === -1) return;
-
-        // 3. Determine target index to swap with
-        const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-
-        // 4. Boundary checks
-        if (targetIndex < 0 || targetIndex >= unpinned.length) return;
-
-        // 5. Swap the 'order' values
-        const currentComp = unpinned[currentIndex];
-        const targetComp = unpinned[targetIndex];
-
-        const tempOrder = currentComp.order;
-        currentComp.order = targetComp.order;
-        targetComp.order = tempOrder;
-
-        // 6. Re-render
-        renderList();
-    }
-    
-    // Attach to window so HTML onclicks work
-    window.moveComponent = moveComponent;
-
     function renderList() {
         const listEl = document.getElementById('components-list');
         listEl.innerHTML = '';
@@ -270,30 +240,13 @@ Baseline_Emotional_State: Natural`
         });
 
         components.forEach((comp, index) => {
-            // Ensure data consistency if orders get messy
-            if(!comp.pinned) comp.order = index; 
-
+            comp.order = index;
             const item = document.createElement('div');
             item.className = `component-item ${selectedComponent === comp.name ? 'selected' : ''}`;
 
-            // Generate Move Buttons only if NOT pinned
-            let moveButtons = '';
-            if (!comp.pinned) {
-                moveButtons = `
-                <div class="move-btn-group" onclick="event.stopPropagation()">
-                    <button class="move-btn" onclick="moveComponent('${comp.name}', 'up')">▲</button>
-                    <button class="move-btn" onclick="moveComponent('${comp.name}', 'down')">▼</button>
-                </div>
-                `;
-            } else {
-                 // Placeholder to keep alignment
-                 moveButtons = `<div style="width: 26px; margin-right: 8px;"></div>`; 
-            }
-
             item.innerHTML = `
-                <span class="component-handle" style="display:none;">::</span>
-                ${moveButtons}
-                <button class="pin-btn" data-name="${comp.name}" title="${comp.pinned ? 'Unpin' : 'Pin'}" style="margin-right:8px;">
+                <span class="component-handle">::</span>
+                <button class="pin-btn" data-name="${comp.name}" title="${comp.pinned ? 'Unpin' : 'Pin'}">
                     ${comp.pinned ? '📌' : '📍'}
                 </button>
                 <span class="component-name">${comp.name}</span>
@@ -528,6 +481,57 @@ Baseline_Emotional_State: Natural`
                 <ul>
                     <li><strong>Edit Components:</strong> Select any item on the left list to modify its content and bracket configuration.</li>
                     <li><strong>Toggle Switches:</strong> Enable or disable components to include or exclude them from the final prompt.</li>
-                    <li><strong>Move (Arrows):</strong> Use the Up/Down arrows to reorder unpinned components.</li>
                     <li><strong>Pinning:</strong> Use the pin icon to keep important components at the top of the list.</li>
-                    <li><strong>Save .SNS:</strong> Download your current configuration as a .SNS
+                    <li><strong>Save .SNS:</strong> Download your current configuration as a .SNS (Snapshot) file. This saves all your text, toggles, and ordering.</li>
+                    <li><strong>Load .SNS:</strong> Upload a previously saved snapshot to restore your workspace.</li>
+                </ul>
+                <p style="margin-top:20px; color:var(--brand-purple);"><strong>Tip:</strong> The 'rwi' component automatically updates its Table of Contents based on which other components are active.</p>
+            `;
+            
+            content.classList.add('hidden');
+            htmlContent.classList.remove('hidden');
+            copyBtn.classList.add('btn-hidden'); 
+            modal.classList.remove('hidden');
+        }
+    };
+    
+    window.closeModal = () => {
+        const modal = document.getElementById('preview-modal');
+        if(modal) modal.classList.add('hidden');
+    }
+
+    window.copyModalContent = () => {
+         const content = document.getElementById('modal-content');
+         if(content && !content.classList.contains('hidden')) {
+             content.select();
+             document.execCommand('copy');
+             const btn = document.getElementById('copy-btn');
+             const orig = btn.innerText;
+             btn.innerText = "Copied!";
+             setTimeout(() => btn.innerText = orig, 1500);
+         }
+    }
+    
+    window.onclick = (event) => {
+        const modal = document.getElementById('preview-modal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    selectComponent("rwi");
+}
+
+function showToast(msg, error=false) {
+    const t = document.getElementById('rwi-toast');
+    if(!t) return;
+    t.innerText = msg;
+    t.style.borderColor = error ? 'var(--error-color)' : 'var(--brand-purple)';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function escapeHtml(text) {
+    if (!text) return "";
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
