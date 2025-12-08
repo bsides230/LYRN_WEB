@@ -89,28 +89,24 @@ img {
     display: block;
 }
 
-/* Default Dark Mode Background: Cyberpunk Scanlines & Data Columns */
+/* Default Dark Mode Background
+   UPDATED: Now matches Light Mode pattern (Diagonal Lines + Glow)
+   but with light purple streaks on dark background.
+*/
 body {
   background-image:
-      /* 1. Horizontal Scanlines (CRT TV feel) */
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      
-      /* 2. Vertical "Data Columns" (HUD/Server look) */
-      linear-gradient(90deg, transparent 96%, rgba(124, 92, 255, 0.06) 96%),
-      
-      /* 3. Main Atmospheric Glow (Top) */
-      radial-gradient(circle at 50% 0%, rgba(124, 92, 255, 0.35) 0%, transparent 65%),
-      
-      /* 4. Secondary Deep Blue Glow (Bottom) */
-      radial-gradient(circle at 100% 100%, rgba(50, 180, 255, 0.08) 0%, transparent 50%);
+      /* 1. Diagonal Lines (Light Purple, low opacity) */
+      repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 10px,
+          rgba(124, 92, 255, 0.05) 10px,
+          rgba(124, 92, 255, 0.05) 11px
+      ),
+      /* 2. Main Atmospheric Glow (Top) */
+      radial-gradient(circle at 50% 0%, rgba(124, 92, 255, 0.25) 0%, transparent 60%);
 
-  /* Sizes for the patterns above */
-  background-size: 
-      100% 3px,      /* Scanline frequency */
-      40px 100%,     /* Column width */
-      100% 100%,     /* Glow 1 */
-      100% 100%;     /* Glow 2 */
-      
+  background-size: auto, 100% 100%;
   background-attachment: fixed;
 }
 
@@ -125,13 +121,14 @@ h1, h2, h3, h4, h5 {
     font-size: 3rem; 
     line-height: 1.1;
     margin-bottom: 25px; /* Added spacing */
-    color: var(--brand-purple); 
+    color: #ffffff; /* UPDATED: Now White for Dark Mode */
     text-shadow: 0 0 25px rgba(124, 92, 255, 0.6); 
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-/* Title shadow adjustment for Light Mode */
+/* Title adjustments for Light Mode */
 body[data-theme="light"] .hero-title {
+    color: var(--brand-purple); /* Keep purple for light mode so it stands out */
     text-shadow: 0 0 10px rgba(106, 76, 224, 0.25);
 }
 
@@ -221,15 +218,26 @@ h2 {
     color: var(--brand-purple);
 }
 
-/* NEW: Standardized Image Aspect Ratio (Fixes Image Rhythm) */
+/* * FIXED: Image Aspect Ratio 
+ * Removed fixed 16/9 ratio so 2400x600 images show fully.
+ */
 .section-header-img {
     width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
+    height: auto; /* Allow natural height based on image source */
     margin-bottom: 30px;
     border-radius: 4px;
     border: 1px solid var(--border-color);
     background-color: var(--bg-panel);
+}
+
+/* NEW: Top Announcement Banner Styles */
+.top-banner-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
 }
 
 /* =========================================
@@ -239,15 +247,20 @@ h2 {
   position: sticky;
   top: 0;
   z-index: 9999;
-  background-color: var(--bg-core);
+  background-color: var(--bg-core); /* Opaque background for scrolling */
   border-bottom: 1px solid var(--border-color);
   padding: 0 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   transition: background-color 0.5s ease;
+  
+  /* NEW: Fix for "Stretching all the way across" */
+  /* Since nav is now inside .page-container, we use negative margins to make it touch the borders */
+  margin-left: -40px;
+  margin-right: -40px;
+  width: calc(100% + 80px); /* 100% + left pad + right pad */
 }
 
 #sticky-nav .logo {
@@ -340,6 +353,14 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
   color: #ffffff;
 }
 
+/* NEW: Hero Actions Container */
+.hero-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  flex-wrap: wrap;
+}
+
 /* NEW: Back To Top Button */
 #back-to-top {
     position: fixed;
@@ -376,6 +397,21 @@ header {
   margin-top: 40px;
   margin-bottom: 60px;
   flex-wrap: wrap;
+
+  /* NEW: Default (Dark) Hero Background Image */
+  background-image: url('assets/hero-dk.png');
+  background-size: cover; 
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* Added padding so text doesn't touch edges of the image */
+  padding: 40px; 
+  border-radius: 8px; /* Optional rounded corners */
+}
+
+/* NEW: Light Mode Hero Background Override */
+body[data-theme="light"] header {
+    background-image: url('assets/hero-lt.png');
 }
 
 .header-left {
@@ -623,6 +659,9 @@ footer {
   background: var(--bg-panel);
   flex-shrink: 0; 
   margin: 0; 
+  /* Override parent header styling so RWI header doesn't get the background image */
+  background-image: none;
+  padding: 15px 20px;
 }
 
 .rwi-wrapper .main-grid {
@@ -864,7 +903,17 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
         padding: 10px 15px;
         flex-direction: column;
         gap: 15px;
-        position: relative; 
+        
+        /* NEW: Fix for "nav menu does not follow scrolling on mobile" */
+        /* Changed from relative to sticky to ensure it pins */
+        position: sticky;
+        top: 0;
+        z-index: 10000;
+        
+        /* Update negative margins for mobile padding (20px) */
+        margin-left: -20px;
+        margin-right: -20px;
+        width: calc(100% + 40px);
     }
 
     /* Make nav links swipeable/scrollable horizontally */
@@ -904,6 +953,11 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
 
     .hero-title {
         font-size: 2.2rem; /* Smaller font for mobile */
+    }
+
+    /* NEW: Center hero buttons on mobile to match text alignment */
+    .hero-actions {
+        justify-content: center;
     }
 
     /* 5. RWI Builder / Snapshot Demo Mobile Layout */

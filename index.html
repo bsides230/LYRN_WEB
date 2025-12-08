@@ -27,33 +27,34 @@
 </head>
 <body>
 
-  <nav id="sticky-nav">
-     <a href="#home" class="logo">
-       <img src="assets/logo.png" alt="LYRN" style="height: 30px; width: auto;">
-       LYRN Systems
-     </a>
-
-     <div class="nav-links">
-        <a href="#home" class="nav-link">Home</a>
-        <a href="#embodied" class="nav-link">Embodied</a>
-        <a href="#memory" class="nav-link">Memory</a>
-        <a href="#reflection" class="nav-link">Reflection</a>
-        <a href="#topic" class="nav-link">Indexing</a>
-        <a href="#snapshot" class="nav-link">Snapshot</a>
-        <a href="#snapshot-demo" class="nav-link" style="color: var(--brand-purple);">Snapshot Demo</a>
-        <a href="#industry" class="nav-link">Industry</a>
-        <a href="#kiosks" class="nav-link">Kiosks</a>
-        <a href="#security" class="nav-link">Security</a>
-        <a href="#space" class="nav-link">Space</a>
-     </div>
-
-     <div class="nav-actions">
-        <a href="#snapshot-demo" class="theme-button">SNAPSHOT BUILDER DEMO</a>
-        <button id="themeButton" class="theme-button">LIGHT MODE</button>
-     </div>
-  </nav>
-
   <div class="page-container">
+     
+     <nav id="sticky-nav">
+         <a href="#home" class="logo">
+           <img src="assets/logo.png" alt="LYRN" style="height: 30px; width: auto;">
+           </a>
+    
+         <div class="nav-links">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#embodied" class="nav-link">Embodied</a>
+            <a href="#memory" class="nav-link">Memory</a>
+            <a href="#reflection" class="nav-link">Reflection</a>
+            <a href="#topic" class="nav-link">Indexing</a>
+            <a href="#snapshot" class="nav-link">Snapshot</a>
+            <a href="#industry" class="nav-link">Industry</a>
+            <a href="#kiosks" class="nav-link">Kiosks</a>
+            <a href="#security" class="nav-link">Security</a>
+            <a href="#space" class="nav-link">Space</a>
+         </div>
+    
+         <div class="nav-actions">
+            <a href="#snapshot-demo" class="theme-button">SNAPSHOT BUILDER</a>
+            <button id="themeButton" class="theme-button">LIGHT MODE</button>
+         </div>
+      </nav>
+
+     <img src="assets/banner.png" alt="Dashboard v5 Coming Soon" class="top-banner-img">
+
      <section id="home">
         <header style="margin-top: 40px; margin-bottom: 40px;">
           <div class="header-left">
@@ -62,9 +63,11 @@
               <h1 class="hero-title">Living Yield Relational Network</h1>
               <p style="max-width: 90%;">LYRN is a local‑first cognitive operating system built on snapshot, delta, verbatim memory and topic indexes.</p>
               
-              <button class="btn-primary" onclick="window.location.href='#snapshot-demo'" style="margin-top: 25px; font-size: 13px; padding: 12px 24px;">
-                SNAPSHOT BUILDER DEMO
-              </button>
+              <div class="hero-actions">
+                  <a href="#snapshot-demo" class="theme-button">SNAPSHOT BUILDER</a>
+                  <a href="https://github.com/bsides230/LYRN" target="_blank" class="theme-button">Get Dashboard v4</a>
+              </div>
+
             </div>
           </div>
           <div class="header-right">
@@ -481,9 +484,12 @@
 
      <div class="decoration-line"></div>
      <section id="snapshot-demo">
-        <div class="meta-label">PRODUCTION MODULE</div>
-        <h2 style="margin-bottom: 20px;">Snapshot / RWI Builder</h2>
-        <p>This is the exact production code used in the LYRN Dashboard. It is not a simulation.</p>
+        <div class="meta-label" style="color: var(--brand-purple);">LYRN DASHBOARD v5 // PREVIEW</div>
+        <h2 style="margin-bottom: 20px;">SNAPSHOT BUILDER MODULE</h2>
+        <p style="max-width: 800px; margin-bottom: 30px;">
+            <strong>This is the live production engine from the upcoming Dashboard v5.</strong><br>
+            It allows you to architect complex agent identities and rulesets using the new <code>.sns</code> file standard. Files created here are forward-compatible and ready for hot-loading into local v5 runtimes.
+        </p>
 
 
     <div class="rwi-wrapper">
