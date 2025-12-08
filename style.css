@@ -606,6 +606,7 @@ footer {
     line-height: 1;
 }
 
+/* --- RWI Component List Styles --- */
 .component-item {
     display: flex;
     align-items: center;
@@ -615,12 +616,61 @@ footer {
     transition: background 0.2s;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
+    background: var(--bg-core); /* Default Dark Mode BG */
 }
 
 .component-item:hover { background: var(--bg-panel); }
+
 .component-item.selected { 
     background: var(--brand-purple-dim); 
     border-left: 3px solid var(--brand-purple);
+}
+
+/* Light Mode Overrides for RWI Builder */
+body[data-theme="light"] .component-item {
+    background: #ffffff; /* Clean white background for list items */
+    border-bottom: 1px solid #e0e0e0;
+    color: #000000;
+}
+
+body[data-theme="light"] .component-item:hover {
+    background: #f4f4f6;
+}
+
+body[data-theme="light"] .component-item.selected {
+    /* Darker purple selection for better visibility */
+    background: rgba(106, 76, 224, 0.25) !important; 
+    border-left: 3px solid #6a4ce0;
+}
+
+body[data-theme="light"] .component-name {
+    color: #000000;
+    font-weight: 500;
+}
+
+/* Move Buttons (Arrows) */
+.move-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-right: 8px;
+}
+
+.move-btn {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 8px;
+    padding: 2px 6px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.move-btn:hover {
+    background: var(--brand-purple);
+    color: #fff;
+    border-color: var(--brand-purple);
 }
 
 .component-handle { color: var(--text-dim); margin-right: 8px; cursor: grab; }
@@ -758,107 +808,4 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
 .modal-text-display ul { padding-left: 20px; margin-bottom: 20px; }
 .modal-text-display li { margin-bottom: 8px; }
 
-.modal-footer {
-    padding: 15px 20px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: flex-end;
-}
-
-/* =========================================
-   MOBILE RESPONSIVENESS FIXES
-   ========================================= */
-@media (max-width: 768px) {
-
-    /* 1. Container & Global Spacing */
-    .page-container {
-        padding: 15px; /* Reduce from 40px to save space */
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
-    }
-
-    /* 2. Collapse Grids to Single Column */
-    .grid-2, .grid-4 {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-
-    /* 3. Navigation Bar Adjustments */
-    #sticky-nav {
-        height: auto;
-        padding: 10px 15px;
-        flex-direction: column;
-        gap: 15px;
-        position: relative; /* Optional: un-stick on mobile if it takes too much screen space */
-    }
-
-    /* Make nav links swipeable/scrollable horizontally */
-    #sticky-nav .nav-links {
-        display: flex;
-        flex-wrap: nowrap !important; /* Override inline styles */
-        overflow-x: auto;
-        width: 100%;
-        justify-content: flex-start;
-        padding-bottom: 10px; /* Space for scrollbar touch target */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        gap: 20px;
-    }
-    
-    /* Hide scrollbar for a cleaner look */
-    #sticky-nav .nav-links::-webkit-scrollbar {
-        height: 0px;
-        background: transparent;
-    }
-
-    .nav-actions {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    /* 4. Hero Section */
-    header {
-        flex-direction: column-reverse; /* Text on top, logo on bottom */
-        text-align: center;
-        gap: 20px;
-    }
-    
-    .header-left {
-        min-width: auto;
-        width: 100%;
-    }
-
-    .hero-title {
-        font-size: 2.2rem; /* Smaller font for mobile */
-    }
-
-    /* 5. RWI Builder / Snapshot Demo Mobile Layout */
-    .rwi-wrapper {
-        height: auto; /* Allow height to expand */
-        min-height: 800px;
-    }
-
-    .rwi-wrapper .main-grid {
-        grid-template-columns: 1fr; /* Stack panels */
-        display: flex;
-        flex-direction: column;
-    }
-
-    .rwi-wrapper .left-panel {
-        width: 100%;
-        height: 300px; /* Fixed height scrollable area for component list */
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    /* 6. Footer Stacking */
-    footer {
-        grid-template-columns: 1fr;
-        gap: 25px;
-        text-align: center;
-    }
-    
-    .footer-left, .footer-center, .footer-right {
-        justify-self: center;
-    }
-}
+.
