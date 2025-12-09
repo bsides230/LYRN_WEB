@@ -949,18 +949,28 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
         border-bottom: 1px solid var(--border-color);
     }
 
-    /* FIX: Reset RWI Header direction to normal column so Title is top, Buttons bottom */
+    /* FIX: RWI Header Mobile Layout */
     .rwi-wrapper header {
-        flex-direction: column !important; 
-        gap: 15px;
+        flex-direction: column !important; /* Stack vertical */
+        gap: 20px;
         align-items: center;
         text-align: center;
+        padding-bottom: 20px;
     }
     
-    /* Ensure the button group wraps if needed */
+    /* Ensure the button group stays centered and flexible */
     .rwi-wrapper header .btn-group {
         justify-content: center;
         flex-wrap: wrap;
+        width: 100%;
+        gap: 10px;
+    }
+    
+    /* Make header buttons slightly smaller to fit better on small screens */
+    .rwi-wrapper header button {
+        padding: 8px 12px;
+        font-size: 10px;
+        flex: 0 1 auto; /* Don't stretch */
     }
 
     footer {
