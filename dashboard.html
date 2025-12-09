@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v9</title>
+    <title>LYRN Dashboard v9 Mobile</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -42,7 +42,10 @@
         body.is-dragging-global { user-select: none; cursor: grabbing; }
         
         body {
-            margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden;
+            margin: 0; padding: 0; width: 100vw; 
+            /* CHANGED: Allow height to grow on mobile */
+            min-height: 100vh; 
+            overflow: hidden; /* Default desktop behavior */
             background-color: var(--bg-core);
             font-family: 'Inter', system-ui, sans-serif;
             color: var(--text-body);
@@ -55,7 +58,10 @@
         }
 
         /* [ ... WINDOW STYLES ... ] */
-        #desktop-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; }
+        #desktop-area { 
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; 
+            /* Ensure clicks pass through to bg if needed, though usually covered by windows */
+        }
 
         .lyrn-window {
             position: absolute;
@@ -259,6 +265,58 @@
         }
         .btn-text:hover { color: var(--text-head); border-color: var(--text-dim); }
 
+
+        /* =========================================================
+           [ NEW SECTION ] MOBILE / RESPONSIVE OVERRIDES
+           Triggers when width is < 850px (typical mobile/tablet)
+           ========================================================= */
+        @media (max-width: 850px) {
+            
+            /* 1. ENABLE SCROLLING ON BODY */
+            body {
+                overflow-y: auto; 
+                height: auto;
+            }
+
+            /* 2. CHANGE DESKTOP AREA TO FLEX COLUMN (STACKING) */
+            #desktop-area {
+                position: relative; /* Change from absolute to relative to flow with page */
+                height: auto;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                padding: 10px;
+                padding-bottom: 120px; /* Space for the dock at bottom */
+                gap: 20px; /* Space between stacked windows */
+            }
+
+            /* 3. WINDOWS: FORCE FULL WIDTH & RELATIVE POSITIONING */
+            .lyrn-window {
+                position: relative !important; /* Override JS absolute positioning */
+                width: 100% !important; /* Max width */
+                height: 500px !important; /* Fixed height for consistency, or use auto */
+                left: auto !important;
+                top: auto !important;
+                transform: none !important;
+                border-radius: 12px; /* Slightly rounder on mobile looks nicer */
+            }
+            
+            /* Hide maximize/pin buttons on mobile as they are irrelevant in stack mode */
+            .win-btn.pin, .resize-handle { display: none; }
+            .window-header { cursor: default; } /* Remove grab cursor */
+
+            /* 4. DOCK: SCROLLS WITH CONTENT (ABSOLUTE POSITIONING) */
+            #dock-container {
+                position: absolute; /* Detach from viewport, attach to document flow */
+                /* Note: JS drag might set top/left, we can try to override or let it sit.
+                   For best "scrolls with" behavior, we force it to bottom of container if user hasn't dragged.
+                   However, user said "stays where you tell it". 
+                   If we leave it as absolute, the JS coordinates will place it on the canvas. 
+                   When you scroll, it moves up. This is the desired behavior. 
+                */
+            }
+        }
+
     </style>
 </head>
 <body data-theme="dark">
@@ -269,7 +327,7 @@
         <div id="dock-content"></div>
         <div id="dock-handle"><div class="handle-bar"></div></div>
     </div>
-
+    
     <div id="settings-menu">
         <div class="menu-header">Modules</div>
         <div class="menu-item" onclick="openModuleManager()">
