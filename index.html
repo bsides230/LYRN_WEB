@@ -10,8 +10,49 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
+  <style>
+      /* Dashboard Overlay Styles */
+      #dashboard-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: #050505;
+          z-index: 99999; /* Above everything */
+          display: none; /* Hidden by default */
+          opacity: 0;
+          transition: opacity 0.3s ease;
+      }
+
+      #dashboard-overlay.visible {
+          display: block;
+          opacity: 1;
+      }
+
+      #dashboard-frame {
+          width: 100%;
+          height: 100%;
+          border: none;
+          display: block;
+      }
+
+      /* Trigger styling to keep it subtle */
+      #eof-trigger {
+          cursor: pointer;
+          transition: color 0.2s;
+      }
+      #eof-trigger:hover {
+          color: var(--brand-purple);
+      }
+  </style>
+
 </head>
 <body>
+
+  <div id="dashboard-overlay">
+      <iframe src="dashboard.html" id="dashboard-frame"></iframe>
+  </div>
 
   <div class="page-container">
      
@@ -902,7 +943,7 @@
          <span class="social-separator">/</span>
          <a href="https://www.linkedin.com/in/mathew-schroeder-15a93142/" target="_blank" class="social-link">LINKEDIN</a>
       </div>
-      <div class="footer-right">CONSOLIDATED INDEX // EOF</div>
+      <div class="footer-right">CONSOLIDATED INDEX // <span id="eof-trigger">EOF</span></div>
     </footer>
   </div>
 
@@ -951,5 +992,28 @@
   </div>
 
   <script src="script.js"></script>
+
+  <script>
+      // LOGIC FOR DASHBOARD OVERLAY
+      document.addEventListener('DOMContentLoaded', () => {
+          const trigger = document.getElementById('eof-trigger');
+          const overlay = document.getElementById('dashboard-overlay');
+          const frame = document.getElementById('dashboard-frame');
+
+          // 1. Open on "EOF" Click
+          trigger.addEventListener('click', () => {
+              overlay.classList.add('visible');
+              // Optional: reset frame source to reload dashboard fresh
+              // frame.src = frame.src; 
+          });
+
+          // 2. Listen for "CLOSE_DASHBOARD" message from iframe
+          window.addEventListener('message', (event) => {
+              if (event.data && event.data.type === 'CLOSE_DASHBOARD') {
+                  overlay.classList.remove('visible');
+              }
+          });
+      });
+  </script>
 </body>
 </html>
