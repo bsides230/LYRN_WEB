@@ -9,7 +9,7 @@
 :root {
   --bg-core: #050505;
   --bg-panel: #0a0a0a;
-  --bg-input: #050505; /* Default Dark Input */
+  --bg-input: #050505; 
   --brand-purple: #7c5cff;
   --brand-purple-dim: rgba(124, 92, 255, 0.1);
   --brand-purple-glow: rgba(124, 92, 255, 0.5);
@@ -22,35 +22,40 @@
   --input-focus-bg: #111111;
   --success-color: #10B981;
   --error-color: #EF4444;
+
+  /* Button Variables (Dark Mode Defaults) */
+  --btn-text: #e0e0e0;
+  --btn-border: #444444;
+  --btn-bg: rgba(255,255,255,0.03);
 }
 
 /* Light mode overrides */
 body[data-theme="light"] {
-  --bg-core: #c0c2c5;  
-  --bg-panel: #d1d3d6; 
+  --bg-core: #eef0f4;  /* Clean Light Grey */
+  --bg-panel: #ffffff; /* White Panels */
   --bg-input: #f4f4f6; 
+  
   --brand-purple: #6a4ce0; 
   --brand-purple-dim: rgba(106, 76, 224, 0.1);
   --brand-purple-glow: rgba(106, 76, 224, 0.3);
-  --text-head: #000000;
-  --text-body: #222222;
-  --text-dim: #444444;
-  --border-color: #a0a0a0; 
+  
+  --text-head: #111111;
+  --text-body: #333333;
+  --text-dim: #555555;
+  
+  --border-color: #d1d5db; 
   --code-bg: #e0e0e0;
   --code-border: #999999;
   --input-focus-bg: #ffffff;
 
-  background-color: #c0c2c5;
-  background-image:
-      repeating-linear-gradient(
-          45deg,
-          transparent,
-          transparent 10px,
-          rgba(106, 76, 224, 0.05) 10px,
-          rgba(106, 76, 224, 0.05) 11px
-      ),
-      radial-gradient(circle at 50% 0%, rgba(106, 76, 224, 0.15) 0%, transparent 60%);
-  background-size: auto, 100% 100%;
+  /* Button Variables (Light Mode) */
+  --btn-text: #333333;       /* Dark Text */
+  --btn-border: #bbbbbb;     /* Visible Grey Border */
+  --btn-bg: rgba(0,0,0,0.03);/* Slight darken on white */
+
+  /* Removed the textured background image */
+  background-color: #eef0f4;
+  background-image: none; 
 }
 
 /* =========================================
@@ -381,13 +386,13 @@ body[data-theme="light"] .hero-logo-large {
    COMPONENTS
    ========================================= */
 
-/* General Button Styles */
+/* General Button Styles - Now uses dynamic variables */
 button {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  background: rgba(255,255,255,0.03); 
-  border: 1px solid #444444; 
-  color: #e0e0e0;
+  background: var(--btn-bg); 
+  border: 1px solid var(--btn-border); 
+  color: var(--btn-text);
   padding: 10px 18px;
   cursor: pointer;
   text-transform: uppercase;
@@ -417,7 +422,7 @@ button.btn-primary:hover {
     gap: 10px;
 }
 
-/* NEW: Square Button Style for Save/Delete/Arrows */
+/* Square Button Style for Save/Delete/Arrows */
 .btn-square {
     width: 36px;
     height: 36px;
@@ -426,9 +431,9 @@ button.btn-primary:hover {
     align-items: center;
     justify-content: center;
     font-size: 16px; /* Icon Size */
-    border: 1px solid #444;
-    background: rgba(255,255,255,0.05);
-    color: #e0e0e0;
+    border: 1px solid var(--btn-border);
+    background: var(--btn-bg);
+    color: var(--btn-text);
     border-radius: 4px;
 }
 .btn-square:hover {
@@ -459,8 +464,8 @@ button.btn-primary:hover {
     font-size: 14px;
     margin-right: 0;
     border-radius: 3px;
-    border: 1px solid #444444;
-    color: #e0e0e0;
+    border: 1px solid var(--btn-border);
+    color: var(--btn-text);
     line-height: 1;
 }
 .btn-arrow:hover {
