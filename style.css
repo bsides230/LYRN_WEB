@@ -9,7 +9,7 @@
 :root {
   --bg-core: #050505;
   --bg-panel: #0a0a0a;
-  --bg-input: #050505; /* Default Dark Input */
+  --bg-input: #050505; 
   --brand-purple: #7c5cff;
   --brand-purple-dim: rgba(124, 92, 255, 0.1);
   --brand-purple-glow: rgba(124, 92, 255, 0.5);
@@ -49,9 +49,9 @@ body[data-theme="light"] {
   --input-focus-bg: #ffffff;
 
   /* Button Variables (Light Mode) */
-  --btn-text: #333333;       /* Dark Text */
-  --btn-border: #bbbbbb;     /* Visible Grey Border */
-  --btn-bg: rgba(0,0,0,0.03);/* Slight darken on white */
+  --btn-text: #333333;       
+  --btn-border: #bbbbbb;     
+  --btn-bg: rgba(0,0,0,0.03);
 
   background-color: #eef0f4;
   background-image: none; 
@@ -579,16 +579,6 @@ footer {
 .social-link:hover { color: var(--brand-purple); }
 .social-separator { color: var(--border-color); }
 
-@media (max-width: 768px) {
-    footer {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-        gap: 20px;
-        text-align: center;
-    }
-    .footer-left, .footer-center, .footer-right { justify-self: center; }
-}
-
 /* =========================================
    RWI BUILDER STYLES
    ========================================= */
@@ -748,13 +738,28 @@ body[data-theme="light"] .rwi-wrapper header {
 input:checked + .slider { background-color: var(--brand-purple); border-color: var(--brand-purple); }
 input:checked + .slider:before { transform: translateX(14px); background-color: #fff; }
 
+/* TOAST FIX: Position Fixed to Viewport so it never gets cut off */
 #rwi-toast {
-    position: absolute; bottom: 20px; right: 20px;
-    background: var(--bg-panel); border: 1px solid var(--brand-purple);
-    color: var(--text-head); padding: 10px 20px; border-radius: 4px;
-    font-family: 'JetBrains Mono', monospace; font-size: 12px;
-    opacity: 0; pointer-events: none; transition: opacity 0.3s;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 100;
+    position: fixed; 
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-panel); 
+    border: 1px solid var(--brand-purple);
+    color: var(--text-head); 
+    padding: 10px 20px; 
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; 
+    font-size: 12px;
+    opacity: 0; 
+    pointer-events: none; 
+    transition: opacity 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    z-index: 11000;
+    width: auto;
+    min-width: 250px;
+    max-width: 90%;
+    text-align: center;
 }
 #rwi-toast.show { opacity: 1; }
 
@@ -851,6 +856,8 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
 
     .page-container {
         padding: 20px; 
+        /* Added padding top so content isn't hidden behind fixed nav */
+        padding-top: 100px; 
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
@@ -871,17 +878,19 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
         padding: 20px;
     }
 
+    /* Fixed Position for Mobile Nav */
     #sticky-nav {
         height: auto;
         padding: 15px;
         flex-direction: column;
         gap: 15px;
-        position: sticky;
+        position: fixed; /* Force fixed on mobile */
         top: 0;
+        left: 0;
+        right: 0;
         z-index: 10000;
-        margin-left: -20px;
-        margin-right: -20px;
-        width: calc(100% + 40px);
+        margin: 0; /* Reset margins */
+        width: 100%;
     }
 
     #sticky-nav .nav-links {
