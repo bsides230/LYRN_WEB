@@ -902,11 +902,35 @@
          <span class="social-separator">/</span>
          <a href="https://www.linkedin.com/in/mathew-schroeder-15a93142/" target="_blank" class="social-link">LINKEDIN</a>
       </div>
-      <div class="footer-right">LYRN SYSTEMS INDEX // EOF</div>
+      <div class="footer-right">CONSOLIDATED INDEX // EOF</div>
     </footer>
   </div>
 
-  <button id="back-to-top" title="Back to Top">↑</button>
+  <div id="floating-dock" class="dock-collapsed">
+      
+      <div id="dock-content">
+          <button id="floating-builder-btn" class="dock-btn" title="Snapshot Builder" onclick="document.getElementById('snapshot-demo').scrollIntoView({behavior: 'smooth'})">🛠️</button>
+          <button id="floating-menu-btn" class="dock-btn" title="Navigation">☰</button>
+          <button id="back-to-top" class="dock-btn" title="Back to Top">↑</button>
+      </div>
+
+      <div id="dock-handle" title="Drag to move, Click to toggle">
+          <div class="handle-bar"></div>
+      </div>
+  </div>
+
+  <div id="floating-nav-overlay">
+      <a href="#home" class="nav-link" onclick="closeFloatingNav()">Home</a>
+      <a href="#embodied" class="nav-link" onclick="closeFloatingNav()">Embodied</a>
+      <a href="#memory" class="nav-link" onclick="closeFloatingNav()">Memory</a>
+      <a href="#reflection" class="nav-link" onclick="closeFloatingNav()">Reflection</a>
+      <a href="#topic" class="nav-link" onclick="closeFloatingNav()">Indexing</a>
+      <a href="#snapshot" class="nav-link" onclick="closeFloatingNav()">Snapshot</a>
+      <a href="#industry" class="nav-link" onclick="closeFloatingNav()">Industry</a>
+      <a href="#kiosks" class="nav-link" onclick="closeFloatingNav()">Kiosks</a>
+      <a href="#security" class="nav-link" onclick="closeFloatingNav()">Security</a>
+      <a href="#space" class="nav-link" onclick="closeFloatingNav()">Space</a>
+  </div>
 
   <div id="preview-modal" class="modal-overlay hidden">
     <div class="modal-box">
