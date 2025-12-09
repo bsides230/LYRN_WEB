@@ -49,9 +49,9 @@ body[data-theme="light"] {
   --input-focus-bg: #ffffff;
 
   /* Button Variables (Light Mode) */
-  --btn-text: #333333;       
-  --btn-border: #bbbbbb;     
-  --btn-bg: rgba(0,0,0,0.03);
+  --btn-text: #333333;       /* Dark Text */
+  --btn-border: #bbbbbb;     /* Visible Grey Border */
+  --btn-bg: rgba(0,0,0,0.03);/* Slight darken on white */
 
   background-color: #eef0f4;
   background-image: none; 
@@ -337,7 +337,7 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
     transform: translateY(-3px);
 }
 
-/* HERO SECTION Header (Has Background Image) */
+/* HERO SECTION Header (Has Background Image on Desktop) */
 header {
   display: flex;
   justify-content: space-between;
@@ -354,7 +354,7 @@ header {
   border-radius: 8px; 
 }
 
-/* Override ONLY for the Main Hero Header in Light Mode */
+/* Override ONLY for the Main Hero Header in Light Mode Desktop */
 body[data-theme="light"] header {
     background-image: url('assets/hero-lt.png');
 }
@@ -908,10 +908,14 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
         flex-wrap: wrap;
     }
 
+    /* Hero Header: NO BG IMAGE on Mobile */
     header {
         flex-direction: column-reverse; 
         text-align: center;
         gap: 20px;
+        /* Disable background image on mobile */
+        background-image: none !important;
+        background-color: var(--bg-panel); /* Ensure contrast */
     }
     
     .header-left {
