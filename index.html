@@ -518,56 +518,7 @@
             It allows you to architect complex agent identities and rulesets using the new <code>.sns</code> file standard. Files created here are forward-compatible and ready for hot-loading into local v5 runtimes.
         </p>
 
-
-    <div class="rwi-wrapper">
-        <header>
-            <div>
-                <div class="meta-label">LYRN SYSTEM MODULE</div>
-                <h1 class="panel-title" style="font-size: 20px;">RWI Prompt Builder <span class="version-tag">v1.1</span></h1>
-            </div>
-            <div class="btn-group" style="align-items: center; gap: 10px;">
-                <input type="file" id="sns-file-input" style="display: none;" accept=".sns" onchange="rwiLoadSNS(this)">
-                <button onclick="document.getElementById('sns-file-input').click()">Load .SNS</button>
-                <button onclick="rwiSaveSNS()">Save .SNS</button>
-                <button onclick="rwiPreview()">View Final</button>
-                <button class="btn-primary" id="rebuild-btn" onclick="rwiBuild()">Rebuild</button>
-                <button class="btn-icon" style="width: 24px; height: 24px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;" onclick="rwiShowHelp()" title="Help">?</button>
-            </div>
-        </header>
-
-        <div class="main-grid">
-            <div class="panel left-panel">
-                <div class="panel-header">
-                    <h3 class="panel-title">Components</h3>
-                    <div style="display: flex; gap: 5px;">
-                        <button class="btn-arrow btn-square" id="btn-move-up" onclick="moveSelected(-1)" title="Move Up">↑</button>
-                        <button class="btn-arrow btn-square" id="btn-move-down" onclick="moveSelected(1)" title="Move Down">↓</button>
-                        <button class="btn-icon btn-square" onclick="rwiAddNew()" title="Add New Component">+</button>
-                    </div>
-                </div>
-                <div id="components-list"></div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">
-                    <h3 class="panel-title" id="editor-title">Editor</h3>
-                    <div class="btn-group">
-                        <button class="btn-square btn-delete" id="delete-btn" style="display: none;" onclick="rwiDelete()" title="Delete">🗑️</button>
-                        <button class="btn-square btn-save" id="save-btn" onclick="rwiSave()" title="Save">💾</button>
-                    </div>
-                </div>
-                <div id="editor-container" class="editor-scroll">
-                    <p style="color: var(--text-dim); padding: 20px; text-align: center;">Select a component to edit.</p>
-                </div>
-            </div>
-        </div>
-
-        <div style="padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel);">
-             <span style="font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono';">RWI SYSTEM // V1.1</span>
-        </div>
-
-        <div id="rwi-toast">Operation Successful</div>
-        </div>
+        <iframe src="modules/Snapshot Builder.html" id="module-frame-snapshot" class="module-iframe" title="LYRN Snapshot Builder"></iframe>
 
         <p class="rwi-footer-note" style="margin-top: 15px; font-size: 11px; color: var(--text-dim); text-align: center; font-family: 'JetBrains Mono';">
             <span style="color: var(--brand-purple);">NOTE:</span> .sns files generated here can be uploaded directly to the LYRN Dashboard (v5.0 - Coming Soon) for live context migration.

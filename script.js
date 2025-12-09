@@ -1,12 +1,11 @@
 /*
  * Global script for LYRN unified website
- * Includes Theme Engine, ScrollSpy Navigation, and RWI Builder Demo
+ * Includes Theme Engine, ScrollSpy Navigation, and Module Loader
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initScrollSpy();
-  initRWIBuilder();
   initBackToTop(); 
   initFloatingMenu();
   initFloatingToggle(); 
@@ -277,6 +276,14 @@ function initTheme() {
   let currentTheme = storedTheme || 'dark';
   applyTheme(currentTheme);
 
+  // Sync to iframe on load
+  const iframe = document.getElementById('module-frame-snapshot');
+  if(iframe) {
+      iframe.onload = () => {
+          applyTheme(currentTheme);
+      };
+  }
+
   if (themeButton) {
     themeButton.addEventListener('click', () => {
       currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -290,6 +297,14 @@ function initTheme() {
         themeButton.innerText = theme === 'dark' ? 'LIGHT MODE' : 'DARK MODE';
     }
     localStorage.setItem('lyrn-theme', theme);
+
+    // Broadcast theme to modular iframes
+    const frames = document.querySelectorAll('.module-iframe');
+    frames.forEach(frame => {
+        if(frame.contentWindow) {
+            frame.contentWindow.postMessage({ type: 'THEME_CHANGE', theme: theme }, '*');
+        }
+    });
   }
 }
 
@@ -350,315 +365,7 @@ function initScrollSpy() {
   onScroll(); 
 }
 
-// --- RWI Builder Demo ---
-function initRWIBuilder() {
-    if (!document.getElementById('components-list')) return;
-
-    let components = [
-        {
-            name: "rwi",
-            pinned: true,
-            active: true,
-            order: 0,
-            config: {
-                begin_bracket: "###RWI_INSTRUCTIONS_START###",
-                end_bracket: "###RWI_INSTRUCTIONS_END###",
-                rwi_text: "Relational Web Index header."
-            },
-            content: "" 
-        },
-        {
-            name: "system_instructions",
-            pinned: true,
-            active: true,
-            order: 1,
-            config: {
-                begin_bracket: "###SYSTEM_INSTRUCTIONS_START###",
-                end_bracket: "###SYSTEM_INSTRUCTIONS_END###",
-                rwi_text: "Core system instructions."
-            },
-            content: `This model operates as part of the LYRN cognitive architecture...`
-        },
-        {
-            name: "system_rules",
-            pinned: true,
-            active: true,
-            order: 2,
-            config: {
-                begin_bracket: "###SYSTEM_RULES_START###",
-                end_bracket: "###SYSTEM_RULES_END###",
-                rwi_text: "Hard constraints."
-            },
-            content: `PRIORITY_OVERRIDES:\n- Follow user directives...`
-        },
-        {
-            name: "ai_preferences",
-            pinned: false,
-            active: true,
-            order: 3,
-            config: {
-                begin_bracket: "###AI_PREFERENCES_START###",
-                end_bracket: "###AI_PREFERENCES_END###",
-                rwi_text: "AI-specific preferences."
-            },
-            content: `Name: Greg\nBirthday: March 11, 1976`
-        },
-        {
-            name: "personality",
-            pinned: false,
-            active: true,
-            order: 4,
-            config: {
-                begin_bracket: "###PERSONALITY_START###",
-                end_bracket: "###PERSONALITY_END###",
-                rwi_text: "AI identity."
-            },
-            content: `"Creativity = 0700"\n"Consistency = 0800"`
-        },
-        {
-            name: "user_preferences",
-            pinned: false,
-            active: true,
-            order: 5,
-            config: {
-                begin_bracket: "###USER_PREFERENCES_START###",
-                end_bracket: "###USER_PREFERENCES_END###",
-                rwi_text: "User knobs."
-            },
-            content: `Reserved for user-specific preferences...`
-        }
-    ];
-
-    let selectedComponent = null;
-
-    function updateRWITableOfContents() {
-        const rwiComp = components.find(c => c.name === 'rwi');
-        if(!rwiComp) return;
-        let txt = "RWI Header: active components list...\n\n";
-        components.forEach(c => {
-            if (c.name !== 'rwi' && c.active) {
-                txt += `- ${c.name}: [${c.config.begin_bracket}]...[${c.config.end_bracket}] ${c.config.rwi_text}\n\n`;
-            }
-        });
-        rwiComp.content = txt;
-        if(selectedComponent === 'rwi') {
-             const editContent = document.getElementById('edit-content');
-             if(editContent) editContent.value = txt;
-        }
-    }
-    updateRWITableOfContents();
-
-    function renderList() {
-        const listEl = document.getElementById('components-list');
-        listEl.innerHTML = '';
-        components.sort((a, b) => {
-            if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
-            return (a.order || 0) - (b.order || 0);
-        });
-
-        components.forEach((comp, index) => {
-            comp.order = index;
-            const item = document.createElement('div');
-            item.className = `component-item ${selectedComponent === comp.name ? 'selected' : ''}`;
-            item.title = comp.config.rwi_text || comp.name;
-
-            let pinStatusHtml = comp.name === 'rwi' 
-                ? `<span style="font-size:10px; color:var(--brand-purple); margin-right:8px; font-weight:bold;">SYSTEM</span>`
-                : `<button class="pin-btn" data-name="${comp.name}" title="${comp.pinned ? 'Unpin' : 'Pin'}">${comp.pinned ? '📌' : '📍'}</button>`;
-
-            let toggleHtml = comp.name !== 'rwi' 
-                ? `<label class="switch component-toggle" onclick="event.stopPropagation()"><input type="checkbox" ${comp.active ? 'checked' : ''} data-name="${comp.name}"><span class="slider"></span></label>`
-                : '';
-
-            item.innerHTML = `${pinStatusHtml}<span class="component-name">${comp.name}</span>${toggleHtml}`;
-            item.onclick = () => selectComponent(comp.name);
-
-            if (comp.name !== 'rwi') {
-                item.querySelector('.pin-btn').onclick = (e) => { e.stopPropagation(); togglePin(comp.name); };
-                item.querySelector('input').onchange = (e) => { toggleActive(comp.name, e.target.checked); };
-            }
-            listEl.appendChild(item);
-        });
-    }
-
-    window.moveSelected = (direction) => {
-        if (!selectedComponent) { showToast("No component selected", true); return; }
-        const index = components.findIndex(c => c.name === selectedComponent);
-        if (index === -1) return;
-        const currentComp = components[index];
-        if (currentComp.pinned) { showToast("Pinned items cannot be reordered", true); return; }
-        const targetIndex = index + direction;
-        if (targetIndex < 0 || targetIndex >= components.length) return;
-        const targetComp = components[targetIndex];
-        if (targetComp.pinned) { showToast("Cannot move into pinned section", true); return; }
-        
-        const tempOrder = currentComp.order;
-        currentComp.order = targetComp.order;
-        targetComp.order = tempOrder;
-        renderList();
-    };
-
-    function togglePin(name) {
-        const c = components.find(x => x.name === name);
-        if (c) { c.pinned = !c.pinned; renderList(); }
-    }
-
-    function toggleActive(name, val) {
-        const c = components.find(x => x.name === name);
-        if (c) { c.active = val; updateRWITableOfContents(); showToast(val ? `${name} Activated` : `${name} Deactivated`); }
-    }
-
-    function selectComponent(name) {
-        selectedComponent = name;
-        renderList();
-        const titleEl = document.getElementById('editor-title');
-        const container = document.getElementById('editor-container');
-        titleEl.innerText = name === '_NEW_' ? 'New Component' : `Editing: ${name}`;
-
-        if (name === '_NEW_') {
-            container.innerHTML = `
-                <div class="form-group"><label>Component Name</label><input type="text" id="edit-name" placeholder="e.g., memory_buffer"></div>
-                <div class="form-group"><label>Begin Bracket</label><input type="text" id="edit-begin" value="###_START###"></div>
-                <div class="form-group"><label>End Bracket</label><input type="text" id="edit-end" value="###_END###"></div>
-                <div class="form-group"><label>RWI Instructions</label><textarea id="edit-rwi" placeholder="Description..."></textarea></div>
-                <div class="form-group"><label>Content</label><textarea id="edit-content"></textarea></div>
-            `;
-        } else {
-            const c = components.find(x => x.name === name);
-            if (!c) return;
-            container.innerHTML = `
-                <div class="form-group"><label>Begin Bracket</label><input type="text" id="edit-begin" value="${escapeHtml(c.config.begin_bracket)}"></div>
-                <div class="form-group"><label>End Bracket</label><input type="text" id="edit-end" value="${escapeHtml(c.config.end_bracket)}"></div>
-                <div class="form-group"><label>RWI Instructions</label><textarea id="edit-rwi">${escapeHtml(c.config.rwi_text)}</textarea></div>
-                <div class="form-group"><label>Main Content</label><textarea id="edit-content" style="height: 300px;">${escapeHtml(c.content)}</textarea></div>
-            `;
-        }
-        const delBtn = document.getElementById('delete-btn');
-        if (delBtn) delBtn.style.display = (name === '_NEW_' || name === 'rwi') ? 'none' : 'block';
-    }
-
-    window.rwiAddNew = () => selectComponent('_NEW_');
-
-    window.rwiSave = () => {
-        const isNew = selectedComponent === '_NEW_';
-        let name = selectedComponent;
-        if (isNew) {
-            name = document.getElementById('edit-name').value.trim();
-            if (!name || components.find(c => c.name === name)) { showToast("Invalid Name", true); return; }
-            components.push({
-                name: name, pinned: false, active: true, order: components.length,
-                config: {
-                    begin_bracket: document.getElementById('edit-begin').value,
-                    end_bracket: document.getElementById('edit-end').value,
-                    rwi_text: document.getElementById('edit-rwi').value
-                },
-                content: document.getElementById('edit-content').value
-            });
-            selectedComponent = name;
-        } else {
-            const c = components.find(x => x.name === name);
-            if (c) {
-                c.config.begin_bracket = document.getElementById('edit-begin').value;
-                c.config.end_bracket = document.getElementById('edit-end').value;
-                c.config.rwi_text = document.getElementById('edit-rwi').value;
-                c.content = document.getElementById('edit-content').value;
-            }
-        }
-        updateRWITableOfContents();
-        showToast("Component Saved");
-        renderList();
-        if (isNew) selectComponent(name);
-    };
-
-    window.rwiDelete = () => {
-        if (!selectedComponent || selectedComponent === '_NEW_') return;
-        if (confirm(`Delete ${selectedComponent}?`)) {
-            components = components.filter(c => c.name !== selectedComponent);
-            selectedComponent = null;
-            document.getElementById('editor-container').innerHTML = '<p style="padding:20px; color:var(--text-dim)">Select a component.</p>';
-            updateRWITableOfContents();
-            renderList();
-            showToast("Deleted");
-        }
-    };
-
-    window.rwiBuild = () => {
-        const btn = document.getElementById('rebuild-btn');
-        if (!btn) return;
-        const origText = btn.innerText;
-        btn.innerText = "Building...";
-        setTimeout(() => { btn.innerText = origText; showToast("Master Prompt Rebuilt"); }, 800);
-    };
-    
-    window.rwiSaveSNS = () => { window.rwiPreview(); document.getElementById('modal-title').innerText = "Review Snapshot (.SNS)"; document.getElementById('download-btn').classList.remove('btn-hidden'); };
-    
-    window.rwiDownloadSNS = () => {
-         let filename = prompt("Enter filename:", "lyrn_snapshot");
-        if (!filename) return;
-        if (!filename.endsWith('.sns')) filename += '.sns';
-        const blob = new Blob([JSON.stringify(components, null, 2)], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = filename;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast("Snapshot Downloaded");
-        closeModal();
-    }
-
-    window.rwiLoadSNS = (input) => {
-        const file = input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                components = JSON.parse(e.target.result);
-                selectedComponent = 'rwi'; 
-                updateRWITableOfContents(); renderList(); selectComponent('rwi');
-                showToast("Snapshot Loaded");
-            } catch (err) { showToast("Error Parsing File", true); }
-        };
-        reader.readAsText(file); input.value = '';
-    };
-
-    window.rwiPreview = () => {
-        let text = "";
-        components.filter(c => c.active).forEach(c => { text += `${c.config.begin_bracket}\n${c.content}\n${c.config.end_bracket}\n\n`; });
-        document.getElementById('modal-title').innerText = "Final RWI Prompt";
-        document.getElementById('modal-content').value = text;
-        document.getElementById('modal-content').classList.remove('hidden');
-        document.getElementById('modal-html-content').classList.add('hidden');
-        document.getElementById('copy-btn').classList.remove('btn-hidden');
-        document.getElementById('download-btn').classList.add('btn-hidden');
-        document.getElementById('preview-modal').classList.remove('hidden');
-    };
-    
-    window.rwiShowHelp = () => {
-        document.getElementById('modal-title').innerText = "RWI Builder Guide";
-        document.getElementById('modal-html-content').innerHTML = `<p><strong>RWI Builder v1.1 Guide</strong></p><ul><li>Edit, reorder, and toggle components.</li><li>Export .sns files for the dashboard.</li></ul>`;
-        document.getElementById('modal-content').classList.add('hidden');
-        document.getElementById('modal-html-content').classList.remove('hidden');
-        document.getElementById('copy-btn').classList.add('btn-hidden'); 
-        document.getElementById('download-btn').classList.add('btn-hidden');
-        document.getElementById('preview-modal').classList.remove('hidden');
-    };
-    
-    window.closeModal = () => document.getElementById('preview-modal').classList.add('hidden');
-    window.copyModalContent = () => { document.getElementById('modal-content').select(); document.execCommand('copy'); showToast("Copied!"); }
-    window.onclick = (event) => { if (event.target == document.getElementById('preview-modal')) closeModal(); }
-    selectComponent("rwi");
-}
-
 function showToast(msg, error=false) {
-    const t = document.getElementById('rwi-toast');
-    if(!t) return;
-    t.innerText = msg;
-    t.style.borderColor = error ? 'var(--error-color)' : 'var(--brand-purple)';
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function escapeHtml(text) {
-    if (!text) return "";
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    // Only used for global notifications now, RWI has its own internal toaster
+    console.log("Global Toast:", msg);
 }

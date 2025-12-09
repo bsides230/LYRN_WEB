@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.22</title>
+    <title>LYRN Dashboard v0.23</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -161,6 +161,8 @@
             opacity: 0;
             transform: translateY(10px) scale(0.8);
             pointer-events: none;
+            /* FIX: Visibility hidden ensures this doesn't block clicks on the handle */
+            visibility: hidden;
         }
 
         /* DOCK HANDLE */
@@ -252,7 +254,8 @@
         @media (max-width: 900px) {
             body { overflow-y: auto; height: auto; }
             #desktop-area { position: relative; height: auto; padding: 20px; padding-bottom: 120px; }
-            .lyrn-window { position: relative !important; width: 100% !important; height: 500px !important; margin-bottom: 20px; }
+            /* FIX: Removed !important from height to allow JS resizing */
+            .lyrn-window { position: relative !important; width: 100% !important; height: 500px; margin-bottom: 20px; }
             
             #dock-content { flex-direction: column-reverse; left: 50%; transform: translateX(-50%); }
             #floating-dock.dock-collapsed:not(.pinned-open) #dock-content { transform: translateX(-50%) translateY(10px) scale(0.8); }
@@ -677,7 +680,8 @@
                 e.preventDefault();
                 const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
                 const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-                if(Math.abs(clientX - startX) > 3 || Math.abs(clientY - startY) > 3) hasMoved = true;
+                // FIX: Increased threshold to 6px to separate clicks from tiny drags
+                if(Math.abs(clientX - startX) > 6 || Math.abs(clientY - startY) > 6) hasMoved = true;
                 dock.style.left = (initL + (clientX - startX)) + 'px';
                 dock.style.top = (initT + (clientY - startY)) + 'px';
             };
