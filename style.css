@@ -949,6 +949,20 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
         border-bottom: 1px solid var(--border-color);
     }
 
+    /* FIX: Reset RWI Header direction to normal column so Title is top, Buttons bottom */
+    .rwi-wrapper header {
+        flex-direction: column !important; 
+        gap: 15px;
+        align-items: center;
+        text-align: center;
+    }
+    
+    /* Ensure the button group wraps if needed */
+    .rwi-wrapper header .btn-group {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
     footer {
         grid-template-columns: 1fr;
         gap: 25px;
