@@ -24,15 +24,12 @@
   --error-color: #EF4444;
 }
 
-/* Light mode overrides - UPDATED: Silver Gray */
+/* Light mode overrides */
 body[data-theme="light"] {
-  --bg-core: #c0c2c5;  /* Silver Gray */
-  --bg-panel: #d1d3d6; /* Slightly lighter silver for panels */
-  
-  /* Inputs are light grey/white in light mode */
+  --bg-core: #c0c2c5;  
+  --bg-panel: #d1d3d6; 
   --bg-input: #f4f4f6; 
-  
-  --brand-purple: #6a4ce0; /* Darker purple for contrast against silver */
+  --brand-purple: #6a4ce0; 
   --brand-purple-dim: rgba(106, 76, 224, 0.1);
   --brand-purple-glow: rgba(106, 76, 224, 0.3);
   --text-head: #000000;
@@ -43,7 +40,6 @@ body[data-theme="light"] {
   --code-border: #999999;
   --input-focus-bg: #ffffff;
 
-  /* Override body background to match light theme: Techy Diagonal Lines */
   background-color: #c0c2c5;
   background-image:
       repeating-linear-gradient(
@@ -67,35 +63,22 @@ body[data-theme="light"] {
 body, .page-container {
   margin: 0;
   padding: 0;
-  
-  /* --- BACKGROUND CONFIGURATION (Default Dark) --- */
-  background-color: #030208; /* Deep purple-black */
-  
-  /* Note: Background image for dark mode is set on body specifically below to allow overrides */
+  background-color: #030208; 
   color: var(--text-body);
   font-family: 'Inter', system-ui, sans-serif;
-  
-  /* UPDATED: Increased line height for better readability per feedback */
   line-height: 1.75; 
-  
-  /* Smooth transition for theme toggle */
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Ensure images never overflow horizontally on mobile */
 img {
     max-width: 100%;
     height: auto;
     display: block;
 }
 
-/* Default Dark Mode Background
-   UPDATED: Now matches Light Mode pattern (Diagonal Lines + Glow)
-   but with light purple streaks on dark background.
-*/
+/* Default Dark Mode Background */
 body {
   background-image:
-      /* 1. Diagonal Lines (Light Purple, low opacity) */
       repeating-linear-gradient(
           45deg,
           transparent,
@@ -103,7 +86,6 @@ body {
           rgba(124, 92, 255, 0.05) 10px,
           rgba(124, 92, 255, 0.05) 11px
       ),
-      /* 2. Main Atmospheric Glow (Top) */
       radial-gradient(circle at 50% 0%, rgba(124, 92, 255, 0.25) 0%, transparent 60%);
 
   background-size: auto, 100% 100%;
@@ -116,23 +98,20 @@ h1, h2, h3, h4, h5 {
   margin-top: 0;
 }
 
-/* --- HERO TITLE --- */
 .hero-title {
     font-size: 3rem; 
     line-height: 1.1;
-    margin-bottom: 25px; /* Added spacing */
-    color: #ffffff; /* UPDATED: Now White for Dark Mode */
+    margin-bottom: 25px; 
+    color: #ffffff; 
     text-shadow: 0 0 25px rgba(124, 92, 255, 0.6); 
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-/* Title adjustments for Light Mode */
 body[data-theme="light"] .hero-title {
-    color: var(--brand-purple); /* Keep purple for light mode so it stands out */
+    color: var(--brand-purple); 
     text-shadow: 0 0 10px rgba(106, 76, 224, 0.25);
 }
 
-/* Section Headings */
 h2 {
     font-size: 28px;
     padding-left: 20px;
@@ -140,7 +119,7 @@ h2 {
     background: linear-gradient(90deg, rgba(124, 92, 255, 0.1) 0%, transparent 80%);
     padding-top: 10px;
     padding-bottom: 10px;
-    margin-bottom: 40px; /* Increased from 30px for breathing room */
+    margin-bottom: 40px; 
     letter-spacing: -0.02em;
     display: flex;
     align-items: center;
@@ -174,10 +153,9 @@ h2 {
   gap: 20px;
 }
 
-/* Accent Card for View Cases */
 .view-case-card {
     border: 1px solid var(--border-color);
-    border-top: 4px solid var(--brand-purple); /* Purple Accent */
+    border-top: 4px solid var(--brand-purple);
     padding: 20px;
     background: var(--bg-panel);
     display: flex;
@@ -193,7 +171,7 @@ h2 {
 
 .section-divider {
   border-bottom: 1px solid var(--border-color);
-  margin: 50px 0 30px 0; /* Increased top margin for hierarchy */
+  margin: 50px 0 30px 0; 
   padding-bottom: 10px;
   color: var(--brand-purple);
   font-family: 'JetBrains Mono', monospace;
@@ -202,7 +180,6 @@ h2 {
   letter-spacing: 0.1em;
 }
 
-/* NEW: Meta Label for subtitles (Fixes Hierarchy Issue) */
 .meta-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
@@ -213,24 +190,19 @@ h2 {
     display: block;
     font-weight: 600;
 }
-/* Highlight meta labels inside callouts or specific contexts */
 .callout .meta-label, .text-box-outline .meta-label {
     color: var(--brand-purple);
 }
 
-/* * FIXED: Image Aspect Ratio 
- * Removed fixed 16/9 ratio so 2400x600 images show fully.
- */
 .section-header-img {
     width: 100%;
-    height: auto; /* Allow natural height based on image source */
+    height: auto; 
     margin-bottom: 30px;
     border-radius: 4px;
     border: 1px solid var(--border-color);
     background-color: var(--bg-panel);
 }
 
-/* NEW: Top Announcement Banner Styles */
 .top-banner-img {
     width: 100%;
     height: auto;
@@ -247,7 +219,7 @@ h2 {
   position: sticky;
   top: 0;
   z-index: 9999;
-  background-color: var(--bg-core); /* Opaque background for scrolling */
+  background-color: var(--bg-core); 
   border-bottom: 1px solid var(--border-color);
   padding: 0 40px;
   display: flex;
@@ -255,12 +227,9 @@ h2 {
   align-items: center;
   height: 60px;
   transition: background-color 0.5s ease;
-  
-  /* NEW: Fix for "Stretching all the way across" */
-  /* Since nav is now inside .page-container, we use negative margins to make it touch the borders */
   margin-left: -40px;
   margin-right: -40px;
-  width: calc(100% + 80px); /* 100% + left pad + right pad */
+  width: calc(100% + 80px); 
 }
 
 #sticky-nav .logo {
@@ -304,30 +273,10 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
     color: #593bd9;
 }
 
-/* Grouping container for Right Nav items */
 .nav-actions {
   display: flex;
   align-items: center;
   gap: 15px;
-}
-
-/* New Nav CTA Button */
-.nav-cta {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 600;
-  background-color: var(--brand-purple);
-  color: #ffffff;
-  padding: 8px 16px;
-  text-decoration: none;
-  text-transform: uppercase;
-  border: 1px solid var(--brand-purple);
-  transition: background-color 0.2s ease;
-  white-space: nowrap;
-}
-
-.nav-cta:hover {
-  background-color: #6a4ce0;
 }
 
 .theme-button {
@@ -342,8 +291,6 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
   letter-spacing: 0.1em;
   transition: background-color 0.2s ease, color 0.2s ease;
   white-space: nowrap;
-  
-  /* Updated for Links */
   text-decoration: none;
   display: inline-block;
 }
@@ -353,7 +300,6 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
   color: #ffffff;
 }
 
-/* NEW: Hero Actions Container */
 .hero-actions {
   display: flex;
   gap: 15px;
@@ -361,7 +307,6 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
   flex-wrap: wrap;
 }
 
-/* NEW: Back To Top Button */
 #back-to-top {
     position: fixed;
     bottom: 30px;
@@ -372,7 +317,7 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
     border: 1px solid var(--brand-purple);
     color: var(--brand-purple);
     border-radius: 50%;
-    display: none; /* JS toggles this */
+    display: none; 
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -388,7 +333,6 @@ body[data-theme="light"] #sticky-nav .nav-link:hover {
     transform: translateY(-3px);
 }
 
-/* Header (Hero) */
 header {
   display: flex;
   justify-content: space-between;
@@ -397,19 +341,14 @@ header {
   margin-top: 40px;
   margin-bottom: 60px;
   flex-wrap: wrap;
-
-  /* NEW: Default (Dark) Hero Background Image */
   background-image: url('assets/hero-dk.png');
   background-size: cover; 
   background-position: center;
   background-repeat: no-repeat;
-  
-  /* Added padding so text doesn't touch edges of the image */
   padding: 40px; 
-  border-radius: 8px; /* Optional rounded corners */
+  border-radius: 8px; 
 }
 
-/* NEW: Light Mode Hero Background Override */
 body[data-theme="light"] header {
     background-image: url('assets/hero-lt.png');
 }
@@ -425,12 +364,11 @@ body[data-theme="light"] header {
     align-items: center;
 }
 
-/* UPDATED: Matched Dark Mode size and glow to Light Mode */
 .hero-logo-large {
     width: 100%;
-    max-width: 150px; /* Reduced from 180px */
+    max-width: 150px; 
     height: auto;
-    filter: drop-shadow(0 0 20px var(--brand-purple)); /* Stronger purple glow */
+    filter: drop-shadow(0 0 20px var(--brand-purple)); 
     transition: filter 0.3s ease, max-width 0.3s ease;
 }
 
@@ -442,12 +380,14 @@ body[data-theme="light"] .hero-logo-large {
 /* =========================================
    COMPONENTS
    ========================================= */
+
+/* General Button Styles */
 button {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-dim);
+  background: rgba(255,255,255,0.03); 
+  border: 1px solid #444444; 
+  color: #e0e0e0;
   padding: 10px 18px;
   cursor: pointer;
   text-transform: uppercase;
@@ -471,6 +411,63 @@ button.btn-primary:hover {
   background: #6a4ce0;
 }
 
+.btn-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* NEW: Square Button Style for Save/Delete/Arrows */
+.btn-square {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px; /* Icon Size */
+    border: 1px solid #444;
+    background: rgba(255,255,255,0.05);
+    color: #e0e0e0;
+    border-radius: 4px;
+}
+.btn-square:hover {
+    border-color: var(--brand-purple);
+    color: var(--brand-purple);
+    background: var(--bg-panel);
+}
+
+/* Specific Hover colors */
+.btn-delete:hover {
+    border-color: #ff4444;
+    color: #ff4444;
+}
+
+.btn-save:hover {
+    border-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.btn-icon {
+    padding: 4px 8px;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.btn-arrow {
+    padding: 6px 10px;
+    font-size: 14px;
+    margin-right: 0;
+    border-radius: 3px;
+    border: 1px solid #444444;
+    color: #e0e0e0;
+    line-height: 1;
+}
+.btn-arrow:hover {
+    color: var(--brand-purple);
+    border-color: var(--brand-purple);
+}
+
 .callout {
   background: linear-gradient(90deg, var(--brand-purple-dim) 0%, transparent 100%);
   border-left: 3px solid var(--brand-purple);
@@ -483,11 +480,10 @@ button.btn-primary:hover {
   color: var(--text-head);
 }
 
-/* Spacers */
 .purple-spacer {
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--brand-purple), transparent);
-  margin: 50px auto; /* Increased from 40px */
+  margin: 50px auto; 
   width: 100%;
   opacity: 0.6;
   position: relative;
@@ -507,11 +503,10 @@ button.btn-primary:hover {
 .decoration-line {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--brand-purple), transparent);
-  margin: 80px 0; /* Increased from 60px */
+  margin: 80px 0; 
   opacity: 0.3;
 }
 
-/* Text Box Outline */
 .text-box-outline {
   border: 1px solid var(--brand-purple-glow);
   padding: 25px;
@@ -538,21 +533,6 @@ button.btn-primary:hover {
   border-bottom: 1px solid var(--brand-purple); border-right: 1px solid var(--brand-purple);
 }
 
-.text-box {
-  border: 1px solid var(--border-color);
-  padding: 20px;
-  background: var(--bg-panel);
-  margin-top: 20px;
-  position: relative;
-}
-.text-box::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; width: 4px; height: 100%;
-  background: var(--brand-purple);
-}
-
-/* Tags */
 .tag-container {
   display: flex;
   gap: 10px;
@@ -572,11 +552,11 @@ button.btn-primary:hover {
 }
 
 /* =========================================
-   FOOTER (Updated)
+   FOOTER
    ========================================= */
 footer {
     display: grid;
-    grid-template-columns: 1fr auto 1fr; /* Left | Center | Right */
+    grid-template-columns: 1fr auto 1fr; 
     align-items: center;
     border-top: 1px solid var(--border-color);
     padding-top: 40px;
@@ -586,35 +566,14 @@ footer {
     color: var(--text-dim);
 }
 
-.footer-left {
-  justify-self: start;
-}
+.footer-left { justify-self: start; }
+.footer-center { justify-self: center; display: flex; gap: 15px; align-items: center; }
+.footer-right { justify-self: end; }
 
-.footer-center {
-  justify-self: center;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
+.social-link { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+.social-link:hover { color: var(--brand-purple); }
+.social-separator { color: var(--border-color); }
 
-.footer-right {
-  justify-self: end;
-}
-
-/* Social Links */
-.social-link {
-    color: var(--text-dim);
-    text-decoration: none;
-    transition: color 0.2s;
-}
-.social-link:hover {
-    color: var(--brand-purple);
-}
-.social-separator {
-    color: var(--border-color);
-}
-
-/* Mobile Footer Stack */
 @media (max-width: 768px) {
     footer {
         grid-template-columns: 1fr;
@@ -622,9 +581,7 @@ footer {
         gap: 20px;
         text-align: center;
     }
-    .footer-left, .footer-center, .footer-right {
-        justify-self: center;
-    }
+    .footer-left, .footer-center, .footer-right { justify-self: center; }
 }
 
 /* =========================================
@@ -644,7 +601,6 @@ footer {
   overflow: hidden; 
 }
 
-/* Scrollbar Styling */
 .rwi-wrapper ::-webkit-scrollbar { width: 6px; height: 6px; }
 .rwi-wrapper ::-webkit-scrollbar-track { background: transparent; }
 .rwi-wrapper ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
@@ -658,10 +614,19 @@ footer {
   align-items: center;
   background: var(--bg-panel);
   flex-shrink: 0; 
-  margin: 0; 
-  /* Override parent header styling so RWI header doesn't get the background image */
   background-image: none;
-  padding: 15px 20px;
+}
+
+.version-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: var(--bg-core);
+    border: 1px solid var(--border-color);
+    color: var(--text-dim);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 10px;
+    vertical-align: middle;
 }
 
 .rwi-wrapper .main-grid {
@@ -675,6 +640,12 @@ footer {
     overflow-y: auto;
     height: 100%;
     position: relative;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.rwi-wrapper .panel:focus-within {
+    box-shadow: inset 0 0 20px var(--brand-purple-dim);
+    border-color: var(--brand-purple);
 }
 
 .rwi-wrapper .left-panel {
@@ -701,12 +672,6 @@ footer {
     font-weight: 600;
 }
 
-.rwi-wrapper .btn-icon {
-    padding: 4px 8px;
-    font-size: 14px;
-    line-height: 1;
-}
-
 .component-item {
     display: flex;
     align-items: center;
@@ -724,11 +689,15 @@ footer {
     border-left: 3px solid var(--brand-purple);
 }
 
-.component-handle { color: var(--text-dim); margin-right: 8px; cursor: grab; }
+.component-controls {
+    display: flex;
+    gap: 2px;
+    margin-right: 8px;
+}
+
 .component-name { flex: 1; color: var(--text-body); margin: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Form Styles inside Editor */
-.editor-scroll { padding: 20px; }
+.editor-scroll { padding: 20px; outline: none; }
 .form-group { margin-bottom: 15px; }
 .form-group label {
     display: block; font-size: 10px; color: var(--text-dim);
@@ -752,7 +721,6 @@ footer {
     background: var(--input-focus-bg);
 }
 
-/* Switch */
 .switch { position: relative; display: inline-block; width: 30px; height: 16px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
@@ -769,7 +737,6 @@ footer {
 input:checked + .slider { background-color: var(--brand-purple); border-color: var(--brand-purple); }
 input:checked + .slider:before { transform: translateX(14px); background-color: #fff; }
 
-/* Toast */
 #rwi-toast {
     position: absolute; bottom: 20px; right: 20px;
     background: var(--bg-panel); border: 1px solid var(--brand-purple);
@@ -781,7 +748,7 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
 #rwi-toast.show { opacity: 1; }
 
 /* =========================================
-   MODAL STYLES (NEW)
+   MODAL STYLES
    ========================================= */
 .hidden { display: none !important; }
 .btn-hidden { display: none !important; }
@@ -845,7 +812,6 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
 }
 .modal-body textarea:focus { outline: none; }
 
-/* New Text Display Div for Help Menu */
 .modal-text-display {
     width: 100%;
     height: 100%;
@@ -864,6 +830,7 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: flex-end;
+    gap: 10px; 
 }
 
 /* =========================================
@@ -871,77 +838,58 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
    ========================================= */
 @media (max-width: 768px) {
 
-    /* 1. Container & Global Spacing */
     .page-container {
-        padding: 20px; /* Adjusted padding */
+        padding: 20px; 
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
     }
 
-    /* Fix for cramped Headers */
     h2 {
         font-size: 24px;
         margin-top: 20px;
         margin-bottom: 30px;
     }
 
-    /* 2. Collapse Grids to Single Column */
     .grid-2, .grid-4 {
         grid-template-columns: 1fr;
         gap: 30px;
     }
     
-    /* Ensure padding inside boxes isn't too huge on mobile */
     .text-box-outline, .view-case-card {
         padding: 20px;
     }
 
-    /* 3. Navigation Bar Adjustments */
     #sticky-nav {
         height: auto;
-        padding: 10px 15px;
+        padding: 15px;
         flex-direction: column;
         gap: 15px;
-        
-        /* NEW: Fix for "nav menu does not follow scrolling on mobile" */
-        /* Changed from relative to sticky to ensure it pins */
         position: sticky;
         top: 0;
         z-index: 10000;
-        
-        /* Update negative margins for mobile padding (20px) */
         margin-left: -20px;
         margin-right: -20px;
         width: calc(100% + 40px);
     }
 
-    /* Make nav links swipeable/scrollable horizontally */
     #sticky-nav .nav-links {
         display: flex;
-        flex-wrap: nowrap !important; /* Override inline styles */
-        overflow-x: auto;
+        flex-wrap: wrap !important; 
+        justify-content: center;
         width: 100%;
-        justify-content: flex-start;
-        padding-bottom: 10px; /* Space for scrollbar touch target */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-        gap: 20px;
+        gap: 15px;
+        overflow: visible; 
     }
     
-    /* Hide scrollbar for a cleaner look */
-    #sticky-nav .nav-links::-webkit-scrollbar {
-        height: 0px;
-        background: transparent;
-    }
-
     .nav-actions {
         width: 100%;
-        justify-content: space-between;
+        justify-content: center;
+        flex-wrap: wrap;
     }
 
-    /* 4. Hero Section */
     header {
-        flex-direction: column-reverse; /* Text on top, logo on bottom */
+        flex-direction: column-reverse; 
         text-align: center;
         gap: 20px;
     }
@@ -952,34 +900,31 @@ input:checked + .slider:before { transform: translateX(14px); background-color: 
     }
 
     .hero-title {
-        font-size: 2.2rem; /* Smaller font for mobile */
+        font-size: 2.2rem; 
     }
 
-    /* NEW: Center hero buttons on mobile to match text alignment */
     .hero-actions {
         justify-content: center;
     }
 
-    /* 5. RWI Builder / Snapshot Demo Mobile Layout */
     .rwi-wrapper {
-        height: auto; /* Allow height to expand */
+        height: auto; 
         min-height: 800px;
     }
 
     .rwi-wrapper .main-grid {
-        grid-template-columns: 1fr; /* Stack panels */
+        grid-template-columns: 1fr; 
         display: flex;
         flex-direction: column;
     }
 
     .rwi-wrapper .left-panel {
         width: 100%;
-        height: 300px; /* Fixed height scrollable area for component list */
+        height: 350px; 
         border-right: none;
         border-bottom: 1px solid var(--border-color);
     }
 
-    /* 6. Footer Stacking */
     footer {
         grid-template-columns: 1fr;
         gap: 25px;

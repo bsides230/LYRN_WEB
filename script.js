@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initScrollSpy();
   initRWIBuilder();
-  initBackToTop(); // Added init for Back To Top
+  initBackToTop(); 
 });
 
 // --- Back To Top Logic ---
@@ -190,41 +190,16 @@ Baseline_Emotional_State: Natural`
 "Openness = 0900"`
         },
         {
-            name: "jobs",
-            pinned: false,
-            active: true,
-            order: 5,
-            config: {
-                begin_bracket: "###JOBS_START###",
-                end_bracket: "###JOBS_END###",
-                rwi_text: "This block contains a list of job instructions."
-            },
-            content: `**DO NOT PERFORM A JOB WITHOUT A TRIGGER INPUT**
-**PERFORM SPECIFIED JOB WHEN TRIGGER IS ACTIVATED**`
-        },
-        {
             name: "user_preferences",
             pinned: false,
             active: true,
-            order: 6,
+            order: 5,
             config: {
                 begin_bracket: "###USER_PREFERENCES_START###",
                 end_bracket: "###USER_PREFERENCES_END###",
                 rwi_text: "Reserved for user-specific preferences and knobs."
             },
             content: `This section is reserved for user-specific preferences and configuration fields. In the live system it is populated from the snapshot layer.`
-        },
-        {
-            name: "oss_tools",
-            pinned: false,
-            active: true,
-            order: 7,
-            config: {
-                begin_bracket: "###OSS_TOOLS_START###",
-                end_bracket: "###OSS_TOOLS_END###",
-                rwi_text: "Tool and OSS integration notes."
-            },
-            content: `This section documents active OSS tools and utilities available to the agent.`
         }
     ];
 
@@ -256,42 +231,102 @@ Baseline_Emotional_State: Natural`
         const listEl = document.getElementById('components-list');
         listEl.innerHTML = '';
 
+        // Sort: Pinned first, then by Order
         components.sort((a, b) => {
             if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
             return (a.order || 0) - (b.order || 0);
         });
 
         components.forEach((comp, index) => {
-            comp.order = index;
+            comp.order = index; // Re-normalize orders
             const item = document.createElement('div');
             item.className = `component-item ${selectedComponent === comp.name ? 'selected' : ''}`;
+            
+            // Tooltip
+            item.title = comp.config.rwi_text || comp.name;
 
-            item.innerHTML = `
-                <span class="component-handle">::</span>
+            // Pin Status Indicator
+            let pinStatusHtml = '';
+            if (comp.name === 'rwi') {
+                 pinStatusHtml = `<span style="font-size:10px; color:var(--brand-purple); margin-right:8px; font-weight:bold;">SYSTEM</span>`;
+            } else {
+                pinStatusHtml = `
                 <button class="pin-btn" data-name="${comp.name}" title="${comp.pinned ? 'Unpin' : 'Pin'}">
                     ${comp.pinned ? '📌' : '📍'}
-                </button>
-                <span class="component-name">${comp.name}</span>
+                </button>`;
+            }
+
+            let toggleHtml = '';
+            if (comp.name !== 'rwi') {
+                toggleHtml = `
                 <label class="switch component-toggle" onclick="event.stopPropagation()">
                     <input type="checkbox" ${comp.active ? 'checked' : ''} data-name="${comp.name}">
                     <span class="slider"></span>
-                </label>
+                </label>`;
+            }
+
+            item.innerHTML = `
+                ${pinStatusHtml}
+                <span class="component-name">${comp.name}</span>
+                ${toggleHtml}
             `;
 
             item.onclick = () => selectComponent(comp.name);
 
-            item.querySelector('.pin-btn').onclick = (e) => {
-                e.stopPropagation();
-                togglePin(comp.name);
-            };
+            if (comp.name !== 'rwi') {
+                item.querySelector('.pin-btn').onclick = (e) => {
+                    e.stopPropagation();
+                    togglePin(comp.name);
+                };
 
-            item.querySelector('input').onchange = (e) => {
-                toggleActive(comp.name, e.target.checked);
-            };
+                item.querySelector('input').onchange = (e) => {
+                    toggleActive(comp.name, e.target.checked);
+                };
+            }
 
             listEl.appendChild(item);
         });
     }
+
+    // NEW: Function to handle Up/Down arrow clicks from Header
+    window.moveSelected = (direction) => {
+        if (!selectedComponent) {
+            showToast("No component selected", true);
+            return;
+        }
+
+        const index = components.findIndex(c => c.name === selectedComponent);
+        if (index === -1) return;
+
+        const currentComp = components[index];
+
+        // Constraint 1: Pinned items cannot be moved
+        if (currentComp.pinned) {
+             showToast("Pinned items cannot be reordered", true);
+             return;
+        }
+
+        const targetIndex = index + direction;
+        
+        // Bounds check
+        if (targetIndex < 0 || targetIndex >= components.length) return;
+        
+        const targetComp = components[targetIndex];
+
+        // Constraint 2: Cannot move into pinned section (Target is pinned)
+        if (targetComp.pinned) {
+            showToast("Cannot move into pinned section", true);
+            return;
+        }
+
+        // Swap Logic
+        const tempOrder = currentComp.order;
+        currentComp.order = targetComp.order;
+        targetComp.order = tempOrder;
+
+        // Re-render
+        renderList();
+    };
 
     function togglePin(name) {
         const c = components.find(x => x.name === name);
@@ -418,8 +453,21 @@ Baseline_Emotional_State: Natural`
     };
     
     // --- SNS File Handling ---
+    // UPDATED: Now opens Modal with Download Button
     window.rwiSaveSNS = () => {
-        let filename = prompt("Enter filename for snapshot:", "lyrn_snapshot");
+        // Open Modal
+        window.rwiPreview();
+        
+        const modalTitle = document.getElementById('modal-title');
+        const dlBtn = document.getElementById('download-btn');
+        
+        if (modalTitle) modalTitle.innerText = "Review Snapshot (.SNS)";
+        if (dlBtn) dlBtn.classList.remove('btn-hidden');
+    };
+    
+    // NEW: Actual Download Trigger
+    window.rwiDownloadSNS = () => {
+         let filename = prompt("Enter filename for snapshot:", "lyrn_snapshot");
         if (!filename) return;
         if (!filename.endsWith('.sns')) filename += '.sns';
 
@@ -433,8 +481,9 @@ Baseline_Emotional_State: Natural`
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showToast("Snapshot Saved");
-    };
+        showToast("Snapshot Downloaded");
+        closeModal();
+    }
 
     window.rwiLoadSNS = (input) => {
         const file = input.files[0];
@@ -477,13 +526,15 @@ Baseline_Emotional_State: Natural`
         const htmlContent = document.getElementById('modal-html-content');
         const title = document.getElementById('modal-title');
         const copyBtn = document.getElementById('copy-btn');
+        const dlBtn = document.getElementById('download-btn');
         
         if(modal && content) {
             title.innerText = "Final RWI Prompt";
             content.value = text;
             content.classList.remove('hidden');
             htmlContent.classList.add('hidden');
-            copyBtn.classList.remove('btn-hidden'); 
+            copyBtn.classList.remove('btn-hidden');
+            if (dlBtn) dlBtn.classList.add('btn-hidden'); // Hide DL by default
             modal.classList.remove('hidden');
         }
     };
@@ -494,25 +545,24 @@ Baseline_Emotional_State: Natural`
         const htmlContent = document.getElementById('modal-html-content');
         const title = document.getElementById('modal-title');
         const copyBtn = document.getElementById('copy-btn');
+        const dlBtn = document.getElementById('download-btn');
 
         if(modal && htmlContent) {
             title.innerText = "RWI Builder Guide";
             htmlContent.innerHTML = `
-                <p><strong>Welcome to the LYRN Relational Web Index (RWI) Builder.</strong></p>
-                <p>This tool allows you to construct and manage context windows for local-first LLMs. Here is how to use it:</p>
+                <p><strong>Welcome to the LYRN Relational Web Index (RWI) Builder v1.1.</strong></p>
+                <p>This tool allows you to construct and manage context windows for local-first LLMs.</p>
                 <ul>
-                    <li><strong>Edit Components:</strong> Select any item on the left list to modify its content and bracket configuration.</li>
-                    <li><strong>Toggle Switches:</strong> Enable or disable components to include or exclude them from the final prompt.</li>
-                    <li><strong>Pinning:</strong> Use the pin icon to keep important components at the top of the list.</li>
-                    <li><strong>Save .SNS:</strong> Download your current configuration as a .SNS (Snapshot) file. This saves all your text, toggles, and ordering.</li>
-                    <li><strong>Load .SNS:</strong> Upload a previously saved snapshot to restore your workspace.</li>
+                    <li><strong>Edit Components:</strong> Select any item on the left list to modify it.</li>
+                    <li><strong>Reorder:</strong> Use the ↑ and ↓ arrows in the top header to move unpinned components.</li>
+                    <li><strong>Pins:</strong> Pinned items (📍) stay fixed at the top and cannot be moved.</li>
                 </ul>
-                <p style="margin-top:20px; color:var(--brand-purple);"><strong>Tip:</strong> The 'rwi' component automatically updates its Table of Contents based on which other components are active.</p>
             `;
             
             content.classList.add('hidden');
             htmlContent.classList.remove('hidden');
             copyBtn.classList.add('btn-hidden'); 
+            if (dlBtn) dlBtn.classList.add('btn-hidden');
             modal.classList.remove('hidden');
         }
     };

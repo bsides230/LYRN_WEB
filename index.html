@@ -10,20 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-  <style>
-    /* Updated Header Layout */
-    #sticky-nav {
-      justify-content: space-between;
-      align-items: center;
-    }
-    #sticky-nav .nav-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
-  </style>
-
 </head>
 <body>
 
@@ -496,7 +482,7 @@
         <header>
             <div>
                 <div class="meta-label">LYRN SYSTEM MODULE</div>
-                <h1 class="panel-title" style="font-size: 20px;">RWI Prompt Builder</h1>
+                <h1 class="panel-title" style="font-size: 20px;">RWI Prompt Builder <span class="version-tag">v1.1</span></h1>
             </div>
             <div class="btn-group" style="align-items: center; gap: 10px;">
                 <input type="file" id="sns-file-input" style="display: none;" accept=".sns" onchange="rwiLoadSNS(this)">
@@ -512,7 +498,11 @@
             <div class="panel left-panel">
                 <div class="panel-header">
                     <h3 class="panel-title">Components</h3>
-                    <button class="btn-icon" onclick="rwiAddNew()">+</button>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn-arrow btn-square" id="btn-move-up" onclick="moveSelected(-1)" title="Move Up">↑</button>
+                        <button class="btn-arrow btn-square" id="btn-move-down" onclick="moveSelected(1)" title="Move Down">↓</button>
+                        <button class="btn-icon btn-square" onclick="rwiAddNew()" title="Add New Component">+</button>
+                    </div>
                 </div>
                 <div id="components-list"></div>
             </div>
@@ -521,8 +511,8 @@
                 <div class="panel-header">
                     <h3 class="panel-title" id="editor-title">Editor</h3>
                     <div class="btn-group">
-                        <button class="btn-delete" id="delete-btn" style="display: none;" onclick="rwiDelete()">Delete</button>
-                        <button class="btn-primary" id="save-btn" onclick="rwiSave()">Save</button>
+                        <button class="btn-square btn-delete" id="delete-btn" style="display: none;" onclick="rwiDelete()" title="Delete">🗑️</button>
+                        <button class="btn-square btn-save" id="save-btn" onclick="rwiSave()" title="Save">💾</button>
                     </div>
                 </div>
                 <div id="editor-container" class="editor-scroll">
@@ -931,6 +921,7 @@
         </div>
         <div class="modal-footer">
              <button id="copy-btn" onclick="copyModalContent()">Copy to Clipboard</button>
+             <button id="download-btn" class="btn-primary btn-hidden" onclick="rwiDownloadSNS()">Download .SNS File</button>
         </div>
     </div>
   </div>
