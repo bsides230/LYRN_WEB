@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.26</title>
+    <title>LYRN Dashboard v0.27</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -27,6 +27,9 @@
             --dock-bg: rgba(10, 10, 10, 0.85);
             --dock-border: rgba(255, 255, 255, 0.1);
             --dock-blur: 20px;
+
+            /* TYPOGRAPHY SCALE */
+            --font-size-base: 12px; /* Default Base Size */
         }
 
         body[data-theme="light"] {
@@ -56,6 +59,7 @@
                 radial-gradient(circle at 50% 0%, rgba(124, 92, 255, 0.15) 0%, transparent 60%);
             background-size: auto, 100% 100%;
             background-attachment: fixed;
+            font-size: var(--font-size-base);
         }
         
         /* UTILITY: Prevent Selection during Drag */
@@ -101,14 +105,19 @@
         }
         .window-header:active { cursor: grabbing; }
         
-        .window-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; color: var(--text-dim); }
+        .window-title { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: calc(var(--font-size-base) - 1px); 
+            text-transform: uppercase; color: var(--text-dim); 
+        }
         
         .win-controls { display: flex; align-items: center; gap: 4px; }
         
         .win-btn {
             background: transparent; border: none; color: var(--text-dim);
             width: 24px; height: 24px; border-radius: 4px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 12px;
+            display: flex; align-items: center; justify-content: center; 
+            font-size: var(--font-size-base);
             transition: all 0.2s;
         }
         .win-btn:hover { background: var(--brand-purple-dim); color: var(--text-head); }
@@ -216,9 +225,13 @@
         @keyframes popupFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .settings-section { display: flex; flex-direction: column; gap: 8px; }
-        .settings-header { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 4px; }
+        .settings-header { 
+            font-family: 'JetBrains Mono'; 
+            font-size: calc(var(--font-size-base) - 2px);
+            color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 4px; 
+        }
         
-        .settings-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        .settings-row { display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-base); }
         
         /* Custom Checkbox/Switch */
         .toggle-switch { position: relative; width: 32px; height: 18px; display: inline-block; }
@@ -227,6 +240,19 @@
         .toggle-slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: var(--text-dim); transition: .4s; border-radius: 50%; }
         input:checked + .toggle-slider { background-color: var(--brand-purple); }
         input:checked + .toggle-slider:before { transform: translateX(14px); background-color: white; }
+
+        /* Range Slider for Font */
+        input[type=range] {
+            -webkit-appearance: none; width: 100px; background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
+            background: var(--brand-purple); margin-top: -5px; cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: var(--border-color); border-radius: 2px;
+        }
+        input[type=range]:focus { outline: none; }
 
         /* DESKTOP LAYOUT */
         @media (min-width: 901px) {
@@ -244,7 +270,7 @@
             .dock-btn::after {
                 content: attr(title); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
                 background: var(--bg-panel); border: 1px solid var(--border-color); color: var(--text-head);
-                font-size: 10px; padding: 4px 8px; border-radius: 4px; white-space: nowrap; opacity: 0; 
+                font-size: calc(var(--font-size-base) - 2px); padding: 4px 8px; border-radius: 4px; white-space: nowrap; opacity: 0; 
                 pointer-events: none; font-family: 'JetBrains Mono'; transition: opacity 0.2s;
             }
             .dock-btn:hover::after { opacity: 1; }
@@ -368,6 +394,13 @@
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
+                <div class="settings-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+                    <div style="display:flex; justify-content:space-between; width:100%;">
+                        <span>Font Size</span>
+                        <span id="font-size-display" style="font-family:'JetBrains Mono'; color:var(--brand-purple);">12px</span>
+                    </div>
+                    <input type="range" id="setting-font-size" min="10" max="18" step="1" value="12" oninput="toggleFontSize(this.value)">
+                </div>
             </div>
             <div class="settings-section">
                 <div class="settings-header">Modules</div>
@@ -390,7 +423,7 @@
             // IMPORTANT: 'file' path is relative to the dashboard. 
             // If dashboard is in root, use "modules/Snapshot Builder.html".
             { id: "mod_builder", file: "Snapshot Builder.html", name: "Snapshot Builder", icon: "🛠️" },
-    { id: "mod_job_manager", file: "Job Manager.html", name: "Job Automation", icon: "🤖" },
+            { id: "mod_job_manager", file: "Job Manager.html", name: "Job Automation", icon: "🤖" },
         ];
         /* ========================================================================= */
 
@@ -403,7 +436,8 @@
             activeModules: ['mod_builder', 'mod_job_manager'],
             dockPinned: false,
             dockFixed: false,
-            theme: 'dark'
+            theme: 'dark',
+            fontSize: 12
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -412,9 +446,15 @@
             initFloatingDock();
             initSettingsUI();
             
+            // Apply loaded settings
             document.body.setAttribute('data-theme', appSettings.theme);
             document.getElementById('setting-theme').checked = (appSettings.theme === 'dark');
             
+            // Apply Font Size
+            document.documentElement.style.setProperty('--font-size-base', appSettings.fontSize + 'px');
+            document.getElementById('setting-font-size').value = appSettings.fontSize;
+            document.getElementById('font-size-display').innerText = appSettings.fontSize + 'px';
+
             if(appSettings.dockPinned) {
                 document.getElementById('floating-dock').classList.add('pinned-open');
                 document.getElementById('setting-dock-pin').checked = true;
@@ -432,6 +472,8 @@
                 try {
                     const parsed = JSON.parse(saved);
                     appSettings = { ...appSettings, ...parsed };
+                    // Default font size if missing from old save
+                    if(!appSettings.fontSize) appSettings.fontSize = 12;
                 } catch(e) { console.error("Settings parse error", e); }
             }
         }
@@ -520,6 +562,18 @@
             
             document.querySelectorAll('iframe').forEach(frame => {
                 frame.contentWindow.postMessage({ type: 'THEME_CHANGE', theme: theme }, '*');
+            });
+        }
+        
+        function toggleFontSize(val) {
+            const size = parseInt(val);
+            appSettings.fontSize = size;
+            document.getElementById('font-size-display').innerText = size + 'px';
+            document.documentElement.style.setProperty('--font-size-base', size + 'px');
+            saveSettings();
+
+            document.querySelectorAll('iframe').forEach(frame => {
+                frame.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: size }, '*');
             });
         }
 
@@ -636,6 +690,7 @@
 
         window.syncFrameTheme = (iframe) => {
             iframe.contentWindow.postMessage({ type: 'THEME_CHANGE', theme: appSettings.theme }, '*');
+            iframe.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: appSettings.fontSize }, '*');
         };
 
         window.togglePinWindow = (btn) => {

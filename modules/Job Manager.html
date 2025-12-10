@@ -28,6 +28,9 @@
       --btn-text: #e0e0e0;
       --btn-border: #444444;
       --btn-bg: rgba(255,255,255,0.03);
+
+      /* TYPOGRAPHY */
+      --font-size-base: 12px;
     }
 
     body[data-theme="light"] {
@@ -59,13 +62,16 @@
       background-color: var(--bg-core); color: var(--text-body);
       font-family: 'Inter', system-ui, sans-serif;
       height: 100vh; width: 100vw; overflow: hidden;
+      font-size: var(--font-size-base);
     }
 
     h1, h2, h3, h4 { font-family: 'JetBrains Mono', monospace; color: var(--text-head); margin: 0; }
 
     /* UI ELEMENTS */
     button {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--btn-bg);
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: calc(var(--font-size-base) - 1px); 
+      background: var(--btn-bg);
       border: 1px solid var(--btn-border); color: var(--btn-text); padding: 8px 12px;
       cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s ease; border-radius: 4px;
       white-space: nowrap; display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -74,7 +80,7 @@
     button.btn-primary { background: var(--brand-purple); color: #ffffff; border-color: var(--brand-purple); font-weight: 600; }
     button.btn-primary:hover { background: #6a4ce0; }
     .btn-group { display: flex; align-items: center; gap: 8px; }
-    .btn-square { width: 32px; height: 32px; padding: 0; font-size: 16px; }
+    .btn-square { width: 32px; height: 32px; padding: 0; font-size: calc(var(--font-size-base) + 4px); }
     .btn-delete:hover { border-color: #ff4444; color: #ff4444; }
     .btn-save:hover { border-color: var(--success-color); color: var(--success-color); }
 
@@ -93,8 +99,8 @@
       background: var(--bg-panel); flex-shrink: 0;
     }
 
-    .meta-label { font-family: 'JetBrains Mono'; font-size: 10px; color: var(--brand-purple); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; display: block; }
-    .panel-title { font-size: 14px; font-weight: 600; }
+    .meta-label { font-family: 'JetBrains Mono'; font-size: calc(var(--font-size-base) - 2px); color: var(--brand-purple); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; display: block; }
+    .panel-title { font-size: calc(var(--font-size-base) + 2px); font-weight: 600; }
 
     /* TABS */
     .tabs-bar {
@@ -104,7 +110,7 @@
     .tab-btn {
         background: transparent; border: none; border-bottom: 2px solid transparent;
         color: var(--text-dim); padding: 12px 4px; font-family: 'JetBrains Mono';
-        font-size: 11px; cursor: pointer; border-radius: 0;
+        font-size: calc(var(--font-size-base) - 1px); cursor: pointer; border-radius: 0;
     }
     .tab-btn:hover { color: var(--text-head); }
     .tab-btn.active { color: var(--brand-purple); border-bottom-color: var(--brand-purple); }
@@ -121,7 +127,7 @@
 
     .list-scroll { flex: 1; overflow-y: auto; }
 
-    .list-item { display: flex; align-items: center; padding: 10px 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 11px; transition: background 0.2s; }
+    .list-item { display: flex; align-items: center; padding: 10px 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: calc(var(--font-size-base) - 1px); transition: background 0.2s; }
     .list-item:hover { background: var(--bg-panel); }
     .list-item.selected { background: var(--brand-purple-dim); border-left: 3px solid var(--brand-purple); }
     .item-name { flex: 1; color: var(--text-body); margin: 0 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -131,10 +137,10 @@
 
     /* FORMS */
     .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-size: 10px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; font-family: 'JetBrains Mono'; }
+    .form-group label { display: block; font-size: calc(var(--font-size-base) - 2px); color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; font-family: 'JetBrains Mono'; }
 
     input[type="text"], input[type="number"], select, textarea {
-      width: 100%; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-head); padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12px; border-radius: 4px;
+      width: 100%; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-head); padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: var(--font-size-base); border-radius: 4px;
     }
     input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--brand-purple); outline: none; background: var(--input-focus-bg); }
 
@@ -146,24 +152,24 @@
         flex: 1; overflow-y: auto; padding: 10px; gap: 1px; background: var(--border-color);
         border: 1px solid var(--border-color);
     }
-    .calendar-day-header { background: var(--bg-panel); padding: 10px; text-align: center; font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); }
+    .calendar-day-header { background: var(--bg-panel); padding: 10px; text-align: center; font-family: 'JetBrains Mono'; font-size: calc(var(--font-size-base) - 1px); color: var(--text-dim); }
     .calendar-day {
         background: var(--bg-core); min-height: 80px; padding: 6px;
         cursor: pointer; transition: background 0.2s; position: relative;
     }
     .calendar-day:hover { background: var(--bg-panel); }
     .calendar-day.today { box-shadow: inset 0 0 0 1px var(--brand-purple); }
-    .day-number { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 4px; }
+    .day-number { font-size: var(--font-size-base); font-weight: 600; color: var(--text-dim); margin-bottom: 4px; }
     .day-events { display: flex; flex-direction: column; gap: 2px; }
     .event-dot { width: 6px; height: 6px; background: var(--brand-purple); border-radius: 50%; display: inline-block; margin-right: 2px; }
-    .event-pill { font-size: 10px; background: var(--brand-purple-dim); color: var(--brand-purple); padding: 2px 4px; border-radius: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .event-pill { font-size: calc(var(--font-size-base) - 2px); background: var(--brand-purple-dim); color: var(--brand-purple); padding: 2px 4px; border-radius: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 
     /* TOAST */
     #toast {
         position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
         background: var(--bg-panel); border: 1px solid var(--brand-purple);
         color: var(--text-head); padding: 10px 20px; border-radius: 4px;
-        font-family: 'JetBrains Mono', monospace; font-size: 12px;
+        font-family: 'JetBrains Mono', monospace; font-size: var(--font-size-base);
         opacity: 0; pointer-events: none; transition: opacity 0.3s;
         box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 11000;
     }
@@ -183,10 +189,10 @@
     @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
     .modal-body { flex: 1; padding: 20px; overflow-y: auto; }
-    .schedule-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 12px; }
+    .schedule-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: var(--font-size-base); }
 
     /* FOOTER */
-    .footer-bar { padding: 8px 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel); font-size: 10px; font-family: 'JetBrains Mono'; color: var(--text-dim); flex-shrink: 0; }
+    .footer-bar { padding: 8px 16px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel); font-size: calc(var(--font-size-base) - 2px); font-family: 'JetBrains Mono'; color: var(--text-dim); flex-shrink: 0; }
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
@@ -221,7 +227,6 @@
     </div>
 
     <div class="content-area">
-        <!-- JOBS TAB -->
         <div id="tab-jobs" class="tab-content active">
             <div class="split-grid">
                 <div class="left-panel">
@@ -246,7 +251,6 @@
             </div>
         </div>
 
-        <!-- SCHEDULER TAB -->
         <div id="tab-scheduler" class="tab-content">
             <div class="calendar-container">
                 <div class="panel-header">
@@ -261,7 +265,6 @@
             </div>
         </div>
 
-        <!-- CYCLES TAB -->
         <div id="tab-cycles" class="tab-content">
              <div class="split-grid">
                 <div class="left-panel">
@@ -295,7 +298,6 @@
 
   <div id="toast">Operation Successful</div>
 
-  <!-- SCHEDULER MODAL -->
   <div id="scheduler-modal" class="modal-overlay hidden">
     <div class="modal-box">
         <div class="modal-header">
@@ -305,7 +307,7 @@
         <div class="modal-body">
             <div id="day-schedule-list"></div>
             <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
-                <h4 style="font-size: 11px; margin-bottom: 10px; color: var(--text-dim);">ADD SCHEDULE</h4>
+                <h4 style="font-size: calc(var(--font-size-base) - 1px); margin-bottom: 10px; color: var(--text-dim);">ADD SCHEDULE</h4>
                 <div class="form-group">
                     <select id="modal-job-select"></select>
                 </div>
@@ -348,6 +350,9 @@
         window.addEventListener('message', (event) => {
             if (event.data.type === 'THEME_CHANGE') {
                 document.body.setAttribute('data-theme', event.data.theme);
+            }
+            if (event.data.type === 'FONT_CHANGE') {
+                document.documentElement.style.setProperty('--font-size-base', event.data.fontSize + 'px');
             }
         });
     });
