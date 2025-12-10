@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.24</title>
+    <title>LYRN Dashboard v0.25</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -383,6 +383,7 @@
             // IMPORTANT: 'file' path is relative to the dashboard. 
             // If dashboard is in root, use "modules/Snapshot Builder.html".
             { id: "mod_builder", file: "Snapshot Builder.html", name: "Snapshot Builder", icon: "🛠️" },
+    { id: "mod_job_manager", file: "Job Manager.html", name: "Job Automation", icon: "🤖" },
         ];
         /* ========================================================================= */
 
@@ -392,7 +393,7 @@
         const GRID_SIZE = 20; 
         
         let appSettings = {
-            activeModules: ['mod_builder'], 
+            activeModules: ['mod_builder', 'mod_job_manager'],
             dockPinned: false,
             dockFixed: false,
             theme: 'dark'
