@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.23</title>
+    <title>LYRN Dashboard v0.24</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -133,7 +133,7 @@
            ========================================= */
         #floating-dock {
             position: fixed;
-            /* GLOBAL Z-INDEX: Higher than any window (even pinned ones at 9999) */
+            /* GLOBAL Z-INDEX: Higher than any window */
             z-index: 20000; 
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end; 
             width: 50px; height: 30px; 
@@ -152,8 +152,6 @@
             opacity: 1; pointer-events: auto;
             transform-origin: bottom center;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            
-            /* INTERNAL Z-INDEX: Middle priority within dock group */
             z-index: 20; 
         }
         
@@ -161,7 +159,6 @@
             opacity: 0;
             transform: translateY(10px) scale(0.8);
             pointer-events: none;
-            /* FIX: Visibility hidden ensures this doesn't block clicks on the handle */
             visibility: hidden;
         }
 
@@ -173,8 +170,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.4);
             display: flex; align-items: center; justify-content: center;
             cursor: grab; 
-            
-            /* INTERNAL Z-INDEX: Lowest priority within dock group, but above page */
             z-index: 10;
         }
         #dock-handle:active { cursor: grabbing; transform: scale(0.95); }
@@ -208,8 +203,6 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             display: none; flex-direction: column; gap: 15px;
             pointer-events: auto; cursor: default;
-            
-            /* INTERNAL Z-INDEX: Highest priority within dock group to overlap content */
             z-index: 30;
         }
         #settings-popup.show { display: flex; animation: popupFade 0.2s ease-out; }
@@ -248,19 +241,83 @@
                 pointer-events: none; font-family: 'JetBrains Mono'; transition: opacity 0.2s;
             }
             .dock-btn:hover::after { opacity: 1; }
+
+            /* =========================================
+               4. FIXED CENTER DOCK (Desktop Only)
+               ========================================= */
+            #floating-dock.fixed-mode {
+                /* Force position to bottom center */
+                top: auto !important;
+                left: 50% !important;
+                bottom: 30px !important;
+                right: auto !important;
+                transform: translateX(-50%) !important;
+                
+                /* Reset container size to fit content */
+                width: auto; height: auto;
+                transition: bottom 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+
+            /* Hide the drag handle in fixed mode */
+            #floating-dock.fixed-mode #dock-handle { display: none; }
+
+            /* Reposition content to sit naturally */
+            #floating-dock.fixed-mode #dock-content {
+                position: relative;
+                bottom: auto; margin-bottom: 0; left: auto;
+                transform: none !important; opacity: 1 !important; visibility: visible;
+                
+                /* Premium Styling Overrides */
+                background: rgba(15, 15, 15, 0.6);
+                backdrop-filter: blur(25px) saturate(180%);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+                padding: 12px 16px; gap: 12px; border-radius: 24px;
+            }
+
+            /* Light Mode Specifics for Fixed Dock */
+            body[data-theme="light"] #floating-dock.fixed-mode #dock-content {
+                background: rgba(255, 255, 255, 0.65);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
+            }
+
+            /* "Magnification" Hover Effect */
+            #floating-dock.fixed-mode .dock-btn {
+                transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                margin: 0 2px;
+            }
+            #floating-dock.fixed-mode .dock-btn:hover {
+                transform: translateY(-8px) scale(1.2);
+                background: var(--brand-purple); color: white;
+                box-shadow: 0 10px 20px var(--brand-purple-dim);
+                z-index: 100; margin: 0 8px;
+            }
+            
+            /* Reposition Settings Popup in Fixed Mode */
+            #floating-dock.fixed-mode #settings-popup {
+                bottom: 100%; right: 50%; transform: translateX(50%);
+                margin-bottom: 20px; transform-origin: bottom center;
+            }
+            #floating-dock.fixed-mode #settings-popup.show {
+                animation: popupFixedUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+            @keyframes popupFixedUp { from { opacity: 0; transform: translateX(50%) translateY(20px) scale(0.9); } to { opacity: 1; transform: translateX(50%) translateY(0) scale(1); } }
         }
 
         /* MOBILE LAYOUT */
         @media (max-width: 900px) {
             body { overflow-y: auto; height: auto; }
             #desktop-area { position: relative; height: auto; padding: 20px; padding-bottom: 120px; }
-            /* FIX: Removed !important from height to allow JS resizing */
             .lyrn-window { position: relative !important; width: 100% !important; height: 500px; margin-bottom: 20px; }
             
             #dock-content { flex-direction: column-reverse; left: 50%; transform: translateX(-50%); }
             #floating-dock.dock-collapsed:not(.pinned-open) #dock-content { transform: translateX(-50%) translateY(10px) scale(0.8); }
             .dock-btn { width: 40px; height: 40px; font-size: 18px; }
             .dock-btn::after { display: none; }
+            
+            /* Hide Fixed Dock toggle on mobile */
+            .desktop-only-setting { display: none !important; }
 
             .resize-handle {
                 width: 100%; height: 24px; bottom: 0; left: 0;
@@ -277,8 +334,7 @@
 </head>
 <body data-theme="dark">
 
-    <div id="desktop-area">
-        </div>
+    <div id="desktop-area"></div>
 
     <div id="floating-dock" class="dock-collapsed">
         <div id="settings-popup">
@@ -291,23 +347,28 @@
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
-                <div class="settings-row">
+                <div class="settings-row" id="row-dock-pin">
                     <span>Pin Dock Open</span>
                     <label class="toggle-switch">
                         <input type="checkbox" id="setting-dock-pin" onchange="toggleDockPin(this.checked)">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
+                <div class="settings-row desktop-only-setting">
+                    <span>Fixed Center Dock</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="setting-dock-fixed" onchange="toggleFixedDock(this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
             </div>
             <div class="settings-section">
                 <div class="settings-header">Modules</div>
-                <div id="module-list-container">
-                    </div>
+                <div id="module-list-container"></div>
             </div>
         </div>
 
-        <div id="dock-content">
-            </div>
+        <div id="dock-content"></div>
 
         <div id="dock-handle" title="Drag to move, Click to toggle">
             <div class="handle-bar"></div>
@@ -333,6 +394,7 @@
         let appSettings = {
             activeModules: ['mod_builder'], 
             dockPinned: false,
+            dockFixed: false,
             theme: 'dark'
         };
 
@@ -348,6 +410,11 @@
             if(appSettings.dockPinned) {
                 document.getElementById('floating-dock').classList.add('pinned-open');
                 document.getElementById('setting-dock-pin').checked = true;
+            }
+
+            if(appSettings.dockFixed) {
+                toggleFixedDock(true, false); // Don't save on load
+                document.getElementById('setting-dock-fixed').checked = true;
             }
         });
 
@@ -456,6 +523,37 @@
             saveSettings();
         }
 
+        function toggleFixedDock(isFixed, save = true) {
+            appSettings.dockFixed = isFixed;
+            const dock = document.getElementById('floating-dock');
+            const pinRow = document.getElementById('row-dock-pin');
+            
+            if (isFixed) {
+                dock.classList.add('fixed-mode');
+                // Disable Pin toggle visually as Fixed mode implies pinned
+                if(pinRow) {
+                    pinRow.style.opacity = '0.3';
+                    pinRow.style.pointerEvents = 'none';
+                }
+            } else {
+                dock.classList.remove('fixed-mode');
+                // Restore Floating Position
+                const savedPos = localStorage.getItem('lyrn-dock-xy');
+                if (savedPos) {
+                    const { left, top } = JSON.parse(savedPos);
+                    dock.style.left = left + 'px';
+                    dock.style.top = top + 'px';
+                    dock.style.transform = 'none';
+                }
+                // Enable Pin toggle
+                if(pinRow) {
+                    pinRow.style.opacity = '1';
+                    pinRow.style.pointerEvents = 'auto';
+                }
+            }
+            if (save) saveSettings();
+        }
+
         function initSettingsUI() {
             document.addEventListener('click', (e) => {
                 const popup = document.getElementById('settings-popup');
@@ -504,7 +602,6 @@
                 win.style.top = (50 + offset) + 'px';
             }
 
-            // FIX: Added 'modules/' prefix assuming folder structure
             win.innerHTML = `
                 <div class="window-header">
                     <span class="window-title">${mod.name}</span>
@@ -641,7 +738,7 @@
             const handle = document.getElementById('dock-handle');
             
             const savedPos = localStorage.getItem('lyrn-dock-xy');
-            if (savedPos) {
+            if (savedPos && !appSettings.dockFixed) {
                 try {
                     const { left, top } = JSON.parse(savedPos);
                     const maxL = window.innerWidth - 60;
@@ -656,6 +753,8 @@
             let startX, startY, initL, initT;
 
             const startDrag = (e) => {
+                if(appSettings.dockFixed) return; // Disable drag in fixed mode
+                
                 isDragging = true; hasMoved = false;
                 dock.classList.add('is-dragging');
                 document.body.classList.add('no-select');
@@ -680,7 +779,7 @@
                 e.preventDefault();
                 const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
                 const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-                // FIX: Increased threshold to 6px to separate clicks from tiny drags
+                
                 if(Math.abs(clientX - startX) > 6 || Math.abs(clientY - startY) > 6) hasMoved = true;
                 dock.style.left = (initL + (clientX - startX)) + 'px';
                 dock.style.top = (initT + (clientY - startY)) + 'px';
@@ -697,7 +796,7 @@
                 document.removeEventListener('touchend', onEnd);
 
                 if(!hasMoved) {
-                    if(!appSettings.dockPinned) {
+                    if(!appSettings.dockPinned && !appSettings.dockFixed) {
                         dock.classList.toggle('dock-collapsed');
                     }
                 } else {
