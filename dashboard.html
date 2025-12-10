@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.27</title>
+    <title>LYRN Dashboard v0.30</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -18,6 +18,7 @@
             --bg-panel: #0a0a0a;
             --brand-purple: #7c5cff;
             --brand-purple-dim: rgba(124, 92, 255, 0.1);
+            --brand-purple-glow: rgba(124, 92, 255, 0.4);
             --text-head: #ffffff;
             --text-body: #b0b0b0;
             --text-dim: #666666;
@@ -29,7 +30,7 @@
             --dock-blur: 20px;
 
             /* TYPOGRAPHY SCALE */
-            --font-size-base: 12px; /* Default Base Size */
+            --font-size-base: 12px;
         }
 
         body[data-theme="light"] {
@@ -37,6 +38,7 @@
             --bg-panel: #ffffff;
             --brand-purple: #6a4ce0;
             --brand-purple-dim: rgba(106, 76, 224, 0.1);
+            --brand-purple-glow: rgba(106, 76, 224, 0.3);
             --text-head: #111111;
             --text-body: #333333;
             --text-dim: #555555;
@@ -62,7 +64,6 @@
             font-size: var(--font-size-base);
         }
         
-        /* UTILITY: Prevent Selection during Drag */
         body.no-select * {
             user-select: none !important;
             -webkit-user-select: none !important;
@@ -84,6 +85,10 @@
             animation: openWin 0.2s forwards ease-out;
         }
         
+        .lyrn-window.maximized {
+            transition: width 0.2s, height 0.2s, left 0.2s, top 0.2s;
+        }
+
         @keyframes openWin { to { opacity: 1; transform: scale(1); } }
 
         .lyrn-window.active {
@@ -91,12 +96,14 @@
             box-shadow: 0 25px 70px rgba(0,0,0,0.7), 0 0 15px var(--brand-purple-dim);
         }
         
-        /* PINNED STATE: Ensures window is always very high z-index but BELOW dock */
-        .lyrn-window.pinned {
+        .lyrn-window.always-on-top {
             z-index: 9999 !important; 
             border: 1px solid var(--brand-purple);
             box-shadow: 0 0 0 1px var(--brand-purple), 0 25px 70px rgba(0,0,0,0.7);
         }
+
+        .lyrn-window.locked .window-header { cursor: default; }
+        .lyrn-window.locked .resize-handle { display: none; }
 
         .window-header {
             height: 36px; background: var(--bg-panel); border-bottom: 1px solid var(--border-color);
@@ -111,17 +118,19 @@
             text-transform: uppercase; color: var(--text-dim); 
         }
         
-        .win-controls { display: flex; align-items: center; gap: 4px; }
+        .win-controls { display: flex; align-items: center; gap: 6px; }
         
         .win-btn {
             background: transparent; border: none; color: var(--text-dim);
             width: 24px; height: 24px; border-radius: 4px; cursor: pointer;
             display: flex; align-items: center; justify-content: center; 
             font-size: var(--font-size-base);
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .win-btn:hover { background: var(--brand-purple-dim); color: var(--text-head); }
-        .win-btn.is-pinned { color: var(--brand-purple); transform: rotate(45deg); }
+        
+        .win-btn.is-locked { color: var(--brand-purple); background: var(--brand-purple-dim); transform: rotate(45deg); }
+        .win-btn.is-active { background-color: var(--brand-purple); color: #ffffff; box-shadow: 0 2px 8px var(--brand-purple-glow); transform: scale(1.05); }
         .win-btn.close-btn:hover { background: rgba(255, 68, 68, 0.1); color: #ff4444; }
 
         .window-content { flex: 1; position: relative; background: var(--bg-core); overflow: hidden; }
@@ -130,6 +139,7 @@
         .iframe-shield { position: absolute; top:0; left:0; width:100%; height:100%; z-index:10; display:none; }
         .lyrn-window.is-dragging .iframe-shield, 
         .lyrn-window.is-resizing .iframe-shield { display: block; }
+        body.global-interaction .iframe-shield { display: block !important; }
 
         .resize-handle {
             position: absolute; bottom: 0; right: 0;
@@ -141,22 +151,14 @@
            3. FLOATING DOCK & SETTINGS
            ========================================= */
         #floating-dock {
-            position: fixed;
-            /* GLOBAL Z-INDEX: Higher than any window */
-            z-index: 20000; 
+            position: fixed; z-index: 20000; 
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end; 
             width: 50px; height: 30px; 
-            
-            /* UPDATED DEFAULT POSITION: Center Screen */
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%);
-            bottom: auto; right: auto;
-            
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
             transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1), top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
         #floating-dock.is-dragging { transition: none !important; }
 
-        /* DOCK CONTENT (Icons) */
         #dock-content {
             position: absolute; bottom: 100%; margin-bottom: 12px;
             display: flex; gap: 8px; padding: 10px;
@@ -170,23 +172,17 @@
         }
         
         #floating-dock.dock-collapsed:not(.pinned-open) #dock-content {
-            opacity: 0;
-            transform: translateY(10px) scale(0.8);
-            pointer-events: none;
-            visibility: hidden;
+            opacity: 0; transform: translateY(10px) scale(0.8);
+            pointer-events: none; visibility: hidden;
         }
 
-        /* DOCK HANDLE */
         #dock-handle {
             width: 50px; height: 30px;
             background: var(--dock-bg); backdrop-filter: blur(var(--dock-blur));
             border: 1px solid var(--dock-border); border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.4);
             display: flex; align-items: center; justify-content: center;
-            cursor: grab; 
-            
-            /* UPDATED: Z-Index increased to ensure clickability on mobile */
-            z-index: 100;
+            cursor: grab; z-index: 100;
         }
         #dock-handle:active { cursor: grabbing; transform: scale(0.95); }
         .handle-bar {
@@ -203,23 +199,26 @@
             background: var(--brand-purple-dim); color: var(--brand-purple); border-color: var(--brand-purple);
             transform: translateY(-2px);
         }
-        .dock-btn.is-open::before {
+        /* RUNNING INDICATOR (The Dot) */
+        .dock-btn.is-running::before {
             content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
-            width: 4px; height: 4px; border-radius: 50%; background: var(--brand-purple);
-            box-shadow: 0 0 5px var(--brand-purple);
+            width: 4px; height: 4px; border-radius: 50%; background: var(--text-dim);
+            transition: all 0.3s ease;
+        }
+        /* FOCUSED INDICATOR (Purple Dot) */
+        .dock-btn.is-focused::before {
+            background: var(--brand-purple); box-shadow: 0 0 5px var(--brand-purple);
         }
 
-        /* SETTINGS POPUP */
         #settings-popup {
             position: absolute; bottom: 100%; right: 0; 
-            margin-bottom: 20px; width: 220px;
+            margin-bottom: 20px; width: 260px; /* Slightly wider for Task Mgr */
             background: var(--dock-bg); backdrop-filter: blur(var(--dock-blur));
             border: 1px solid var(--dock-border); border-radius: 12px;
             padding: 15px; color: var(--text-body);
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             display: none; flex-direction: column; gap: 15px;
-            pointer-events: auto; cursor: default;
-            z-index: 30;
+            pointer-events: auto; cursor: default; z-index: 30;
         }
         #settings-popup.show { display: flex; animation: popupFade 0.2s ease-out; }
         @keyframes popupFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -230,10 +229,28 @@
             font-size: calc(var(--font-size-base) - 2px);
             color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 4px; 
         }
-        
         .settings-row { display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-base); }
         
-        /* Custom Checkbox/Switch */
+        /* TASK MANAGER STYLES */
+        .task-list { display: flex; flex-direction: column; gap: 2px; max-height: 150px; overflow-y: auto; }
+        .task-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 4px; border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .task-item:hover { background: rgba(255,255,255,0.03); }
+        .task-info { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+        .task-status { width: 6px; height: 6px; border-radius: 50%; background: #333; }
+        .task-status.visible { background: #00ff88; box-shadow: 0 0 4px rgba(0,255,136,0.4); }
+        .task-status.background { background: #ffcc00; }
+        .task-kill-btn {
+            background: transparent; color: var(--text-dim); border: 1px solid var(--border-color);
+            border-radius: 4px; padding: 2px 6px; cursor: pointer; font-size: 10px;
+            font-family: 'JetBrains Mono'; text-transform: uppercase;
+        }
+        .task-kill-btn:hover { background: rgba(255,68,68,0.1); color: #ff4444; border-color: #ff4444; }
+        .empty-tasks { font-size: 11px; color: var(--text-dim); font-style: italic; padding: 5px; text-align: center; }
+
         .toggle-switch { position: relative; width: 32px; height: 18px; display: inline-block; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 18px; }
@@ -241,20 +258,11 @@
         input:checked + .toggle-slider { background-color: var(--brand-purple); }
         input:checked + .toggle-slider:before { transform: translateX(14px); background-color: white; }
 
-        /* Range Slider for Font */
-        input[type=range] {
-            -webkit-appearance: none; width: 100px; background: transparent;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
-            background: var(--brand-purple); margin-top: -5px; cursor: pointer;
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; cursor: pointer; background: var(--border-color); border-radius: 2px;
-        }
+        input[type=range] { -webkit-appearance: none; width: 100px; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%; background: var(--brand-purple); margin-top: -5px; cursor: pointer; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--border-color); border-radius: 2px; }
         input[type=range]:focus { outline: none; }
 
-        /* DESKTOP LAYOUT */
         @media (min-width: 901px) {
             #dock-content { flex-direction: row; left: 50%; transform: translateX(-50%); }
             #floating-dock.dock-collapsed:not(.pinned-open) #dock-content { transform: translateX(-50%) translateY(10px) scale(0.8); }
@@ -275,92 +283,48 @@
             }
             .dock-btn:hover::after { opacity: 1; }
 
-            /* =========================================
-               4. FIXED CENTER DOCK (Desktop Only)
-               ========================================= */
             #floating-dock.fixed-mode {
-                /* Force position to bottom center */
-                top: auto !important;
-                left: 50% !important;
-                bottom: 30px !important;
-                right: auto !important;
-                transform: translateX(-50%) !important;
-                
-                /* Reset container size to fit content */
-                width: auto; height: auto;
+                top: auto !important; left: 50% !important; bottom: 30px !important; right: auto !important;
+                transform: translateX(-50%) !important; width: auto; height: auto;
                 transition: bottom 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             }
-
-            /* Hide the drag handle in fixed mode */
             #floating-dock.fixed-mode #dock-handle { display: none; }
-
-            /* Reposition content to sit naturally */
             #floating-dock.fixed-mode #dock-content {
-                position: relative;
-                bottom: auto; margin-bottom: 0; left: auto;
+                position: relative; bottom: auto; margin-bottom: 0; left: auto;
                 transform: none !important; opacity: 1 !important; visibility: visible;
-                
-                /* Premium Styling Overrides */
-                background: rgba(15, 15, 15, 0.6);
-                backdrop-filter: blur(25px) saturate(180%);
+                background: rgba(15, 15, 15, 0.6); backdrop-filter: blur(25px) saturate(180%);
                 border: 1px solid rgba(255, 255, 255, 0.08);
                 box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
                 padding: 12px 16px; gap: 12px; border-radius: 24px;
             }
-
-            /* Light Mode Specifics for Fixed Dock */
             body[data-theme="light"] #floating-dock.fixed-mode #dock-content {
-                background: rgba(255, 255, 255, 0.65);
-                border: 1px solid rgba(255, 255, 255, 0.4);
+                background: rgba(255, 255, 255, 0.65); border: 1px solid rgba(255, 255, 255, 0.4);
                 box-shadow: 0 20px 50px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
             }
-
-            /* "Magnification" Hover Effect */
-            #floating-dock.fixed-mode .dock-btn {
-                transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                margin: 0 2px;
-            }
+            #floating-dock.fixed-mode .dock-btn { transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); margin: 0 2px; }
             #floating-dock.fixed-mode .dock-btn:hover {
-                transform: translateY(-8px) scale(1.2);
-                background: var(--brand-purple); color: white;
-                box-shadow: 0 10px 20px var(--brand-purple-dim);
-                z-index: 100; margin: 0 8px;
+                transform: translateY(-8px) scale(1.2); background: var(--brand-purple); color: white;
+                box-shadow: 0 10px 20px var(--brand-purple-dim); z-index: 100; margin: 0 8px;
             }
-            
-            /* Reposition Settings Popup in Fixed Mode */
             #floating-dock.fixed-mode #settings-popup {
                 bottom: 100%; right: 50%; transform: translateX(50%);
                 margin-bottom: 20px; transform-origin: bottom center;
             }
-            #floating-dock.fixed-mode #settings-popup.show {
-                animation: popupFixedUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            }
+            #floating-dock.fixed-mode #settings-popup.show { animation: popupFixedUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
             @keyframes popupFixedUp { from { opacity: 0; transform: translateX(50%) translateY(20px) scale(0.9); } to { opacity: 1; transform: translateX(50%) translateY(0) scale(1); } }
         }
 
-        /* MOBILE LAYOUT */
         @media (max-width: 900px) {
             body { overflow-y: auto; height: auto; }
             #desktop-area { position: relative; height: auto; padding: 20px; padding-bottom: 120px; }
             .lyrn-window { position: relative !important; width: 100% !important; height: 500px; margin-bottom: 20px; }
-            
             #dock-content { flex-direction: column-reverse; left: 50%; transform: translateX(-50%); }
             #floating-dock.dock-collapsed:not(.pinned-open) #dock-content { transform: translateX(-50%) translateY(10px) scale(0.8); }
             .dock-btn { width: 40px; height: 40px; font-size: 18px; }
             .dock-btn::after { display: none; }
-            
-            /* Hide Fixed Dock toggle on mobile */
             .desktop-only-setting { display: none !important; }
-
-            .resize-handle {
-                width: 100%; height: 24px; bottom: 0; left: 0;
-                cursor: ns-resize;
-                display: flex; align-items: center; justify-content: center;
-            }
-            .resize-handle::before {
-                content: ''; width: 40px; height: 4px; background: var(--border-color); border-radius: 2px;
-            }
-            
+            .resize-handle { width: 100%; height: 24px; bottom: 0; left: 0; cursor: ns-resize; display: flex; align-items: center; justify-content: center; }
+            .resize-handle::before { content: ''; width: 40px; height: 4px; background: var(--border-color); border-radius: 2px; }
             #settings-popup { right: -20px; bottom: 120%; }
         }
     </style>
@@ -371,6 +335,14 @@
 
     <div id="floating-dock" class="dock-collapsed">
         <div id="settings-popup">
+            
+            <div class="settings-section">
+                <div class="settings-header">Active Processes</div>
+                <div id="task-manager-list" class="task-list">
+                    <div class="empty-tasks">No active processes</div>
+                </div>
+            </div>
+
             <div class="settings-section">
                 <div class="settings-header">Quick Settings</div>
                 <div class="settings-row">
@@ -420,8 +392,6 @@
            CONFIG: DOCK APP MANIFEST
            ========================================================================= */
         const MODULE_REGISTRY = [
-            // IMPORTANT: 'file' path is relative to the dashboard. 
-            // If dashboard is in root, use "modules/Snapshot Builder.html".
             { id: "mod_builder", file: "Snapshot Builder.html", name: "Snapshot Builder", icon: "🛠️" },
             { id: "mod_job_manager", file: "Job Manager.html", name: "Job Automation", icon: "🤖" },
         ];
@@ -429,7 +399,8 @@
 
         /* --- GLOBAL STATE --- */
         let zIndexCounter = 100;
-        let activeWindows = new Set();
+        // activeWindows now tracks open windows (hidden or visible)
+        let activeWindows = new Set(); 
         const GRID_SIZE = 20; 
         
         let appSettings = {
@@ -446,11 +417,9 @@
             initFloatingDock();
             initSettingsUI();
             
-            // Apply loaded settings
             document.body.setAttribute('data-theme', appSettings.theme);
             document.getElementById('setting-theme').checked = (appSettings.theme === 'dark');
             
-            // Apply Font Size
             document.documentElement.style.setProperty('--font-size-base', appSettings.fontSize + 'px');
             document.getElementById('setting-font-size').value = appSettings.fontSize;
             document.getElementById('font-size-display').innerText = appSettings.fontSize + 'px';
@@ -461,7 +430,7 @@
             }
 
             if(appSettings.dockFixed) {
-                toggleFixedDock(true, false); // Don't save on load
+                toggleFixedDock(true, false); 
                 document.getElementById('setting-dock-fixed').checked = true;
             }
         });
@@ -472,7 +441,6 @@
                 try {
                     const parsed = JSON.parse(saved);
                     appSettings = { ...appSettings, ...parsed };
-                    // Default font size if missing from old save
                     if(!appSettings.fontSize) appSettings.fontSize = 12;
                 } catch(e) { console.error("Settings parse error", e); }
             }
@@ -482,36 +450,31 @@
             localStorage.setItem('lyrn-settings', JSON.stringify(appSettings));
         }
 
-        // 1. RENDER DOCK & MODULE LIST
         function renderDock() {
             const container = document.getElementById('dock-content');
             const modContainer = document.getElementById('module-list-container');
-            
             container.innerHTML = '';
             modContainer.innerHTML = '';
             
             MODULE_REGISTRY.forEach(mod => {
                 const isActive = appSettings.activeModules.includes(mod.id);
-                
-                // Settings List
                 const row = document.createElement('div');
                 row.className = 'settings-row';
-                row.innerHTML = `
-                    <span>${mod.name}</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleModuleActive('${mod.id}', this.checked)">
-                        <span class="toggle-slider"></span>
-                    </label>
-                `;
+                row.innerHTML = `<span>${mod.name}</span><label class="toggle-switch"><input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleModuleActive('${mod.id}', this.checked)"><span class="toggle-slider"></span></label>`;
                 modContainer.appendChild(row);
 
-                // Dock Button
                 if(isActive) {
                     const btn = document.createElement('button');
                     btn.className = 'dock-btn';
                     btn.id = 'btn_' + mod.id; 
                     btn.title = mod.name;
                     btn.innerHTML = mod.icon;
+                    
+                    // Update initial state indicators if window exists from before (unlikely on reload but good for safety)
+                    if(document.getElementById('win_' + mod.id)) {
+                        btn.classList.add('is-running');
+                    }
+
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         toggleWindow(mod);
@@ -523,14 +486,12 @@
                 }
             });
             
-            // Separator
             const sep = document.createElement('div');
             sep.style.cssText = window.innerWidth <= 900 
                 ? "height:1px; width:20px; background:var(--border-color); opacity:0.5; margin:4px auto;"
                 : "width:1px; height:20px; background:var(--border-color); opacity:0.5; margin:0 4px;";
             container.appendChild(sep);
 
-            // Settings Button
             const settingsBtn = document.createElement('button');
             settingsBtn.className = 'dock-btn';
             settingsBtn.innerHTML = '⚙️';
@@ -538,8 +499,8 @@
             settingsBtn.id = 'btn_settings';
             settingsBtn.onclick = (e) => {
                 e.stopPropagation();
-                const popup = document.getElementById('settings-popup');
-                popup.classList.toggle('show');
+                renderTaskManager(); // Refresh task list on open
+                document.getElementById('settings-popup').classList.toggle('show');
             };
             container.appendChild(settingsBtn);
         }
@@ -550,8 +511,7 @@
             } else {
                 appSettings.activeModules = appSettings.activeModules.filter(id => id !== modId);
             }
-            saveSettings();
-            renderDock(); 
+            saveSettings(); renderDock(); 
         }
 
         function toggleTheme(isDark) {
@@ -559,7 +519,6 @@
             document.body.setAttribute('data-theme', theme);
             appSettings.theme = theme;
             saveSettings();
-            
             document.querySelectorAll('iframe').forEach(frame => {
                 frame.contentWindow.postMessage({ type: 'THEME_CHANGE', theme: theme }, '*');
             });
@@ -571,7 +530,6 @@
             document.getElementById('font-size-display').innerText = size + 'px';
             document.documentElement.style.setProperty('--font-size-base', size + 'px');
             saveSettings();
-
             document.querySelectorAll('iframe').forEach(frame => {
                 frame.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: size }, '*');
             });
@@ -580,8 +538,7 @@
         function toggleDockPin(pinned) {
             appSettings.dockPinned = pinned;
             const dock = document.getElementById('floating-dock');
-            if(pinned) dock.classList.add('pinned-open');
-            else dock.classList.remove('pinned-open');
+            if(pinned) dock.classList.add('pinned-open'); else dock.classList.remove('pinned-open');
             saveSettings();
         }
 
@@ -589,34 +546,19 @@
             appSettings.dockFixed = isFixed;
             const dock = document.getElementById('floating-dock');
             const pinRow = document.getElementById('row-dock-pin');
-            
             if (isFixed) {
                 dock.classList.add('fixed-mode');
-                // Disable Pin toggle visually as Fixed mode implies pinned
-                if(pinRow) {
-                    pinRow.style.opacity = '0.3';
-                    pinRow.style.pointerEvents = 'none';
-                }
+                if(pinRow) { pinRow.style.opacity = '0.3'; pinRow.style.pointerEvents = 'none'; }
             } else {
                 dock.classList.remove('fixed-mode');
-                // Restore Floating Position
                 const savedPos = localStorage.getItem('lyrn-dock-xy');
                 if (savedPos) {
                     const { left, top } = JSON.parse(savedPos);
-                    dock.style.left = left + 'px';
-                    dock.style.top = top + 'px';
-                    dock.style.transform = 'none';
+                    dock.style.left = left + 'px'; dock.style.top = top + 'px'; dock.style.transform = 'none';
                 } else {
-                    // Fallback to center if no saved pos
-                    dock.style.top = '50%';
-                    dock.style.left = '50%';
-                    dock.style.transform = 'translate(-50%, -50%)';
+                    dock.style.top = '50%'; dock.style.left = '50%'; dock.style.transform = 'translate(-50%, -50%)';
                 }
-                // Enable Pin toggle
-                if(pinRow) {
-                    pinRow.style.opacity = '1';
-                    pinRow.style.pointerEvents = 'auto';
-                }
+                if(pinRow) { pinRow.style.opacity = '1'; pinRow.style.pointerEvents = 'auto'; }
             }
             if (save) saveSettings();
         }
@@ -631,50 +573,113 @@
             });
         }
 
-        // 2. WINDOW SYSTEM
+        /* =========================================
+           TASK MANAGER LOGIC
+           ========================================= */
+        function renderTaskManager() {
+            const list = document.getElementById('task-manager-list');
+            list.innerHTML = '';
+            
+            if(activeWindows.size === 0) {
+                list.innerHTML = '<div class="empty-tasks">No active processes</div>';
+                return;
+            }
+
+            activeWindows.forEach(modId => {
+                const mod = MODULE_REGISTRY.find(m => m.id === modId);
+                const win = document.getElementById('win_' + modId);
+                if(!mod || !win) return;
+
+                const isVisible = win.style.display !== 'none';
+                const item = document.createElement('div');
+                item.className = 'task-item';
+                item.innerHTML = `
+                    <div class="task-info">
+                        <div class="task-status ${isVisible ? 'visible' : 'background'}" title="${isVisible ? 'Visible' : 'Background'}"></div>
+                        <span>${mod.name}</span>
+                    </div>
+                    <button class="task-kill-btn" onclick="killProcess('${modId}')">Kill</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        window.killProcess = (modId) => {
+            closeWindow(modId);
+        };
+
+
+        /* =========================================
+           WINDOW SYSTEM UPDATES
+           ========================================= */
+        
+        // Modified toggle logic:
+        // 1. If not created -> Create
+        // 2. If created and Hidden -> Show & Focus
+        // 3. If created and Visible -> 
+        //      If Focused (Top zIndex) -> Hide (Minimize)
+        //      If Background -> Bring to front
         function toggleWindow(mod) {
             const winId = 'win_' + mod.id;
             const existingWin = document.getElementById(winId);
-            const btn = document.getElementById('btn_' + mod.id);
 
-            if (existingWin) {
-                existingWin.style.opacity = '0';
-                existingWin.style.transform = 'scale(0.9)';
-                setTimeout(() => existingWin.remove(), 200);
-                activeWindows.delete(mod.id);
-                if(btn) btn.classList.remove('is-open');
-            } else {
+            if (!existingWin) {
                 createWindow(mod, winId);
-                activeWindows.add(mod.id);
-                if(btn) btn.classList.add('is-open');
+            } else {
+                if (existingWin.style.display === 'none') {
+                    // Restore
+                    existingWin.style.display = 'flex';
+                    bringToFront(existingWin);
+                } else {
+                    // Check if it's the top-most window
+                    const currentZ = parseInt(existingWin.style.zIndex || 0);
+                    if (currentZ === zIndexCounter) {
+                        // Minimize
+                        existingWin.style.display = 'none';
+                        updateDockIndicators(); // Update focus states
+                    } else {
+                        // Focus
+                        bringToFront(existingWin);
+                    }
+                }
             }
+            renderTaskManager();
+        }
+
+        function bringToFront(win) {
+            if(!win.classList.contains('always-on-top')) {
+                win.style.zIndex = ++zIndexCounter;
+            }
+            updateDockIndicators();
         }
 
         function createWindow(mod, id) {
             const isMobile = window.innerWidth <= 900;
             const area = document.getElementById('desktop-area');
-            
             const win = document.createElement('div');
             win.className = 'lyrn-window active';
             win.id = id;
             win.style.zIndex = ++zIndexCounter;
             
-            win.onmousedown = () => {
-                if(!win.classList.contains('pinned')) win.style.zIndex = ++zIndexCounter;
+            // Bring to front on click
+            win.onmousedown = () => { 
+                if(!win.classList.contains('always-on-top')) win.style.zIndex = ++zIndexCounter; 
+                updateDockIndicators();
             };
 
             if(!isMobile) {
                 const offset = (activeWindows.size * 30) % 150;
-                win.style.left = (100 + offset) + 'px';
-                win.style.top = (50 + offset) + 'px';
+                win.style.left = (100 + offset) + 'px'; win.style.top = (50 + offset) + 'px';
             }
 
             win.innerHTML = `
                 <div class="window-header">
                     <span class="window-title">${mod.name}</span>
                     <div class="win-controls">
-                         <button class="win-btn" title="Pin Window" onclick="togglePinWindow(this)">📌</button>
-                         <button class="win-btn close-btn" title="Close" onclick="toggleWindow({id: '${mod.id}'})">✕</button>
+                         <button class="win-btn" title="Pin Position" onclick="toggleLock(this)">📌</button>
+                         <button class="win-btn" title="Always On Top" onclick="toggleAlwaysOnTop(this)">⇧</button>
+                         <button class="win-btn" title="Maximize" onclick="toggleMaximize(this)">☐</button>
+                         <button class="win-btn close-btn" title="Terminate Process" onclick="killProcess('${mod.id}')">✕</button>
                     </div>
                 </div>
                 <div class="window-content">
@@ -683,9 +688,58 @@
                 </div>
                 <div class="resize-handle"></div>
             `;
-            
             area.appendChild(win);
+            
+            activeWindows.add(mod.id);
             setupWindowInteractions(win, isMobile);
+            updateDockIndicators();
+            renderTaskManager();
+        }
+
+        function closeWindow(modId) {
+            const win = document.getElementById('win_' + modId);
+            if(win) {
+                win.style.opacity = '0'; 
+                win.style.transform = 'scale(0.9)';
+                setTimeout(() => win.remove(), 200);
+                activeWindows.delete(modId);
+                updateDockIndicators();
+                renderTaskManager();
+            }
+        }
+
+        function updateDockIndicators() {
+            // Reset all
+            document.querySelectorAll('.dock-btn').forEach(btn => {
+                btn.classList.remove('is-running');
+                btn.classList.remove('is-focused');
+            });
+
+            // Set running status
+            activeWindows.forEach(modId => {
+                const btn = document.getElementById('btn_' + modId);
+                if(btn) btn.classList.add('is-running');
+            });
+
+            // Find top-most visible window for focus
+            let topZ = 0;
+            let topWinId = null;
+            
+            activeWindows.forEach(modId => {
+                const win = document.getElementById('win_' + modId);
+                if(win && win.style.display !== 'none') {
+                    const z = parseInt(win.style.zIndex || 0);
+                    if(z > topZ) {
+                        topZ = z;
+                        topWinId = modId;
+                    }
+                }
+            });
+
+            if(topWinId) {
+                const btn = document.getElementById('btn_' + topWinId);
+                if(btn) btn.classList.add('is-focused');
+            }
         }
 
         window.syncFrameTheme = (iframe) => {
@@ -693,28 +747,48 @@
             iframe.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: appSettings.fontSize }, '*');
         };
 
-        window.togglePinWindow = (btn) => {
+        window.toggleAlwaysOnTop = (btn) => {
             const win = btn.closest('.lyrn-window');
-            if(win.classList.contains('pinned')) {
-                win.classList.remove('pinned');
-                btn.classList.remove('is-pinned');
+            if(win.classList.contains('always-on-top')) {
+                win.classList.remove('always-on-top'); btn.classList.remove('is-active');
                 win.style.zIndex = ++zIndexCounter; 
             } else {
-                win.classList.add('pinned');
-                btn.classList.add('is-pinned');
+                win.classList.add('always-on-top'); btn.classList.add('is-active');
             }
         };
 
-        // 3. DRAG & RESIZE LOGIC
+        window.toggleLock = (btn) => {
+            const win = btn.closest('.lyrn-window');
+            if(win.classList.contains('locked')) {
+                win.classList.remove('locked'); btn.classList.remove('is-locked');
+            } else {
+                win.classList.add('locked'); btn.classList.add('is-locked');
+            }
+        };
+
+        window.toggleMaximize = (btn) => {
+            const win = btn.closest('.lyrn-window');
+            if (win.classList.contains('maximized')) {
+                win.classList.remove('maximized'); btn.innerText = '☐';
+                win.style.left = win.dataset.prevLeft; win.style.top = win.dataset.prevTop;
+                win.style.width = win.dataset.prevWidth; win.style.height = win.dataset.prevHeight;
+            } else {
+                win.dataset.prevLeft = win.style.left; win.dataset.prevTop = win.style.top;
+                win.dataset.prevWidth = win.style.width; win.dataset.prevHeight = win.style.height;
+                win.classList.add('maximized'); btn.innerText = '❐';
+                win.style.left = '0px'; win.style.top = '0px'; win.style.width = '100%'; win.style.height = '100%';
+            }
+        };
+
         function setupWindowInteractions(win, isMobile) {
             if(!isMobile) {
                 const header = win.querySelector('.window-header');
                 header.onmousedown = (e) => {
                     if(e.target.closest('button')) return; 
-                    
-                    if(!win.classList.contains('pinned')) win.style.zIndex = ++zIndexCounter;
-                    win.classList.add('is-dragging');
-                    document.body.classList.add('no-select');
+                    if(win.classList.contains('locked') || win.classList.contains('maximized')) return;
+                    if(!win.classList.contains('always-on-top')) win.style.zIndex = ++zIndexCounter;
+                    updateDockIndicators();
+                    win.classList.add('is-dragging'); document.body.classList.add('no-select'); document.body.classList.add('global-interaction');
                     
                     const sx = e.clientX, sy = e.clientY;
                     const il = win.offsetLeft, it = win.offsetTop;
@@ -722,171 +796,111 @@
                     const screenW = window.innerWidth, screenH = window.innerHeight;
 
                     const moveHandler = (me) => {
-                        let rawLeft = il + (me.clientX - sx);
-                        let rawTop = it + (me.clientY - sy);
-                        let snapLeft = Math.round(rawLeft / GRID_SIZE) * GRID_SIZE;
-                        let snapTop = Math.round(rawTop / GRID_SIZE) * GRID_SIZE;
-                        const maxLeft = screenW - winW;
-                        const maxTop = screenH - winH;
-                        
+                        let rawLeft = il + (me.clientX - sx); let rawTop = it + (me.clientY - sy);
+                        let snapLeft = Math.round(rawLeft / GRID_SIZE) * GRID_SIZE; let snapTop = Math.round(rawTop / GRID_SIZE) * GRID_SIZE;
+                        const maxLeft = screenW - winW; const maxTop = screenH - winH;
                         win.style.left = Math.max(0, Math.min(snapLeft, maxLeft)) + 'px';
                         win.style.top = Math.max(0, Math.min(snapTop, maxTop)) + 'px';
                     };
 
                     const upHandler = () => {
-                        win.classList.remove('is-dragging');
-                        document.body.classList.remove('no-select');
-                        document.removeEventListener('mousemove', moveHandler);
-                        document.removeEventListener('mouseup', upHandler);
+                        win.classList.remove('is-dragging'); document.body.classList.remove('no-select'); document.body.classList.remove('global-interaction');
+                        document.removeEventListener('mousemove', moveHandler); document.removeEventListener('mouseup', upHandler);
                     };
-                    document.addEventListener('mousemove', moveHandler);
-                    document.addEventListener('mouseup', upHandler);
+                    document.addEventListener('mousemove', moveHandler); document.addEventListener('mouseup', upHandler);
                 };
             }
 
             const resizer = win.querySelector('.resize-handle');
             resizer.onmousedown = (e) => {
                 e.stopPropagation();
-                if(!win.classList.contains('pinned')) win.style.zIndex = ++zIndexCounter;
-                win.classList.add('is-resizing');
-                document.body.classList.add('no-select');
+                if(win.classList.contains('locked') || win.classList.contains('maximized')) return;
+                if(!win.classList.contains('always-on-top')) win.style.zIndex = ++zIndexCounter;
+                updateDockIndicators();
+                win.classList.add('is-resizing'); document.body.classList.add('no-select'); document.body.classList.add('global-interaction');
 
                 const startX = e.clientX, startY = e.clientY;
                 const startW = win.offsetWidth, startH = win.offsetHeight;
 
                 const resizeMove = (me) => {
-                    const dx = me.clientX - startX;
-                    const dy = me.clientY - startY;
+                    const dx = me.clientX - startX; const dy = me.clientY - startY;
                     let newH = startH + dy;
                     if (!isMobile) newH = Math.round(newH / GRID_SIZE) * GRID_SIZE;
                     if (newH > 100) win.style.height = newH + 'px';
-
                     if (!isMobile) {
-                        let newW = startW + dx;
-                        newW = Math.round(newW / GRID_SIZE) * GRID_SIZE;
+                        let newW = startW + dx; newW = Math.round(newW / GRID_SIZE) * GRID_SIZE;
                         if (newW > 200) win.style.width = newW + 'px';
                     }
                 };
 
                 const resizeUp = () => {
-                    win.classList.remove('is-resizing');
-                    document.body.classList.remove('no-select');
-                    document.removeEventListener('mousemove', resizeMove);
-                    document.removeEventListener('mouseup', resizeUp);
+                    win.classList.remove('is-resizing'); document.body.classList.remove('no-select'); document.body.classList.remove('global-interaction');
+                    document.removeEventListener('mousemove', resizeMove); document.removeEventListener('mouseup', resizeUp);
                 };
-
-                document.addEventListener('mousemove', resizeMove);
-                document.addEventListener('mouseup', resizeUp);
+                document.addEventListener('mousemove', resizeMove); document.addEventListener('mouseup', resizeUp);
             };
             
             resizer.ontouchstart = (e) => {
                 e.stopPropagation();
+                if(win.classList.contains('locked')) return;
                 win.classList.add('is-resizing');
-                const startY = e.touches[0].clientY;
-                const startH = win.offsetHeight;
-
-                const touchMove = (te) => {
-                    const dy = te.touches[0].clientY - startY;
-                    let newH = startH + dy;
-                    if (newH > 100) win.style.height = newH + 'px';
-                };
-                const touchEnd = () => {
-                    win.classList.remove('is-resizing');
-                    document.removeEventListener('touchmove', touchMove);
-                    document.removeEventListener('touchend', touchEnd);
-                };
-                document.addEventListener('touchmove', touchMove, {passive: false});
-                document.addEventListener('touchend', touchEnd);
+                const startY = e.touches[0].clientY; const startH = win.offsetHeight;
+                const touchMove = (te) => { const dy = te.touches[0].clientY - startY; let newH = startH + dy; if (newH > 100) win.style.height = newH + 'px'; };
+                const touchEnd = () => { win.classList.remove('is-resizing'); document.removeEventListener('touchmove', touchMove); document.removeEventListener('touchend', touchEnd); };
+                document.addEventListener('touchmove', touchMove, {passive: false}); document.addEventListener('touchend', touchEnd);
             };
         }
 
-        // 4. FLOATING DOCK LOGIC
         function initFloatingDock() {
             const dock = document.getElementById('floating-dock');
             const handle = document.getElementById('dock-handle');
-            
             const savedPos = localStorage.getItem('lyrn-dock-xy');
             if (savedPos && !appSettings.dockFixed) {
                 try {
                     const { left, top } = JSON.parse(savedPos);
-                    const maxL = window.innerWidth - 60;
-                    const maxT = window.innerHeight - 40;
+                    const maxL = window.innerWidth - 60; const maxT = window.innerHeight - 40;
                     dock.style.bottom = 'auto'; dock.style.right = 'auto';
-                    dock.style.left = Math.min(Math.max(10, left), maxL) + 'px';
-                    dock.style.top = Math.min(Math.max(10, top), maxT) + 'px';
-                    dock.style.transform = 'none'; // remove center transform if manual pos exists
-                } catch(e) {
-                    // Force center on error
-                    dock.style.top = '50%'; dock.style.left = '50%';
-                    dock.style.transform = 'translate(-50%, -50%)';
-                }
+                    dock.style.left = Math.min(Math.max(10, left), maxL) + 'px'; dock.style.top = Math.min(Math.max(10, top), maxT) + 'px';
+                    dock.style.transform = 'none'; 
+                } catch(e) { dock.style.top = '50%'; dock.style.left = '50%'; dock.style.transform = 'translate(-50%, -50%)'; }
             }
 
             let isDragging = false, hasMoved = false;
             let startX, startY, initL, initT;
 
             const startDrag = (e) => {
-                if(appSettings.dockFixed) return; // Disable drag in fixed mode
-                
-                isDragging = true; hasMoved = false;
-                dock.classList.add('is-dragging');
-                document.body.classList.add('no-select');
-
+                if(appSettings.dockFixed) return; 
+                isDragging = true; hasMoved = false; dock.classList.add('is-dragging'); document.body.classList.add('no-select');
                 const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
                 const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
                 startX = clientX; startY = clientY;
-
-                const rect = dock.getBoundingClientRect();
-                initL = rect.left; initT = rect.top;
-                
-                // Clear centered transform on drag start
-                dock.style.transform = 'none';
-                dock.style.bottom = 'auto'; dock.style.right = 'auto';
-                dock.style.left = initL + 'px'; dock.style.top = initT + 'px';
-                
-                document.addEventListener('mousemove', onMove);
-                document.addEventListener('mouseup', onEnd);
-                document.addEventListener('touchmove', onMove, {passive:false});
-                document.addEventListener('touchend', onEnd);
+                const rect = dock.getBoundingClientRect(); initL = rect.left; initT = rect.top;
+                dock.style.transform = 'none'; dock.style.bottom = 'auto'; dock.style.right = 'auto'; dock.style.left = initL + 'px'; dock.style.top = initT + 'px';
+                document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onEnd);
+                document.addEventListener('touchmove', onMove, {passive:false}); document.addEventListener('touchend', onEnd);
             };
 
             const onMove = (e) => {
-                if(!isDragging) return;
-                e.preventDefault();
+                if(!isDragging) return; e.preventDefault();
                 const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
                 const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-                
                 if(Math.abs(clientX - startX) > 6 || Math.abs(clientY - startY) > 6) hasMoved = true;
-                dock.style.left = (initL + (clientX - startX)) + 'px';
-                dock.style.top = (initT + (clientY - startY)) + 'px';
+                dock.style.left = (initL + (clientX - startX)) + 'px'; dock.style.top = (initT + (clientY - startY)) + 'px';
             };
 
             const onEnd = () => {
-                isDragging = false;
-                dock.classList.remove('is-dragging');
-                document.body.classList.remove('no-select');
-                
-                document.removeEventListener('mousemove', onMove);
-                document.removeEventListener('mouseup', onEnd);
-                document.removeEventListener('touchmove', onMove);
-                document.removeEventListener('touchend', onEnd);
-
-                if(!hasMoved) {
-                    if(!appSettings.dockPinned && !appSettings.dockFixed) {
-                        dock.classList.toggle('dock-collapsed');
-                    }
-                } else {
+                isDragging = false; dock.classList.remove('is-dragging'); document.body.classList.remove('no-select');
+                document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onEnd);
+                document.removeEventListener('touchmove', onMove); document.removeEventListener('touchend', onEnd);
+                if(!hasMoved) { if(!appSettings.dockPinned && !appSettings.dockFixed) dock.classList.toggle('dock-collapsed'); } 
+                else {
                     const rect = dock.getBoundingClientRect();
-                    const snapL = Math.round(rect.left / GRID_SIZE) * GRID_SIZE;
-                    const snapT = Math.round(rect.top / GRID_SIZE) * GRID_SIZE;
-                    dock.style.left = snapL + 'px';
-                    dock.style.top = snapT + 'px';
+                    const snapL = Math.round(rect.left / GRID_SIZE) * GRID_SIZE; const snapT = Math.round(rect.top / GRID_SIZE) * GRID_SIZE;
+                    dock.style.left = snapL + 'px'; dock.style.top = snapT + 'px';
                     localStorage.setItem('lyrn-dock-xy', JSON.stringify({left: snapL, top: snapT}));
                 }
             };
-
-            handle.addEventListener('mousedown', startDrag);
-            handle.addEventListener('touchstart', startDrag, {passive: false});
+            handle.addEventListener('mousedown', startDrag); handle.addEventListener('touchstart', startDrag, {passive: false});
         }
     </script>
 </body>
