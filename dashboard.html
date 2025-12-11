@@ -378,9 +378,9 @@
         input[type=range]:focus { outline: none; }
 
         /* =========================================
-           MEDIA QUERIES - TABLET & DESKTOP (> 600px)
+           MEDIA QUERIES - TABLET & DESKTOP (> 500px)
            ========================================= */
-        @media (min-width: 601px) {
+        @media (min-width: 501px) {
             #dock-content { flex-direction: row; left: 50%; transform: translateX(-50%); }
             #floating-dock.dock-collapsed:not(.pinned-open) #dock-content { transform: translateX(-50%) translateY(10px) scale(0.8); }
             .dock-btn { width: 44px; height: 44px; font-size: 20px; }
@@ -433,9 +433,9 @@
         }
 
         /* =========================================
-           MEDIA QUERIES - PHONE ONLY (<= 600px)
+           MEDIA QUERIES - PHONE ONLY (<= 500px)
            ========================================= */
-        @media (max-width: 600px) {
+        @media (max-width: 500px) {
             body { overflow-y: auto; height: auto; }
             
             /* -- MODIFIED: ENABLE SYSTEM BAR ON MOBILE -- */
@@ -632,7 +632,7 @@
         function initSystemMonitor() {
             const elBat = document.getElementById('sys-battery');
             const elCpu = document.getElementById('sys-cpu');
-            const isMobile = window.innerWidth <= 600;
+            const isMobile = window.innerWidth <= 500;
 
             // 1. CPU MONITOR (Slot 2)
             const cores = navigator.hardwareConcurrency || '?';
@@ -711,7 +711,7 @@
                 const datePart = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
                 const timePart = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 // Check screen width for concise mode on mobile
-                if (window.innerWidth <= 600) {
+                if (window.innerWidth <= 500) {
                      el.innerText = timePart; // Only time on small screens
                 } else {
                      el.innerText = `${datePart}   ${timePart}`;
@@ -807,7 +807,7 @@
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         toggleWindow(mod);
-                        if(window.innerWidth <= 600 && !appSettings.dockPinned) {
+                        if(window.innerWidth <= 500 && !appSettings.dockPinned) {
                             document.getElementById('floating-dock').classList.add('dock-collapsed');
                         }
                     };
@@ -816,7 +816,7 @@
             });
             
             const sep = document.createElement('div');
-            sep.style.cssText = window.innerWidth <= 600 
+            sep.style.cssText = window.innerWidth <= 500 
                 ? "height:1px; width:20px; background:var(--border-color); opacity:0.5; margin:4px auto;"
                 : "width:1px; height:20px; background:var(--border-color); opacity:0.5; margin:0 4px;";
             container.appendChild(sep);
@@ -971,7 +971,7 @@
         }
 
         function createWindow(mod, id) {
-            const isPhone = window.innerWidth <= 600;
+            const isPhone = window.innerWidth <= 500;
             const area = document.getElementById('desktop-area');
             const win = document.createElement('div');
             win.className = 'lyrn-window active';
