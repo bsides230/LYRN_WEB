@@ -15,19 +15,37 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Dashboard Overlay Logic ---
 function initDashboardOverlay() {
     const overlay = document.getElementById('dashboard-overlay');
+    const frame = document.getElementById('dashboard-frame');
     
-    // Listen for clicks on specific IDs to open the dashboard
-    const triggers = ['eof-trigger', 'dock-dashboard-btn'];
-    
-    triggers.forEach(id => {
+    // Function to handle opening different dashboard versions
+    function openDash(url) {
+        if(frame.src.indexOf(url) === -1) { 
+            frame.src = url;
+        }
+        overlay.classList.add('visible');
+        document.body.classList.add('dashboard-open'); // LOCK SCROLL
+    }
+
+    // 1. Production Dashboard Triggers (Top Nav + Dock)
+    const prodTriggers = ['nav-dashboard-btn', 'dock-dashboard-btn'];
+    prodTriggers.forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
-            btn.addEventListener('click', () => {
-                overlay.classList.add('visible');
-                document.body.classList.add('dashboard-open'); // LOCK SCROLL
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openDash('dashboard.html');
             });
         }
     });
+
+    // 2. Dev Dashboard Trigger (Footer EOF)
+    const devBtn = document.getElementById('eof-trigger');
+    if (devBtn) {
+        devBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openDash('dev_db.html');
+        });
+    }
 
     // Listen for "CLOSE_DASHBOARD" message from iframe
     window.addEventListener('message', (event) => {
