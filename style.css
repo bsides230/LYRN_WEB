@@ -825,7 +825,8 @@ footer {
 /* =========================================
    MOBILE RESPONSIVENESS FIXES
    ========================================= */
-@media (max-width: 768px) {
+/* CHANGED FROM 768px TO 1150px TO FIX TABLET CROWDING */
+@media (max-width: 1150px) {
 
     .page-container {
         padding: 20px; 

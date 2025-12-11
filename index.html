@@ -75,6 +75,7 @@
          </div>
     
          <div class="nav-actions">
+            <a href="https://github.com/bsides230/LYRN" target="_blank" class="theme-button">v5 PROGRESS</a>
             <a href="#snapshot-demo" class="theme-button">SNAPSHOT BUILDER</a>
             <button id="themeButton" class="theme-button">LIGHT MODE</button>
          </div>
@@ -901,7 +902,9 @@
   <div id="floating-dock" class="dock-collapsed">
       
       <div id="dock-content">
+          <button id="dock-dashboard-btn" class="dock-btn" title="Open Dashboard">💻</button>
           <button id="floating-builder-btn" class="dock-btn" title="Snapshot Builder" onclick="document.getElementById('snapshot-demo').scrollIntoView({behavior: 'smooth'})">🛠️</button>
+          <button class="dock-btn" title="GitHub Repo" onclick="window.open('https://github.com/bsides230/LYRN', '_blank')">🐙</button>
           <button id="floating-menu-btn" class="dock-btn" title="Navigation">☰</button>
           <button id="back-to-top" class="dock-btn" title="Back to Top">↑</button>
       </div>
@@ -944,29 +947,5 @@
 
   <script src="script.js"></script>
 
-  <script>
-      // LOGIC FOR DASHBOARD OVERLAY & SCROLL LOCK
-      document.addEventListener('DOMContentLoaded', () => {
-          const trigger = document.getElementById('eof-trigger');
-          const overlay = document.getElementById('dashboard-overlay');
-          const frame = document.getElementById('dashboard-frame');
-
-          // 1. Open on "EOF" Click
-          trigger.addEventListener('click', () => {
-              overlay.classList.add('visible');
-              document.body.classList.add('dashboard-open'); // LOCK SCROLL
-              // Optional: reset frame source to reload dashboard fresh
-              // frame.src = frame.src; 
-          });
-
-          // 2. Listen for "CLOSE_DASHBOARD" message from iframe
-          window.addEventListener('message', (event) => {
-              if (event.data && event.data.type === 'CLOSE_DASHBOARD') {
-                  overlay.classList.remove('visible');
-                  document.body.classList.remove('dashboard-open'); // UNLOCK SCROLL
-              }
-          });
-      });
-  </script>
 </body>
 </html>

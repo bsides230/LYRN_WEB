@@ -9,7 +9,34 @@ document.addEventListener('DOMContentLoaded', () => {
   initBackToTop(); 
   initFloatingMenu();
   initFloatingToggle(); 
+  initDashboardOverlay();
 });
+
+// --- Dashboard Overlay Logic ---
+function initDashboardOverlay() {
+    const overlay = document.getElementById('dashboard-overlay');
+    
+    // Listen for clicks on specific IDs to open the dashboard
+    const triggers = ['eof-trigger', 'dock-dashboard-btn'];
+    
+    triggers.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.addEventListener('click', () => {
+                overlay.classList.add('visible');
+                document.body.classList.add('dashboard-open'); // LOCK SCROLL
+            });
+        }
+    });
+
+    // Listen for "CLOSE_DASHBOARD" message from iframe
+    window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'CLOSE_DASHBOARD') {
+            overlay.classList.remove('visible');
+            document.body.classList.remove('dashboard-open'); // UNLOCK SCROLL
+        }
+    });
+}
 
 // --- Floating Dock Logic (Drag, Snap to Grid, Persist) ---
 function initFloatingToggle() {
