@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.43</title>
+    <title>LYRN Dashboard v0.46</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -31,6 +31,9 @@
 
             /* TYPOGRAPHY SCALE */
             --font-size-base: 12px;
+            
+            /* HANDLE WIDTH DYNAMIC VARIABLE */
+            --dock-handle-width: 50px; /* Default for mobile */
         }
 
         body[data-theme="light"] {
@@ -119,6 +122,8 @@
             display: none; /* Toggled via JS */
             align-items: center; justify-content: center;
             animation: fadeIn 0.3s ease-out;
+            opacity: 1; /* Default opacity */
+            transition: opacity 0.3s ease; /* Smooth transition for JS manipulation */
         }
 
         .welcome-modal {
@@ -257,7 +262,7 @@
         #floating-dock {
             position: fixed; z-index: 20000; 
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end; 
-            width: 50px; height: 30px; 
+            width: var(--dock-handle-width); height: 30px; 
             top: 50%; left: 50%; transform: translate(-50%, -50%);
             transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1), top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -293,7 +298,7 @@
         }
 
         #dock-handle {
-            width: 50px; height: 30px;
+            width: var(--dock-handle-width); height: 30px;
             background: var(--dock-bg); backdrop-filter: blur(var(--dock-blur));
             border: 1px solid var(--dock-border); border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.4);
@@ -302,13 +307,15 @@
             z-index: 200; /* Ensure handle is ON TOP of content stack for touch */
             position: relative; 
             touch-action: none; /* FIX: Prevents scroll/zoom interference on mobile */
+            transition: width 0.3s ease;
         }
         #dock-handle:active { cursor: grabbing; transform: scale(0.95); }
         
         .handle-bar {
-            width: 20px; height: 4px; background-color: #ffffff;
+            width: 40%; height: 4px; background-color: #ffffff;
             border-radius: 2px; box-shadow: 0 0 6px var(--brand-purple), 0 0 12px var(--brand-purple);
             pointer-events: none; /* FIX: Ensures clicks pass through to the handle div */
+            transition: width 0.3s ease;
         }
 
         /* --- SETTINGS POPUP --- */
@@ -345,6 +352,22 @@
         }
         .settings-row { display: flex; justify-content: space-between; align-items: center; font-size: var(--font-size-base); }
         
+        .btn-full-width {
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
+            color: var(--text-dim); padding: 6px; border-radius: 4px; cursor: pointer;
+            font-size: 11px; margin-top: 4px; transition: all 0.2s;
+        }
+        .btn-full-width:hover { background: var(--brand-purple-dim); color: var(--brand-purple); border-color: var(--brand-purple); }
+
+        /* NUMBER INPUT STYLES */
+        .setting-num-input {
+            width: 70px; background: rgba(255,255,255,0.05); 
+            border: 1px solid var(--border-color); color: var(--text-head);
+            font-family: 'JetBrains Mono'; font-size: 12px;
+            padding: 4px 6px; border-radius: 4px;
+        }
+        .setting-num-input:focus { outline: none; border-color: var(--brand-purple); }
+
         /* TASK MANAGER STYLES */
         .task-list { display: flex; flex-direction: column; gap: 2px; max-height: 150px; overflow-y: auto; }
         .task-item {
@@ -372,7 +395,7 @@
         input:checked + .toggle-slider { background-color: var(--brand-purple); }
         input:checked + .toggle-slider:before { transform: translateX(14px); background-color: white; }
 
-        input[type=range] { -webkit-appearance: none; width: 100px; background: transparent; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%; background: var(--brand-purple); margin-top: -5px; cursor: pointer; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--border-color); border-radius: 2px; }
         input[type=range]:focus { outline: none; }
@@ -381,6 +404,10 @@
            MEDIA QUERIES - TABLET & DESKTOP (> 500px)
            ========================================= */
         @media (min-width: 501px) {
+            :root {
+                --dock-handle-width: 160px; /* Wider default on desktop */
+            }
+
             #dock-content { flex-direction: row; left: 50%; transform: translateX(-50%); }
             #floating-dock.dock-collapsed:not(.pinned-open) #dock-content { transform: translateX(-50%) translateY(10px) scale(0.8); }
             .dock-btn { width: 44px; height: 44px; font-size: 20px; }
@@ -522,6 +549,15 @@
                     </div>
                     <input type="range" id="setting-font-size" min="10" max="18" step="1" value="12" oninput="toggleFontSize(this.value)">
                 </div>
+                
+                <div class="settings-row">
+                    <span>Handle Width</span>
+                    <input type="number" id="setting-handle-width" class="setting-num-input" min="50" max="400" step="10" value="160" oninput="toggleHandleWidth(this.value)">
+                </div>
+
+                <div class="settings-row">
+                     <button class="btn-full-width" onclick="openWelcome()">Show Welcome Guide</button>
+                </div>
             </div>
             <div class="settings-section">
                 <div class="settings-header">Modules</div>
@@ -545,7 +581,7 @@
             </h2>
             
             <p class="welcome-text">
-                Welcome to the v0.43 dashboard environment. 
+                Welcome to the v0.46 dashboard environment. 
                 Use the floating dock to access your modules.
             </p>
 
@@ -553,7 +589,8 @@
                 <div class="welcome-icon">⚓</div>
                 <div>
                     <strong>Floating Dock</strong><br>
-                    Click the handle to open/close. Drag the handle to move the dock anywhere on screen.
+                    Click the handle to open/close. Drag to move.<br>
+                    <span style="opacity:0.8; font-size:11px;">If lost, press the anchor icon in the top bar to reset.</span>
                 </div>
             </div>
             
@@ -582,6 +619,7 @@
         const MODULE_REGISTRY = [
             { id: "mod_builder", file: "Snapshot Builder.html", name: "Snapshot Builder", icon: "🛠️" },
             { id: "mod_job_manager", file: "Job Manager.html", name: "Job Automation", icon: "🤖" },
+            { id: "mod_asset_shop", file: "Asset Shop.html", name: "Asset Shop", icon: "🛍️" },
         ];
         /* ========================================================================= */
 
@@ -591,20 +629,28 @@
         const GRID_SIZE = 20; 
         
         let appSettings = {
-            activeModules: ['mod_builder', 'mod_job_manager'],
+            activeModules: ['mod_builder', 'mod_job_manager', 'mod_asset_shop'],
             dockPinned: false,
             dockFixed: false,
             theme: 'dark',
-            fontSize: 12
+            fontSize: 12,
+            handleWidth: 160
         };
 
         document.addEventListener('DOMContentLoaded', () => {
             loadSettings();
+            
+            // Initial Width Check based on Device
+            if (window.innerWidth <= 500) {
+                 // On mobile, default to 50 if not set, or user pref
+                 if(!localStorage.getItem('lyrn-settings')) appSettings.handleWidth = 50; 
+            }
+            
             renderDock();
             initFloatingDock();
             initSettingsUI();
             startClock();
-            initSystemMonitor(); // <--- NEW: Battery + CPU only
+            initSystemMonitor(); 
             checkIfIframe();
             initWelcome();
             
@@ -614,6 +660,10 @@
             document.documentElement.style.setProperty('--font-size-base', appSettings.fontSize + 'px');
             document.getElementById('setting-font-size').value = appSettings.fontSize;
             document.getElementById('font-size-display').innerText = appSettings.fontSize + 'px';
+
+            // Apply Handle Width
+            document.documentElement.style.setProperty('--dock-handle-width', appSettings.handleWidth + 'px');
+            document.getElementById('setting-handle-width').value = appSettings.handleWidth;
 
             if(appSettings.dockPinned) {
                 document.getElementById('floating-dock').classList.add('pinned-open');
@@ -685,16 +735,24 @@
            WELCOME MODAL LOGIC
            ========================================= */
         function initWelcome() {
-            const hasSeen = localStorage.getItem('lyrn-welcome-v043');
+            const hasSeen = localStorage.getItem('lyrn-welcome-v045');
             if (!hasSeen) {
                 document.getElementById('welcome-overlay').style.display = 'flex';
             }
         }
 
+        // ADDED FIX: Resets opacity when reopening
+        function openWelcome() {
+            const overlay = document.getElementById('welcome-overlay');
+            overlay.style.opacity = '1'; 
+            overlay.style.display = 'flex';
+            document.getElementById('settings-popup').classList.remove('show');
+        }
+
         function closeWelcome() {
             const checkbox = document.getElementById('dont-show-welcome');
             if (checkbox.checked) {
-                localStorage.setItem('lyrn-welcome-v043', 'true');
+                localStorage.setItem('lyrn-welcome-v045', 'true');
             }
             const overlay = document.getElementById('welcome-overlay');
             overlay.style.opacity = '0';
@@ -774,6 +832,7 @@
                     const parsed = JSON.parse(saved);
                     appSettings = { ...appSettings, ...parsed };
                     if(!appSettings.fontSize) appSettings.fontSize = 12;
+                    if(!appSettings.handleWidth) appSettings.handleWidth = 160;
                 } catch(e) { console.error("Settings parse error", e); }
             }
         }
@@ -864,6 +923,14 @@
             });
         }
 
+        function toggleHandleWidth(val) {
+            const width = parseInt(val);
+            if(isNaN(width) || width < 50) return;
+            appSettings.handleWidth = width;
+            document.documentElement.style.setProperty('--dock-handle-width', width + 'px');
+            saveSettings();
+        }
+
         function toggleDockPin(pinned) {
             appSettings.dockPinned = pinned;
             const dock = document.getElementById('floating-dock');
@@ -896,6 +963,7 @@
             document.addEventListener('click', (e) => {
                 const popup = document.getElementById('settings-popup');
                 const btn = document.getElementById('btn_settings');
+                // Allow interactions inside popup, but close if clicking outside
                 if(popup.classList.contains('show') && !popup.contains(e.target) && !btn.contains(e.target)) {
                     popup.classList.remove('show');
                 }
