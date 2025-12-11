@@ -296,11 +296,14 @@
             cursor: grab; 
             z-index: 200; /* Ensure handle is ON TOP of content stack for touch */
             position: relative; 
+            touch-action: none; /* FIX: Prevents scroll/zoom interference on mobile */
         }
         #dock-handle:active { cursor: grabbing; transform: scale(0.95); }
+        
         .handle-bar {
             width: 20px; height: 4px; background-color: #ffffff;
             border-radius: 2px; box-shadow: 0 0 6px var(--brand-purple), 0 0 12px var(--brand-purple);
+            pointer-events: none; /* FIX: Ensures clicks pass through to the handle div */
         }
 
         /* --- SETTINGS POPUP --- */
