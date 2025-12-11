@@ -164,7 +164,7 @@
             <h1 class="panel-title">Asset Shop</h1>
         </div>
         <div class="btn-group">
-            <button class="btn-icon btn-square" onclick="alert('Asset Shop v1.0\nBrowse and download system components.')" title="Help">?</button>
+            <button class="btn-icon btn-square" onclick="alert('Asset Shop v1.1\nBatch download system components.')" title="Help">?</button>
         </div>
     </header>
 
@@ -178,11 +178,6 @@
   </div>
 
   <div id="toast">Operation Successful</div>
-
-  <script>
-    /*! JSZip v3.10.1 - A multi-purpose javascript class for opening and creating .zip files. */
-    !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{("undefined"!=typeof window?window:typeof global!="undefined"?global:"undefined"!=typeof self?self:this).JSZip=e()}}(function(){return function r(n,t,o){function a(i,u){if(!t[i]){if(!n[i]){var f="function"==typeof require&&require;if(!u&&f)return f(i,!0);if(s)return s(i,!0);var c=new Error("Cannot find module '"+i+"'");throw c.code="MODULE_NOT_FOUND",c}var h=t[i]={exports:{}};n[i][0].call(h.exports,function(e){var t=n[i][1][e];return a(t||e)},h,h.exports,r,n,t,o)}return t[i].exports}for(var s="function"==typeof require&&require,e=0;e<o.length;e++)a(o[e]);return a}({1:[function(e,t,n){"use strict";var r=e("./utils"),o=e("./support"),a="BASE64";n.exports=function(e){if(r.findCompression(e))return e;var t=a,n=!0,i=Object.keys(o.nodestream).some(function(t){return t===e});return i&&(t=e,n=!1),{compression:t,localBacked:n}}},{"./support":30,"./utils":32}],2:[function(e,t,n){"use strict";var r=e("./external"),o=e("./stream/DataWorker"),a=e("./stream/Crc32Probe"),s=e("./stream/DataLengthProbe");function i(e,t,n,r){this.name=e,this.dir=n,this.date=r,this.comment=null,this.unixPermissions=null,this.dosPermissions=null,this._data=t,this._dataBinary=!0,this.options={compression:null,compressionOptions:null}}i.prototype={internalStream:function(e){var t=null,n="string";try{if((e=e||"").length)e=e.toLowerCase();else e=null}catch(e){e=null}"binarystring"===e||"text"===e?t="string":"base64"===e?t="base64":"array"===e||"uint8array"===e||"arraybuffer"===e||"blob"===e||"nodebuffer"===e?t="array":e&&(n="binarystring");var i=this._data.uncompressedSize,u=this._data.compressedSize,f=this._data.crc32,c=this._data.compression,h=this._data.compressedContent;return new r.Promise(function(e,a){h.then(function(s){var l=new o(s);l.on("error",function(e){a(e)}).on("end",function(){if("string"===n){var r=t;this.transformTo(r).then(function(t){e(t)},function(e){a(e)})}else e(this.transformTo(t))}).pipe(new s(u)).pipe(new c(i)).pipe(new a(f)).resume()},function(e){a(e)})})},asNodeBuffer:function(){return this.internalStream("nodebuffer")},asArrayBuffer:function(){return this.internalStream("arraybuffer")},asUint8Array:function(){return this.internalStream("uint8array")},asBinaryString:function(){return this.internalStream("binarystring")},asText:function(){return this.internalStream("text")},dir:function(){return this.dir},date:function(){return this.date}},t.exports=i},{"./external":6,"./stream/Crc32Probe":25,"./stream/DataLengthProbe":26,"./stream/DataWorker":27}],3:[function(e,t,n){"use strict";var r=e("./utils"),o=e("./nodejsUtils"),a=e("./stream/GenericWorker"),s=e("./stream/StreamHelper"),i=e("./defaults"),u=e("./compressedObject"),f=e("./zipObject"),c=function(e,t,n){this.name=e,this.dir=t,this.date=n,this.comment=null,this.unixPermissions=null,this.dosPermissions=null,this._data=null,this._dataBinary=!0,this.options={compression:null,compressionOptions:null}};c.prototype={internalStream:function(e){return null},asNodeBuffer:function(){return null},asArrayBuffer:function(){return null},asUint8Array:function(){return null},asBinaryString:function(){return null},asText:function(){return null},dir:function(){return this.dir},date:function(){return this.date}},t.exports=c},{"./compressedObject":2,"./defaults":5,"./nodejsUtils":14,"./stream/GenericWorker":28,"./stream/StreamHelper":29,"./utils":32,"./zipObject":35}],4:[function(e,t,n){"use strict";var r=e("./utils"),o=function(){this.files=[],this.loadOptions={}};o.prototype={checkSignature:function(e){if(!this.reader.readAndCheckSignature(e)){this.reader.index-=4;var t=this.reader.readString(4);throw new Error("Corrupted zip or bug: unexpected signature ("+r.pretty(e)+", expected "+r.pretty(t)+")")}},isSignature:function(e,t){var n=this.reader.index;this.reader.setIndex(e);var r=this.reader.readString(4)===t;return this.reader.setIndex(n),r},readBlockEndOfCentral:function(){this.diskNumber=this.reader.readInt(2),this.diskWithCentralDirStart=this.reader.readInt(2),this.centralDirRecordsOnThisDisk=this.reader.readInt(2),this.centralDirRecords=this.reader.readInt(2),this.centralDirSize=this.reader.readInt(4),this.centralDirOffset=this.reader.readInt(4),this.zipCommentLength=this.reader.readInt(2);var e=this.reader.readData(this.zipCommentLength),t=o.decodeBuffer(e);this.zipComment=t},readBlockZip64EndOfCentral:function(){this.zip64EndOfCentralSize=this.reader.readInt(8),this.reader.skip(4),this.diskNumber=this.reader.readInt(4),this.diskWithCentralDirStart=this.reader.readInt(4),this.centralDirRecordsOnThisDisk=this.reader.readInt(8),this.centralDirRecords=this.reader.readInt(8),this.centralDirSize=this.reader.readInt(8),this.centralDirOffset=this.reader.readInt(8),this.zip64ExtensibleData={};for(var e,t,n,r=this.zip64EndOfCentralSize-44,a=0;a<r;)e=this.reader.readInt(2),t=this.reader.readInt(4),n=this.reader.readData(t),this.zip64ExtensibleData[e]={id:e,length:t,value:n},a+=t+4},readBlockZip64EndOfCentralLocator:function(){this.diskWithZip64CentralDirStart=this.reader.readInt(4),this.relativeOffsetEndOfZip64CentralDir=this.reader.readInt(8),this.disksCount=this.reader.readInt(4),this.disksCount>1&&new Error("Multi-volumes zip are not supported")},readLocalFiles:function(){var e,t;for(e=0;e<this.files.length;e++)t=this.files[e],this.reader.setIndex(t.localHeaderOffset),this.checkSignature("PK\x03\x04"),t.readLocalPart(this.reader),t.handleUTF8(),t.processAttributes()},readCentralDir:function(){var e;for(this.reader.setIndex(this.centralDirOffset);this.reader.readAndCheckSignature("PK\x01\x02");)(e=new o.CentralDirHeader).readCentralPart(this.reader),this.files.push(e);if(this.centralDirRecords!==this.files.length&&0!==this.centralDirRecords&&0===this.files.length)throw new Error("Corrupted zip or bug: expected "+this.centralDirRecords+" records in central dir, got "+this.files.length)},readEndOfCentral:function(){var e=this.reader.lastIndexOfSignature("PK\x05\x06");if(e<0){var t=!this.isSignature(0,"PK\x03\x04");throw t?new Error("Can't find end of central directory : is this a zip file ? If it is, see https://stuk.github.io/jszip/documentation/howto/read_zip.html"):new Error("Corrupted zip: missing/bad signature")}this.reader.setIndex(e);var n=e;if(this.readBlockEndOfCentral(),this.diskNumber===o.MAX_VALUE_16||this.diskWithCentralDirStart===o.MAX_VALUE_16||this.centralDirRecordsOnThisDisk===o.MAX_VALUE_16||this.centralDirRecords===o.MAX_VALUE_16||this.centralDirSize===o.MAX_VALUE_32||this.centralDirOffset===o.MAX_VALUE_32){var r=this.reader.lastIndexOfSignature("PK\x06\x07");if(r<0)throw new Error("Corrupted zip: expecting Zip64 end of central directory locator");if(this.reader.setIndex(r),this.readBlockZip64EndOfCentralLocator(),!this.isSignature(this.relativeOffsetEndOfZip64CentralDir,"PK\x06\x06"))throw new Error("Corrupted zip: expecting Zip64 end of central directory record");this.reader.setIndex(this.relativeOffsetEndOfZip64CentralDir),this.readBlockZip64EndOfCentral()}var a=this.centralDirOffset;if(0===this.centralDirRecords&&0===a&&this.files.length>0)a=this.files[0].localHeaderOffset;else if(0===this.centralDirRecords&&0!==a)throw new Error("Corrupted zip or bug: expected 0 records in central dir, got "+this.centralDirRecords);if(n<a)throw new Error("Corrupted zip: end of central dir looks invalid")},prepareReader:function(e){this.reader=e},load:function(e){this.prepareReader(e),this.readEndOfCentral(),this.readCentralDir(),this.readLocalFiles()}},o.CentralDirHeader=function(){this.versionMadeBy=null,this.versionNeeded=null,this.flag=null,this.compressionMethod=null,this.lastModTime=null,this.lastModDate=null,this.crc32=null,this.compressedSize=null,this.uncompressedSize=null,this.fileNameLength=null,this.extraFieldLength=null,this.fileCommentLength=null,this.diskNumberStart=null,this.internalFileAttributes=null,this.externalFileAttributes=null,this.localHeaderOffset=null,this.fileName=null,this.extraField=null,this.fileComment=null,this.isOnCentralDir=!0,this.dir=!1,this.date=null,this.unixPermissions=null,this.dosPermissions=null,this.extraFields=[]},o.CentralDirHeader.prototype={readCentralPart:function(e){this.versionMadeBy=e.readInt(2),this.versionNeeded=e.readInt(2),this.flag=e.readInt(2),this.compressionMethod=e.readInt(2),this.lastModTime=e.readInt(2),this.lastModDate=e.readInt(2),this.crc32=e.readInt(4),this.compressedSize=e.readInt(4),this.uncompressedSize=e.readInt(4),this.fileNameLength=e.readInt(2),this.extraFieldLength=e.readInt(2),this.fileCommentLength=e.readInt(2),this.diskNumberStart=e.readInt(2),this.internalFileAttributes=e.readInt(2),this.externalFileAttributes=e.readInt(4),this.localHeaderOffset=e.readInt(4),this.fileName=e.readData(this.fileNameLength),this.extraField=e.readData(this.extraFieldLength),this.fileComment=e.readData(this.fileCommentLength)},processAttributes:function(){this.unixPermissions=null,this.dosPermissions=null;var e=this.versionMadeBy>>8;this.dir=!!(16&this.externalFileAttributes),0===e&&(this.dosPermissions=63&this.externalFileAttributes),3===e&&(this.unixPermissions=this.externalFileAttributes>>16&65535),this.dir||"/"!==this.fileName.slice(-1)||(this.dir=!0)},readLocalPart:function(e){var t=e.readInt(2);if(this.versionNeeded=e.readInt(2),this.flag=e.readInt(2),this.compressionMethod=e.readInt(2),this.lastModTime=e.readInt(2),this.lastModDate=e.readInt(2),this.crc32=e.readInt(4),this.compressedSize=e.readInt(4),this.uncompressedSize=e.readInt(4),this.fileNameLength=e.readInt(2),this.extraFieldLength=e.readInt(2),this.fileName=e.readData(this.fileNameLength),this.extraField=e.readData(this.extraFieldLength),t&&7083===t)throw new Error("GP86 not supported")},handleUTF8:function(){var e=o.decodeBuffer(this.fileName),t=o.decodeBuffer(this.fileComment);2048&this.flag&&(this.fileName=e,this.fileComment=t)}},o.decodeBuffer=function(e){return r.transformTo("string",e)},o.MAX_VALUE_16=65535,o.MAX_VALUE_32=4294967295,t.exports=o},{"./utils":32}],5:[function(e,t,n){"use strict";n.base64=!1,n.binary=!1,n.dir=!1,n.createFolders=!0,n.date=null,n.compression=null,n.compressionOptions=null,n.comment=null,n.unixPermissions=null,n.dosPermissions=null},{}],6:[function(e,t,n){"use strict";var r=null;r="undefined"!=typeof Promise?Promise:e("lie"),t.exports={Promise:r}},{lie:37}],7:[function(e,t,n){"use strict";var r="undefined"!=typeof window?window:typeof global!="undefined"?global:"undefined"!=typeof self?self:{},o=r.JSZip||e("./index"),a=e("./utils");t.exports=function(e){var t,n,s,i,u=0,f=[],c=0;if(a.isSupportAvailable(r.FileReaderWithoutSync))s=new r.FileReaderWithoutSync;else{if(!a.isSupportAvailable(r.FileReader))throw new Error("FileReader not supported");s=new r.FileReader}for(s.onload=function(e){f.push(e.target.result),++u===c&&n(f)},s.onerror=function(e){i(e.target.error)},c=0;c<e.length;c++)t=e[c],s.readAsArrayBuffer(t);return new o.external.Promise(function(e,t){n=e,i=t})}},{"./index":11,"./utils":32}],8:[function(e,t,n){"use strict";t.exports=!1},{}]},{},[])})
-  </script>
 
   <script>
     /* =========================================
@@ -355,17 +350,18 @@
         const paths = Array.from(STATE.selectedPaths);
 
         try {
-            if (paths.length === 1) {
-                // SINGLE FILE
-                await downloadSingleFile(paths[0]);
-                showToast("Download Started");
-            } else {
-                // ZIP PACKAGE
-                await downloadZipPackage(paths);
-                showToast("Package Created");
+            // Loop through all selected paths and download sequentially
+            for (let i = 0; i < paths.length; i++) {
+                await downloadSingleFile(paths[i]);
+                
+                // Add a small delay between downloads to ensure browser registers them
+                // and doesn't flag them as spam popups immediately
+                if (i < paths.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
             }
             
-            // Reset state after success
+            showToast("Downloads Started");
             resetState();
         } catch (err) {
             console.error(err);
@@ -385,50 +381,8 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        // Return a small resolved promise just to keep async flow consistent
         return Promise.resolve();
-    }
-
-    async function downloadZipPackage(paths) {
-        if (!window.JSZip) {
-            throw new Error("JSZip not loaded");
-        }
-        
-        const zip = new JSZip();
-        const root = zip.folder("lyrn-package");
-
-        // Fetch all files
-        const promises = paths.map(async (path) => {
-            const response = await fetch(path);
-            if (!response.ok) throw new Error(`Failed to load ${path}`);
-            const text = await response.text();
-            
-            // Determine folder structure based on path logic
-            // core files like "../dashboard.html" go to root
-            // modules like "Snapshot Builder.html" go to /modules/
-            
-            let filename = path.split('/').pop();
-            if (path.includes('../')) {
-                // It's a core file (relative to module folder)
-                root.file(filename, text);
-            } else {
-                // It's a module file (in same folder)
-                // We put it in a modules folder in the zip for structure
-                root.file(`modules/${filename}`, text);
-            }
-        });
-
-        await Promise.all(promises);
-
-        const content = await zip.generateAsync({ type: "blob" });
-        const url = URL.createObjectURL(content);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = "lyrn-package.zip";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     function resetState() {
