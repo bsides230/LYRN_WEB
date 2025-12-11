@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.31</title>
+    <title>LYRN Dashboard v0.35</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -207,6 +207,19 @@
             z-index: 100; /* Content lower than handle */
         }
         
+        /* --- FIXED: Base Dock Button Styles --- */
+        .dock-btn {
+            background: transparent; border: none; 
+            cursor: pointer; position: relative;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-head);
+            border-radius: 12px;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .dock-btn:hover { background: rgba(255, 255, 255, 0.1); transform: scale(1.1); }
+        .dock-btn:active { transform: scale(0.95); }
+        /* -------------------------------------- */
+
         #floating-dock.dock-collapsed:not(.pinned-open) #dock-content {
             opacity: 0; transform: translateY(10px) scale(0.8);
             pointer-events: none; visibility: hidden;
@@ -228,38 +241,31 @@
             border-radius: 2px; box-shadow: 0 0 6px var(--brand-purple), 0 0 12px var(--brand-purple);
         }
 
-        .dock-btn {
-            background: transparent; border: 1px solid transparent; color: var(--text-dim);
-            border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; position: relative;
-        }
-        .dock-btn:hover {
-            background: var(--brand-purple-dim); color: var(--brand-purple); border-color: var(--brand-purple);
-            transform: translateY(-2px);
-        }
-        /* RUNNING INDICATOR (The Dot) */
-        .dock-btn.is-running::before {
-            content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
-            width: 4px; height: 4px; border-radius: 50%; background: var(--text-dim);
-            transition: all 0.3s ease;
-        }
-        /* FOCUSED INDICATOR (Purple Dot) */
-        .dock-btn.is-focused::before {
-            background: var(--brand-purple); box-shadow: 0 0 5px var(--brand-purple);
-        }
-
+        /* --- SETTINGS POPUP --- */
         #settings-popup {
             position: absolute; bottom: 100%; right: 0; 
-            margin-bottom: 20px; width: 260px; /* Slightly wider for Task Mgr */
+            margin-bottom: 50px; /* Lifted higher */
+            width: 260px; 
             background: var(--dock-bg); backdrop-filter: blur(var(--dock-blur));
             border: 1px solid var(--dock-border); border-radius: 12px;
-            padding: 15px; color: var(--text-body);
+            padding: 15px; padding-top: 25px; /* Space for Close X */
+            color: var(--text-body);
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             display: none; flex-direction: column; gap: 15px;
-            pointer-events: auto; cursor: default; z-index: 30;
+            pointer-events: auto; cursor: default; 
+            z-index: 300; /* Higher than dock content */
         }
         #settings-popup.show { display: flex; animation: popupFade 0.2s ease-out; }
         @keyframes popupFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .settings-close-btn {
+            position: absolute; top: 8px; right: 8px;
+            background: transparent; border: none; color: var(--text-dim);
+            font-size: 14px; cursor: pointer; width: 20px; height: 20px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 4px; transition: all 0.2s;
+        }
+        .settings-close-btn:hover { background: rgba(255, 68, 68, 0.1); color: #ff4444; }
 
         .settings-section { display: flex; flex-direction: column; gap: 8px; }
         .settings-header { 
@@ -346,7 +352,8 @@
             }
             #floating-dock.fixed-mode #settings-popup {
                 bottom: 100%; right: 50%; transform: translateX(50%);
-                margin-bottom: 20px; transform-origin: bottom center;
+                margin-bottom: 50px; /* Lifted higher here too */
+                transform-origin: bottom center;
             }
             #floating-dock.fixed-mode #settings-popup.show { animation: popupFixedUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
             @keyframes popupFixedUp { from { opacity: 0; transform: translateX(50%) translateY(20px) scale(0.9); } to { opacity: 1; transform: translateX(50%) translateY(0) scale(1); } }
@@ -378,6 +385,7 @@
             <span class="system-clock" id="sys-clock">00:00</span>
         </div>
         <div class="bar-section">
+            <button class="bar-btn" title="Reset Dock Position" onclick="resetDock()">⚓</button>
             <button class="bar-btn" title="Toggle Fullscreen" onclick="toggleDashboardFullscreen()">⛶</button>
             <button class="bar-btn close-iframe-btn" id="btn-close-iframe" title="Close Dashboard" onclick="closeDashboard()">✕</button>
         </div>
@@ -387,6 +395,7 @@
 
     <div id="floating-dock" class="dock-collapsed">
         <div id="settings-popup">
+            <button class="settings-close-btn" onclick="document.getElementById('settings-popup').classList.remove('show')" title="Close Settings">✕</button>
             
             <div class="settings-section">
                 <div class="settings-header">Active Processes</div>
@@ -500,6 +509,23 @@
             setInterval(update, 1000);
         }
 
+        // --- DOCK RESET ---
+        function resetDock() {
+            const dock = document.getElementById('floating-dock');
+            // Clear local storage for position
+            localStorage.removeItem('lyrn-dock-xy');
+            // Reset Styles
+            dock.style.left = '50%';
+            dock.style.top = '50%';
+            dock.style.transform = 'translate(-50%, -50%)';
+            dock.style.bottom = 'auto';
+            dock.style.right = 'auto';
+            // Force open so user sees it
+            dock.classList.remove('dock-collapsed');
+            // Re-render buttons in case of DOM error
+            renderDock();
+        }
+
         // --- FULLSCREEN TOGGLE ---
         function toggleDashboardFullscreen() {
             if (!document.fullscreenElement) {
@@ -525,7 +551,20 @@
         }
 
         function closeDashboard() {
-            window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*');
+            // Check if we are in fullscreen mode
+            if (document.fullscreenElement) {
+                // Exit fullscreen FIRST, then send the close message
+                document.exitFullscreen()
+                    .then(() => window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*'))
+                    .catch(err => {
+                        console.error("Fullscreen exit error:", err);
+                        // Force close anyway if exit fails
+                        window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*');
+                    });
+            } else {
+                // Not in fullscreen, just close
+                window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*');
+            }
         }
 
         function loadSettings() {
@@ -660,6 +699,7 @@
             document.addEventListener('click', (e) => {
                 const popup = document.getElementById('settings-popup');
                 const btn = document.getElementById('btn_settings');
+                // Ensure clicks inside the popup don't close it, but clicking outside does
                 if(popup.classList.contains('show') && !popup.contains(e.target) && !btn.contains(e.target)) {
                     popup.classList.remove('show');
                 }
@@ -948,14 +988,32 @@
             const dock = document.getElementById('floating-dock');
             const handle = document.getElementById('dock-handle');
             const savedPos = localStorage.getItem('lyrn-dock-xy');
+            
+            // --- FIX FOR REAPPEARING DOCK ---
+            // If not in fixed mode, we check coordinates. If they are crazy, we reset.
             if (savedPos && !appSettings.dockFixed) {
                 try {
                     const { left, top } = JSON.parse(savedPos);
-                    const maxL = window.innerWidth - 60; const maxT = window.innerHeight - 40;
+                    const maxL = window.innerWidth - 60; 
+                    const maxT = window.innerHeight - 40;
+                    
+                    // Sanity check: is it off screen?
+                    if (left < 0 || top < 0 || left > window.innerWidth || top > window.innerHeight) {
+                         throw new Error("Coordinates out of bounds");
+                    }
+
                     dock.style.bottom = 'auto'; dock.style.right = 'auto';
-                    dock.style.left = Math.min(Math.max(10, left), maxL) + 'px'; dock.style.top = Math.min(Math.max(10, top), maxT) + 'px';
+                    dock.style.left = left + 'px'; dock.style.top = top + 'px';
                     dock.style.transform = 'none'; 
-                } catch(e) { dock.style.top = '50%'; dock.style.left = '50%'; dock.style.transform = 'translate(-50%, -50%)'; }
+                } catch(e) { 
+                    // Reset to center if coordinates are bad
+                    dock.style.top = '50%'; dock.style.left = '50%'; dock.style.transform = 'translate(-50%, -50%)'; 
+                }
+            } else {
+                // Default center
+                 if(!appSettings.dockFixed) {
+                    dock.style.top = '50%'; dock.style.left = '50%'; dock.style.transform = 'translate(-50%, -50%)';
+                 }
             }
 
             let isDragging = false, hasMoved = false;
