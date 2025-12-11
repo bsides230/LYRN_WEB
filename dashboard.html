@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.35</title>
+    <title>LYRN Dashboard v0.37</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -70,7 +70,7 @@
         }
 
         /* =========================================
-           1.5 TOP SYSTEM BAR (Desktop Only)
+           1.5 TOP SYSTEM BAR (Desktop & Tablet)
            ========================================= */
         #top-system-bar {
             position: fixed; top: 0; left: 0; right: 0;
@@ -207,7 +207,7 @@
             z-index: 100; /* Content lower than handle */
         }
         
-        /* --- FIXED: Base Dock Button Styles --- */
+        /* --- Base Dock Button Styles --- */
         .dock-btn {
             background: transparent; border: none; 
             cursor: pointer; position: relative;
@@ -218,7 +218,6 @@
         }
         .dock-btn:hover { background: rgba(255, 255, 255, 0.1); transform: scale(1.1); }
         .dock-btn:active { transform: scale(0.95); }
-        /* -------------------------------------- */
 
         #floating-dock.dock-collapsed:not(.pinned-open) #dock-content {
             opacity: 0; transform: translateY(10px) scale(0.8);
@@ -307,7 +306,10 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: var(--border-color); border-radius: 2px; }
         input[type=range]:focus { outline: none; }
 
-        @media (min-width: 901px) {
+        /* =========================================
+           MEDIA QUERIES - TABLET & DESKTOP (> 600px)
+           ========================================= */
+        @media (min-width: 601px) {
             #dock-content { flex-direction: row; left: 50%; transform: translateX(-50%); }
             #floating-dock.dock-collapsed:not(.pinned-open) #dock-content { transform: translateX(-50%) translateY(10px) scale(0.8); }
             .dock-btn { width: 44px; height: 44px; font-size: 20px; }
@@ -359,7 +361,10 @@
             @keyframes popupFixedUp { from { opacity: 0; transform: translateX(50%) translateY(20px) scale(0.9); } to { opacity: 1; transform: translateX(50%) translateY(0) scale(1); } }
         }
 
-        @media (max-width: 900px) {
+        /* =========================================
+           MEDIA QUERIES - PHONE ONLY (<= 600px)
+           ========================================= */
+        @media (max-width: 600px) {
             body { overflow-y: auto; height: auto; }
             #top-system-bar { display: none !important; }
             #desktop-area { position: relative; top: 0; height: auto; padding: 20px; padding-bottom: 120px; }
@@ -382,7 +387,7 @@
 
     <div id="top-system-bar">
         <div class="bar-section">
-            <span class="system-clock" id="sys-clock">00:00</span>
+            <span class="system-clock" id="sys-clock">...</span>
         </div>
         <div class="bar-section">
             <button class="bar-btn" title="Reset Dock Position" onclick="resetDock()">⚓</button>
@@ -503,10 +508,13 @@
             const el = document.getElementById('sys-clock');
             const update = () => {
                 const now = new Date();
-                el.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                // Format: Mon, Dec 10  09:41 PM
+                const datePart = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+                const timePart = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                el.innerText = `${datePart}   ${timePart}`;
             };
             update();
-            setInterval(update, 1000);
+            setInterval(update, 1000); // Update every second
         }
 
         // --- DOCK RESET ---
@@ -610,7 +618,7 @@
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         toggleWindow(mod);
-                        if(window.innerWidth <= 900 && !appSettings.dockPinned) {
+                        if(window.innerWidth <= 600 && !appSettings.dockPinned) {
                             document.getElementById('floating-dock').classList.add('dock-collapsed');
                         }
                     };
@@ -619,7 +627,7 @@
             });
             
             const sep = document.createElement('div');
-            sep.style.cssText = window.innerWidth <= 900 
+            sep.style.cssText = window.innerWidth <= 600 
                 ? "height:1px; width:20px; background:var(--border-color); opacity:0.5; margin:4px auto;"
                 : "width:1px; height:20px; background:var(--border-color); opacity:0.5; margin:0 4px;";
             container.appendChild(sep);
@@ -787,7 +795,7 @@
         }
 
         function createWindow(mod, id) {
-            const isMobile = window.innerWidth <= 900;
+            const isPhone = window.innerWidth <= 600;
             const area = document.getElementById('desktop-area');
             const win = document.createElement('div');
             win.className = 'lyrn-window active';
@@ -800,7 +808,7 @@
                 updateDockIndicators();
             };
 
-            if(!isMobile) {
+            if(!isPhone) {
                 const offset = (activeWindows.size * 30) % 150;
                 win.style.left = (100 + offset) + 'px'; win.style.top = (50 + offset) + 'px';
             }
@@ -824,7 +832,7 @@
             area.appendChild(win);
             
             activeWindows.add(mod.id);
-            setupWindowInteractions(win, isMobile);
+            setupWindowInteractions(win, isPhone);
             updateDockIndicators();
             renderTaskManager();
         }
@@ -913,8 +921,8 @@
             }
         };
 
-        function setupWindowInteractions(win, isMobile) {
-            if(!isMobile) {
+        function setupWindowInteractions(win, isPhone) {
+            if(!isPhone) {
                 const header = win.querySelector('.window-header');
                 header.onmousedown = (e) => {
                     if(e.target.closest('button')) return; 
@@ -958,9 +966,9 @@
                 const resizeMove = (me) => {
                     const dx = me.clientX - startX; const dy = me.clientY - startY;
                     let newH = startH + dy;
-                    if (!isMobile) newH = Math.round(newH / GRID_SIZE) * GRID_SIZE;
+                    if (!isPhone) newH = Math.round(newH / GRID_SIZE) * GRID_SIZE;
                     if (newH > 100) win.style.height = newH + 'px';
-                    if (!isMobile) {
+                    if (!isPhone) {
                         let newW = startW + dx; newW = Math.round(newW / GRID_SIZE) * GRID_SIZE;
                         if (newW > 200) win.style.width = newW + 'px';
                     }
