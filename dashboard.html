@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.37</title>
+    <title>LYRN Dashboard v0.38</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -102,8 +102,71 @@
         .bar-btn.close-iframe-btn { color: #ff4444; margin-left: 10px; }
         .bar-btn.close-iframe-btn:hover { background: rgba(255, 68, 68, 0.1); border-radius: 4px; }
         
-        /* Hidden by default, shown via JS if in iframe */
         #btn-close-iframe { display: none; }
+
+        /* =========================================
+           WELCOME MODAL
+           ========================================= */
+        #welcome-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: none; /* Toggled via JS */
+            align-items: center; justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .welcome-modal {
+            width: 420px; max-width: 90%;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-top: 1px solid var(--brand-purple);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px var(--brand-purple-dim);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+
+        .welcome-close-x {
+            position: absolute; top: 12px; right: 12px;
+            background: transparent; border: none; color: var(--text-dim);
+            cursor: pointer; padding: 4px; font-size: 16px;
+        }
+        .welcome-close-x:hover { color: var(--text-head); }
+
+        .welcome-title {
+            font-family: 'JetBrains Mono'; color: var(--text-head);
+            font-size: 16px; margin: 0; letter-spacing: -0.5px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .welcome-text { font-size: 13px; line-height: 1.5; color: var(--text-body); margin: 0; }
+        .welcome-text strong { color: var(--brand-purple); }
+        
+        .welcome-feature {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
+            padding: 12px; border-radius: 8px; font-size: 12px;
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+        .welcome-icon { font-size: 16px; line-height: 1; }
+
+        .welcome-footer {
+            margin-top: 10px; padding-top: 15px; border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .welcome-checkbox {
+            display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-dim); cursor: pointer;
+        }
+        .welcome-btn {
+            background: var(--brand-purple); color: white; border: none;
+            padding: 6px 16px; border-radius: 6px; font-size: 12px; font-weight: 500;
+            cursor: pointer; transition: opacity 0.2s;
+        }
+        .welcome-btn:hover { opacity: 0.9; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* =========================================
            2. WINDOW SYSTEM
@@ -453,6 +516,45 @@
         </div>
     </div>
 
+    <div id="welcome-overlay">
+        <div class="welcome-modal">
+            <button class="welcome-close-x" onclick="closeWelcome()" title="Close">✕</button>
+            
+            <h2 class="welcome-title">
+                <span style="color:var(--brand-purple);">❖</span> LYRN Systems
+            </h2>
+            
+            <p class="welcome-text">
+                Welcome to the v0.38 dashboard environment. 
+                Use the floating dock to access your modules.
+            </p>
+
+            <div class="welcome-feature">
+                <div class="welcome-icon">⚓</div>
+                <div>
+                    <strong>Floating Dock</strong><br>
+                    Click the handle to open/close. Drag the handle to move the dock anywhere on screen.
+                </div>
+            </div>
+
+            <div class="welcome-feature">
+                <div class="welcome-icon">↺</div>
+                <div>
+                    <strong>Lost the dock?</strong><br>
+                    Click the Anchor icon (⚓) in the top-left system bar to reset the dock to the center of the screen.
+                </div>
+            </div>
+
+            <div class="welcome-footer">
+                <label class="welcome-checkbox">
+                    <input type="checkbox" id="dont-show-welcome">
+                    Don't show this again
+                </label>
+                <button class="welcome-btn" onclick="closeWelcome()">Initialize</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         /* =========================================================================
            CONFIG: DOCK APP MANIFEST
@@ -484,6 +586,7 @@
             initSettingsUI();
             startClock();
             checkIfIframe();
+            initWelcome(); // Check and show welcome modal
             
             document.body.setAttribute('data-theme', appSettings.theme);
             document.getElementById('setting-theme').checked = (appSettings.theme === 'dark');
@@ -502,6 +605,28 @@
                 document.getElementById('setting-dock-fixed').checked = true;
             }
         });
+
+        /* =========================================
+           WELCOME MODAL LOGIC
+           ========================================= */
+        function initWelcome() {
+            const hasSeen = localStorage.getItem('lyrn-welcome-v038');
+            if (!hasSeen) {
+                document.getElementById('welcome-overlay').style.display = 'flex';
+            }
+        }
+
+        function closeWelcome() {
+            const checkbox = document.getElementById('dont-show-welcome');
+            if (checkbox.checked) {
+                localStorage.setItem('lyrn-welcome-v038', 'true');
+            }
+            const overlay = document.getElementById('welcome-overlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+        }
 
         // --- CLOCK FUNCTION ---
         function startClock() {
