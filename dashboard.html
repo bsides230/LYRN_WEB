@@ -1126,30 +1126,23 @@
             const savedPos = localStorage.getItem('lyrn-dock-xy');
             
             // --- FIX FOR REAPPEARING DOCK ---
-            // If not in fixed mode, we check coordinates. If they are crazy, we reset.
             if (savedPos && !appSettings.dockFixed) {
                 try {
                     const { left, top } = JSON.parse(savedPos);
-                    const maxL = window.innerWidth - 60; 
-                    const maxT = window.innerHeight - 40;
-                    
-                    // Sanity check: is it off screen?
+                    // Sanity check bounds
                     if (left < 0 || top < 0 || left > window.innerWidth || top > window.innerHeight) {
-                         throw new Error("Coordinates out of bounds");
+                            throw new Error("Coordinates out of bounds");
                     }
-
                     dock.style.bottom = 'auto'; dock.style.right = 'auto';
                     dock.style.left = left + 'px'; dock.style.top = top + 'px';
                     dock.style.transform = 'none'; 
                 } catch(e) { 
-                    // Reset to center if coordinates are bad
                     dock.style.top = '50%'; dock.style.left = '50%'; dock.style.transform = 'translate(-50%, -50%)'; 
                 }
             } else {
-                // Default center
-                 if(!appSettings.dockFixed) {
+                    if(!appSettings.dockFixed) {
                     dock.style.top = '50%'; dock.style.left = '50%'; dock.style.transform = 'translate(-50%, -50%)';
-                 }
+                    }
             }
 
             let isDragging = false, hasMoved = false;
@@ -1157,37 +1150,69 @@
 
             const startDrag = (e) => {
                 if(appSettings.dockFixed) return; 
-                isDragging = true; hasMoved = false; dock.classList.add('is-dragging'); document.body.classList.add('no-select');
+                
+                // --- FIX START: PREVENT DOUBLE FIRING ---
+                // On mobile, prevent the browser from firing a simulated 'mousedown' 
+                // after the 'touchstart', which causes the dock to toggle twice (Open then immediately Close).
+                if(e.type === 'touchstart') {
+                    e.preventDefault();
+                }
+                // --- FIX END ---
+
+                isDragging = true; hasMoved = false; 
+                dock.classList.add('is-dragging'); 
+                document.body.classList.add('no-select');
+                
                 const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
                 const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+                
                 startX = clientX; startY = clientY;
                 const rect = dock.getBoundingClientRect(); initL = rect.left; initT = rect.top;
-                dock.style.transform = 'none'; dock.style.bottom = 'auto'; dock.style.right = 'auto'; dock.style.left = initL + 'px'; dock.style.top = initT + 'px';
+                
+                dock.style.transform = 'none'; dock.style.bottom = 'auto'; dock.style.right = 'auto'; 
+                dock.style.left = initL + 'px'; dock.style.top = initT + 'px';
+                
                 document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onEnd);
                 document.addEventListener('touchmove', onMove, {passive:false}); document.addEventListener('touchend', onEnd);
             };
 
             const onMove = (e) => {
-                if(!isDragging) return; e.preventDefault();
+                if(!isDragging) return; 
+                e.preventDefault(); // Keep this to prevent scrolling while dragging
+                
                 const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
                 const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+                
                 if(Math.abs(clientX - startX) > 6 || Math.abs(clientY - startY) > 6) hasMoved = true;
-                dock.style.left = (initL + (clientX - startX)) + 'px'; dock.style.top = (initT + (clientY - startY)) + 'px';
+                
+                dock.style.left = (initL + (clientX - startX)) + 'px'; 
+                dock.style.top = (initT + (clientY - startY)) + 'px';
             };
 
             const onEnd = () => {
-                isDragging = false; dock.classList.remove('is-dragging'); document.body.classList.remove('no-select');
+                isDragging = false; 
+                dock.classList.remove('is-dragging'); 
+                document.body.classList.remove('no-select');
+                
                 document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onEnd);
                 document.removeEventListener('touchmove', onMove); document.removeEventListener('touchend', onEnd);
-                if(!hasMoved) { if(!appSettings.dockPinned && !appSettings.dockFixed) dock.classList.toggle('dock-collapsed'); } 
-                else {
+                
+                if(!hasMoved) { 
+                    if(!appSettings.dockPinned && !appSettings.dockFixed) {
+                        dock.classList.toggle('dock-collapsed'); 
+                    }
+                } else {
                     const rect = dock.getBoundingClientRect();
-                    const snapL = Math.round(rect.left / GRID_SIZE) * GRID_SIZE; const snapT = Math.round(rect.top / GRID_SIZE) * GRID_SIZE;
+                    const snapL = Math.round(rect.left / GRID_SIZE) * GRID_SIZE; 
+                    const snapT = Math.round(rect.top / GRID_SIZE) * GRID_SIZE;
                     dock.style.left = snapL + 'px'; dock.style.top = snapT + 'px';
                     localStorage.setItem('lyrn-dock-xy', JSON.stringify({left: snapL, top: snapT}));
                 }
             };
-            handle.addEventListener('mousedown', startDrag); handle.addEventListener('touchstart', startDrag, {passive: false});
+
+            handle.addEventListener('mousedown', startDrag); 
+            // Note: 'passive: false' is required for preventDefault to work
+            handle.addEventListener('touchstart', startDrag, {passive: false});
         }
     </script>
 </body>
