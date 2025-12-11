@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.30</title>
+    <title>LYRN Dashboard v0.31</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -70,9 +70,45 @@
         }
 
         /* =========================================
+           1.5 TOP SYSTEM BAR (Desktop Only)
+           ========================================= */
+        #top-system-bar {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: 32px;
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 15px;
+            user-select: none;
+        }
+
+        .bar-section { display: flex; align-items: center; gap: 15px; }
+
+        .system-clock {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; color: var(--text-head);
+            letter-spacing: 0.05em;
+        }
+
+        .bar-btn {
+            background: transparent; border: none; color: var(--text-dim);
+            cursor: pointer; font-family: 'JetBrains Mono'; font-size: 14px;
+            padding: 4px; display: flex; align-items: center; justify-content: center;
+            transition: color 0.2s;
+        }
+        .bar-btn:hover { color: var(--text-head); }
+        .bar-btn.close-iframe-btn { color: #ff4444; margin-left: 10px; }
+        .bar-btn.close-iframe-btn:hover { background: rgba(255, 68, 68, 0.1); border-radius: 4px; }
+        
+        /* Hidden by default, shown via JS if in iframe */
+        #btn-close-iframe { display: none; }
+
+        /* =========================================
            2. WINDOW SYSTEM
            ========================================= */
-        #desktop-area { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; pointer-events: none; }
+        #desktop-area { position: absolute; top: 32px; left: 0; right: 0; bottom: 0; z-index: 1; pointer-events: none; }
         
         .lyrn-window {
             pointer-events: auto;
@@ -168,7 +204,7 @@
             opacity: 1; pointer-events: auto;
             transform-origin: bottom center;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 20; 
+            z-index: 100; /* Content lower than handle */
         }
         
         #floating-dock.dock-collapsed:not(.pinned-open) #dock-content {
@@ -182,7 +218,9 @@
             border: 1px solid var(--dock-border); border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.4);
             display: flex; align-items: center; justify-content: center;
-            cursor: grab; z-index: 100;
+            cursor: grab; 
+            z-index: 200; /* Ensure handle is ON TOP of content stack for touch */
+            position: relative; 
         }
         #dock-handle:active { cursor: grabbing; transform: scale(0.95); }
         .handle-bar {
@@ -316,10 +354,14 @@
 
         @media (max-width: 900px) {
             body { overflow-y: auto; height: auto; }
-            #desktop-area { position: relative; height: auto; padding: 20px; padding-bottom: 120px; }
+            #top-system-bar { display: none !important; }
+            #desktop-area { position: relative; top: 0; height: auto; padding: 20px; padding-bottom: 120px; }
             .lyrn-window { position: relative !important; width: 100% !important; height: 500px; margin-bottom: 20px; }
-            #dock-content { flex-direction: column-reverse; left: 50%; transform: translateX(-50%); }
+            #dock-content { flex-direction: column-reverse; left: 50%; transform: translateX(-50%); z-index: 100; }
             #floating-dock.dock-collapsed:not(.pinned-open) #dock-content { transform: translateX(-50%) translateY(10px) scale(0.8); }
+            /* Explicitly raise handle Z-index above content for mobile touch targets */
+            #dock-handle { z-index: 200; } 
+            
             .dock-btn { width: 40px; height: 40px; font-size: 18px; }
             .dock-btn::after { display: none; }
             .desktop-only-setting { display: none !important; }
@@ -330,6 +372,16 @@
     </style>
 </head>
 <body data-theme="dark">
+
+    <div id="top-system-bar">
+        <div class="bar-section">
+            <span class="system-clock" id="sys-clock">00:00</span>
+        </div>
+        <div class="bar-section">
+            <button class="bar-btn" title="Toggle Fullscreen" onclick="toggleDashboardFullscreen()">⛶</button>
+            <button class="bar-btn close-iframe-btn" id="btn-close-iframe" title="Close Dashboard" onclick="closeDashboard()">✕</button>
+        </div>
+    </div>
 
     <div id="desktop-area"></div>
 
@@ -416,6 +468,8 @@
             renderDock();
             initFloatingDock();
             initSettingsUI();
+            startClock();
+            checkIfIframe();
             
             document.body.setAttribute('data-theme', appSettings.theme);
             document.getElementById('setting-theme').checked = (appSettings.theme === 'dark');
@@ -434,6 +488,45 @@
                 document.getElementById('setting-dock-fixed').checked = true;
             }
         });
+
+        // --- CLOCK FUNCTION ---
+        function startClock() {
+            const el = document.getElementById('sys-clock');
+            const update = () => {
+                const now = new Date();
+                el.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            };
+            update();
+            setInterval(update, 1000);
+        }
+
+        // --- FULLSCREEN TOGGLE ---
+        function toggleDashboardFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(e => console.log(e));
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // --- IFRAME DETECTION & CLOSE ---
+        function checkIfIframe() {
+            try {
+                if (window.self !== window.top) {
+                    // We are in an iframe
+                    document.getElementById('btn-close-iframe').style.display = 'flex';
+                }
+            } catch (e) {
+                // Cross-origin might block access, but we can assume iframe if error or specific context
+                document.getElementById('btn-close-iframe').style.display = 'flex';
+            }
+        }
+
+        function closeDashboard() {
+            window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*');
+        }
 
         function loadSettings() {
             const saved = localStorage.getItem('lyrn-settings');

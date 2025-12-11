@@ -69,6 +69,11 @@ body, .page-container {
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
+/* UTILITY: Scroll Lock for Dashboard Overlay */
+body.dashboard-open {
+    overflow: hidden !important;
+}
+
 img {
     max-width: 100%;
     height: auto;

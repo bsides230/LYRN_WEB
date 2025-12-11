@@ -739,7 +739,7 @@
         <ul style="font-size: 14px; padding-left: 20px;">
           <li><strong>Snapshot:</strong> Doors, sensors, cameras (meta‑data), badge events and system health.</li>
           <li><strong>Delta:</strong> Each new badge event, alarm trigger or sensor anomaly.</li>
-          <li><strong>Verbatim Memory:</strong> Full log of security‑relevant events in human‑readable narrative.</li>
+          <li><strong>Verbatim Memory:</strong> Log of previous routes, hazards and delays.</li>
           <li><strong>Topic Index:</strong> Personnel IDs, zones, devices, incidents and time windows.</li>
           <li><strong>Reflection:</strong> Periodic reviews of patterns (“this badge repeatedly pings restricted area”).</li>
         </ul>
@@ -945,7 +945,7 @@
   <script src="script.js"></script>
 
   <script>
-      // LOGIC FOR DASHBOARD OVERLAY
+      // LOGIC FOR DASHBOARD OVERLAY & SCROLL LOCK
       document.addEventListener('DOMContentLoaded', () => {
           const trigger = document.getElementById('eof-trigger');
           const overlay = document.getElementById('dashboard-overlay');
@@ -954,6 +954,7 @@
           // 1. Open on "EOF" Click
           trigger.addEventListener('click', () => {
               overlay.classList.add('visible');
+              document.body.classList.add('dashboard-open'); // LOCK SCROLL
               // Optional: reset frame source to reload dashboard fresh
               // frame.src = frame.src; 
           });
@@ -962,6 +963,7 @@
           window.addEventListener('message', (event) => {
               if (event.data && event.data.type === 'CLOSE_DASHBOARD') {
                   overlay.classList.remove('visible');
+                  document.body.classList.remove('dashboard-open'); // UNLOCK SCROLL
               }
           });
       });
