@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.38</title>
+    <title>LYRN Dashboard v0.39</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -70,7 +70,7 @@
         }
 
         /* =========================================
-           1.5 TOP SYSTEM BAR (Desktop & Tablet)
+           1.5 TOP SYSTEM BAR
            ========================================= */
         #top-system-bar {
             position: fixed; top: 0; left: 0; right: 0;
@@ -86,11 +86,15 @@
 
         .bar-section { display: flex; align-items: center; gap: 15px; }
 
-        .system-clock {
+        .system-text {
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px; color: var(--text-head);
             letter-spacing: 0.05em;
         }
+        
+        /* Stats specific colors/spacing */
+        #sys-battery { transition: color 0.3s; }
+        #sys-network { color: #7c5cff; }
 
         .bar-btn {
             background: transparent; border: none; color: var(--text-dim);
@@ -432,7 +436,17 @@
            ========================================= */
         @media (max-width: 600px) {
             body { overflow-y: auto; height: auto; }
-            #top-system-bar { display: none !important; }
+            
+            /* -- MODIFIED: ENABLE SYSTEM BAR ON MOBILE -- */
+            #top-system-bar { 
+                display: flex !important; 
+                height: auto; 
+                padding: 6px 12px;
+                position: relative;
+            }
+            /* Hide long date on small screens if needed, or flex wrap */
+            .bar-section { gap: 10px; }
+
             #desktop-area { position: relative; top: 0; height: auto; padding: 20px; padding-bottom: 120px; }
             .lyrn-window { position: relative !important; width: 100% !important; height: 500px; margin-bottom: 20px; }
             #dock-content { flex-direction: column-reverse; left: 50%; transform: translateX(-50%); z-index: 100; }
@@ -453,7 +467,9 @@
 
     <div id="top-system-bar">
         <div class="bar-section">
-            <span class="system-clock" id="sys-clock">...</span>
+            <span class="system-text" id="sys-clock">...</span>
+            <span class="system-text" id="sys-battery"></span>
+            <span class="system-text" id="sys-network"></span>
         </div>
         <div class="bar-section">
             <button class="bar-btn" title="Reset Dock Position" onclick="resetDock()">⚓</button>
@@ -528,7 +544,7 @@
             </h2>
             
             <p class="welcome-text">
-                Welcome to the v0.38 dashboard environment. 
+                Welcome to the v0.39 dashboard environment. 
                 Use the floating dock to access your modules.
             </p>
 
@@ -539,12 +555,12 @@
                     Click the handle to open/close. Drag the handle to move the dock anywhere on screen.
                 </div>
             </div>
-
+            
             <div class="welcome-feature">
-                <div class="welcome-icon">↺</div>
+                <div class="welcome-icon">⚡</div>
                 <div>
-                    <strong>Lost the dock?</strong><br>
-                    Click the Anchor icon (⚓) in the top-left system bar to reset the dock to the center of the screen.
+                    <strong>System Stats</strong><br>
+                    Real-time Battery and Network metrics are now visible in the top system bar.
                 </div>
             </div>
 
@@ -570,7 +586,6 @@
 
         /* --- GLOBAL STATE --- */
         let zIndexCounter = 100;
-        // activeWindows now tracks open windows (hidden or visible)
         let activeWindows = new Set(); 
         const GRID_SIZE = 20; 
         
@@ -588,8 +603,9 @@
             initFloatingDock();
             initSettingsUI();
             startClock();
+            initSystemMonitor(); // <--- NEW: Starts Battery/Net monitor
             checkIfIframe();
-            initWelcome(); // Check and show welcome modal
+            initWelcome();
             
             document.body.setAttribute('data-theme', appSettings.theme);
             document.getElementById('setting-theme').checked = (appSettings.theme === 'dark');
@@ -610,10 +626,85 @@
         });
 
         /* =========================================
+           SYSTEM MONITOR (BATTERY & NETWORK)
+           ========================================= */
+        function initSystemMonitor() {
+            const elBat = document.getElementById('sys-battery');
+            const elNet = document.getElementById('sys-network');
+
+            // --- 1. BATTERY MONITORING ---
+            // Chrome/Android support 'getBattery'. Safari/Firefox do not.
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(batt => {
+                    const updateBatt = () => {
+                        const level = Math.round(batt.level * 100);
+                        // On desktops, it often shows 100% and charging.
+                        const isCharging = batt.charging;
+                        
+                        let icon = '';
+                        if(isCharging) icon = '⚡';
+                        
+                        // Color logic
+                        let color = '#b0b0b0'; // Default gray
+                        if (isCharging) color = '#00ff88'; // Charging Green
+                        else if (level < 20) color = '#ff4444'; // Low Red
+                        else if (level < 50) color = '#ffcc00'; // Mid Yellow
+                        
+                        elBat.style.color = color;
+                        elBat.innerText = `${icon}${level}%`;
+                    };
+                    updateBatt();
+                    batt.addEventListener('levelchange', updateBatt);
+                    batt.addEventListener('chargingchange', updateBatt);
+                });
+            } else {
+                // FALLBACK: For iPhone, Mac, Firefox, or Desktops where API is blocked.
+                // We display "AC" to indicate power is present, maintaining the dashboard look.
+                elBat.innerText = 'PWR';
+                elBat.style.color = '#666'; 
+                elBat.title = 'Battery status not available on this device';
+            }
+
+            // --- 2. NETWORK MONITORING ---
+            // Primary: Network Information API (Chrome/Android) gives speed/type
+            // Fallback: navigator.onLine (Everything else) gives Online/Offline
+            
+            const updateOnlineStatus = () => {
+                // Option A: Detailed Info (Android/Chrome)
+                if ('connection' in navigator && navigator.connection.effectiveType) {
+                    const conn = navigator.connection;
+                    const type = conn.effectiveType ? conn.effectiveType.toUpperCase() : 'NET';
+                    const speed = conn.downlink ? ` ${conn.downlink}M` : '';
+                    
+                    elNet.innerText = `${type}${speed}`;
+                    elNet.style.color = '#7c5cff';
+                } 
+                // Option B: Basic Info (iOS/Safari/Firefox)
+                else {
+                    const isOnline = navigator.onLine;
+                    elNet.innerText = isOnline ? 'ONLINE' : 'OFFLINE';
+                    elNet.style.color = isOnline ? '#7c5cff' : '#ff4444';
+                }
+            };
+
+            // Listeners for standard events (Works on ALL devices)
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            
+            // Listener for detailed changes (Chrome/Android only)
+            if ('connection' in navigator) {
+                navigator.connection.addEventListener('change', updateOnlineStatus);
+            }
+
+            // Run once on load
+            updateOnlineStatus();
+        }
+
+        /* =========================================
            WELCOME MODAL LOGIC
            ========================================= */
         function initWelcome() {
-            const hasSeen = localStorage.getItem('lyrn-welcome-v038');
+            const hasSeen = localStorage.getItem('lyrn-welcome-v039');
             if (!hasSeen) {
                 document.getElementById('welcome-overlay').style.display = 'flex';
             }
@@ -622,7 +713,7 @@
         function closeWelcome() {
             const checkbox = document.getElementById('dont-show-welcome');
             if (checkbox.checked) {
-                localStorage.setItem('lyrn-welcome-v038', 'true');
+                localStorage.setItem('lyrn-welcome-v039', 'true');
             }
             const overlay = document.getElementById('welcome-overlay');
             overlay.style.opacity = '0';
@@ -636,29 +727,30 @@
             const el = document.getElementById('sys-clock');
             const update = () => {
                 const now = new Date();
-                // Format: Mon, Dec 10  09:41 PM
                 const datePart = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
                 const timePart = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                el.innerText = `${datePart}   ${timePart}`;
+                // Check screen width for concise mode on mobile
+                if (window.innerWidth <= 600) {
+                     el.innerText = timePart; // Only time on small screens
+                } else {
+                     el.innerText = `${datePart}   ${timePart}`;
+                }
             };
             update();
-            setInterval(update, 1000); // Update every second
+            setInterval(update, 1000);
+            window.addEventListener('resize', update);
         }
 
         // --- DOCK RESET ---
         function resetDock() {
             const dock = document.getElementById('floating-dock');
-            // Clear local storage for position
             localStorage.removeItem('lyrn-dock-xy');
-            // Reset Styles
             dock.style.left = '50%';
             dock.style.top = '50%';
             dock.style.transform = 'translate(-50%, -50%)';
             dock.style.bottom = 'auto';
             dock.style.right = 'auto';
-            // Force open so user sees it
             dock.classList.remove('dock-collapsed');
-            // Re-render buttons in case of DOM error
             renderDock();
         }
 
@@ -677,28 +769,19 @@
         function checkIfIframe() {
             try {
                 if (window.self !== window.top) {
-                    // We are in an iframe
                     document.getElementById('btn-close-iframe').style.display = 'flex';
                 }
             } catch (e) {
-                // Cross-origin might block access, but we can assume iframe if error or specific context
                 document.getElementById('btn-close-iframe').style.display = 'flex';
             }
         }
 
         function closeDashboard() {
-            // Check if we are in fullscreen mode
             if (document.fullscreenElement) {
-                // Exit fullscreen FIRST, then send the close message
                 document.exitFullscreen()
                     .then(() => window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*'))
-                    .catch(err => {
-                        console.error("Fullscreen exit error:", err);
-                        // Force close anyway if exit fails
-                        window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*');
-                    });
+                    .catch(err => window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*'));
             } else {
-                // Not in fullscreen, just close
                 window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*');
             }
         }
@@ -737,12 +820,9 @@
                     btn.id = 'btn_' + mod.id; 
                     btn.title = mod.name;
                     btn.innerHTML = mod.icon;
-                    
-                    // Update initial state indicators if window exists from before (unlikely on reload but good for safety)
                     if(document.getElementById('win_' + mod.id)) {
                         btn.classList.add('is-running');
                     }
-
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         toggleWindow(mod);
@@ -767,7 +847,7 @@
             settingsBtn.id = 'btn_settings';
             settingsBtn.onclick = (e) => {
                 e.stopPropagation();
-                renderTaskManager(); // Refresh task list on open
+                renderTaskManager();
                 document.getElementById('settings-popup').classList.toggle('show');
             };
             container.appendChild(settingsBtn);
@@ -835,7 +915,6 @@
             document.addEventListener('click', (e) => {
                 const popup = document.getElementById('settings-popup');
                 const btn = document.getElementById('btn_settings');
-                // Ensure clicks inside the popup don't close it, but clicking outside does
                 if(popup.classList.contains('show') && !popup.contains(e.target) && !btn.contains(e.target)) {
                     popup.classList.remove('show');
                 }
@@ -877,17 +956,9 @@
             closeWindow(modId);
         };
 
-
         /* =========================================
            WINDOW SYSTEM UPDATES
            ========================================= */
-        
-        // Modified toggle logic:
-        // 1. If not created -> Create
-        // 2. If created and Hidden -> Show & Focus
-        // 3. If created and Visible -> 
-        //      If Focused (Top zIndex) -> Hide (Minimize)
-        //      If Background -> Bring to front
         function toggleWindow(mod) {
             const winId = 'win_' + mod.id;
             const existingWin = document.getElementById(winId);
@@ -896,18 +967,14 @@
                 createWindow(mod, winId);
             } else {
                 if (existingWin.style.display === 'none') {
-                    // Restore
                     existingWin.style.display = 'flex';
                     bringToFront(existingWin);
                 } else {
-                    // Check if it's the top-most window
                     const currentZ = parseInt(existingWin.style.zIndex || 0);
                     if (currentZ === zIndexCounter) {
-                        // Minimize
                         existingWin.style.display = 'none';
-                        updateDockIndicators(); // Update focus states
+                        updateDockIndicators(); 
                     } else {
-                        // Focus
                         bringToFront(existingWin);
                     }
                 }
@@ -930,7 +997,6 @@
             win.id = id;
             win.style.zIndex = ++zIndexCounter;
             
-            // Bring to front on click
             win.onmousedown = () => { 
                 if(!win.classList.contains('always-on-top')) win.style.zIndex = ++zIndexCounter; 
                 updateDockIndicators();
@@ -978,19 +1044,16 @@
         }
 
         function updateDockIndicators() {
-            // Reset all
             document.querySelectorAll('.dock-btn').forEach(btn => {
                 btn.classList.remove('is-running');
                 btn.classList.remove('is-focused');
             });
 
-            // Set running status
             activeWindows.forEach(modId => {
                 const btn = document.getElementById('btn_' + modId);
                 if(btn) btn.classList.add('is-running');
             });
 
-            // Find top-most visible window for focus
             let topZ = 0;
             let topWinId = null;
             
@@ -1125,11 +1188,9 @@
             const handle = document.getElementById('dock-handle');
             const savedPos = localStorage.getItem('lyrn-dock-xy');
             
-            // --- FIX FOR REAPPEARING DOCK ---
             if (savedPos && !appSettings.dockFixed) {
                 try {
                     const { left, top } = JSON.parse(savedPos);
-                    // Sanity check bounds
                     if (left < 0 || top < 0 || left > window.innerWidth || top > window.innerHeight) {
                             throw new Error("Coordinates out of bounds");
                     }
@@ -1150,14 +1211,7 @@
 
             const startDrag = (e) => {
                 if(appSettings.dockFixed) return; 
-                
-                // --- FIX START: PREVENT DOUBLE FIRING ---
-                // On mobile, prevent the browser from firing a simulated 'mousedown' 
-                // after the 'touchstart', which causes the dock to toggle twice (Open then immediately Close).
-                if(e.type === 'touchstart') {
-                    e.preventDefault();
-                }
-                // --- FIX END ---
+                if(e.type === 'touchstart') e.preventDefault();
 
                 isDragging = true; hasMoved = false; 
                 dock.classList.add('is-dragging'); 
@@ -1178,7 +1232,7 @@
 
             const onMove = (e) => {
                 if(!isDragging) return; 
-                e.preventDefault(); // Keep this to prevent scrolling while dragging
+                e.preventDefault(); 
                 
                 const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
                 const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
@@ -1211,7 +1265,6 @@
             };
 
             handle.addEventListener('mousedown', startDrag); 
-            // Note: 'passive: false' is required for preventDefault to work
             handle.addEventListener('touchstart', startDrag, {passive: false});
         }
     </script>
