@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.39</title>
+    <title>LYRN Dashboard v0.41</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -90,6 +90,7 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px; color: var(--text-head);
             letter-spacing: 0.05em;
+            cursor: help;
         }
         
         /* Stats specific colors/spacing */
@@ -544,7 +545,7 @@
             </h2>
             
             <p class="welcome-text">
-                Welcome to the v0.39 dashboard environment. 
+                Welcome to the v0.41 dashboard environment. 
                 Use the floating dock to access your modules.
             </p>
 
@@ -559,8 +560,8 @@
             <div class="welcome-feature">
                 <div class="welcome-icon">⚡</div>
                 <div>
-                    <strong>System Stats</strong><br>
-                    Real-time Battery and Network metrics are now visible in the top system bar.
+                    <strong>Hybrid Monitor</strong><br>
+                    Shows Live Battery on mobile, and Memory/System Specs on Desktop.
                 </div>
             </div>
 
@@ -603,7 +604,7 @@
             initFloatingDock();
             initSettingsUI();
             startClock();
-            initSystemMonitor(); // <--- NEW: Starts Battery/Net monitor
+            initSystemMonitor(); // <--- NEW: Hybrid Monitor logic
             checkIfIframe();
             initWelcome();
             
@@ -626,85 +627,83 @@
         });
 
         /* =========================================
-           SYSTEM MONITOR (BATTERY & NETWORK)
+           SYSTEM MONITOR (HYBRID: MOBILE vs DESKTOP)
            ========================================= */
         function initSystemMonitor() {
-            const elBat = document.getElementById('sys-battery');
-            const elNet = document.getElementById('sys-network');
+            const elBat = document.getElementById('sys-battery'); // Slot 1
+            const elNet = document.getElementById('sys-network'); // Slot 2
+            const isMobile = window.innerWidth <= 600; // Matches CSS breakpoint
 
-            // --- 1. BATTERY MONITORING ---
-            // Chrome/Android support 'getBattery'. Safari/Firefox do not.
-            if ('getBattery' in navigator) {
-                navigator.getBattery().then(batt => {
-                    const updateBatt = () => {
-                        const level = Math.round(batt.level * 100);
-                        // On desktops, it often shows 100% and charging.
-                        const isCharging = batt.charging;
-                        
-                        let icon = '';
-                        if(isCharging) icon = '⚡';
-                        
-                        // Color logic
-                        let color = '#b0b0b0'; // Default gray
-                        if (isCharging) color = '#00ff88'; // Charging Green
-                        else if (level < 20) color = '#ff4444'; // Low Red
-                        else if (level < 50) color = '#ffcc00'; // Mid Yellow
-                        
-                        elBat.style.color = color;
-                        elBat.innerText = `${icon}${level}%`;
-                    };
-                    updateBatt();
-                    batt.addEventListener('levelchange', updateBatt);
-                    batt.addEventListener('chargingchange', updateBatt);
-                });
-            } else {
-                // FALLBACK: For iPhone, Mac, Firefox, or Desktops where API is blocked.
-                // We display "AC" to indicate power is present, maintaining the dashboard look.
-                elBat.innerText = 'PWR';
-                elBat.style.color = '#666'; 
-                elBat.title = 'Battery status not available on this device';
-            }
+            // Common Hardware Stats (Used in different slots depending on device)
+            const cores = navigator.hardwareConcurrency || '?';
+            const ram = navigator.deviceMemory ? navigator.deviceMemory + 'GB' : '?';
 
-            // --- 2. NETWORK MONITORING ---
-            // Primary: Network Information API (Chrome/Android) gives speed/type
-            // Fallback: navigator.onLine (Everything else) gives Online/Offline
-            
-            const updateOnlineStatus = () => {
-                // Option A: Detailed Info (Android/Chrome)
-                if ('connection' in navigator && navigator.connection.effectiveType) {
-                    const conn = navigator.connection;
-                    const type = conn.effectiveType ? conn.effectiveType.toUpperCase() : 'NET';
-                    const speed = conn.downlink ? ` ${conn.downlink}M` : '';
-                    
-                    elNet.innerText = `${type}${speed}`;
-                    elNet.style.color = '#7c5cff';
-                } 
-                // Option B: Basic Info (iOS/Safari/Firefox)
-                else {
-                    const isOnline = navigator.onLine;
-                    elNet.innerText = isOnline ? 'ONLINE' : 'OFFLINE';
-                    elNet.style.color = isOnline ? '#7c5cff' : '#ff4444';
+            if (isMobile) {
+                // --- MOBILE MODE ---
+                // Slot 1: BATTERY (Restored)
+                if ('getBattery' in navigator) {
+                    navigator.getBattery().then(batt => {
+                        const updateBatt = () => {
+                            const level = Math.round(batt.level * 100);
+                            const isCharging = batt.charging;
+                            // Charging Green, Low Red, Normal Gray
+                            let color = '#b0b0b0'; 
+                            if (isCharging) color = '#00ff88'; 
+                            else if (level < 20) color = '#ff4444'; 
+                            
+                            elBat.innerHTML = `${isCharging ? '⚡' : ''}${level}%`;
+                            elBat.style.color = color;
+                            elBat.title = `Battery: ${level}% ${isCharging ? '(Charging)' : ''}`;
+                        };
+                        updateBatt();
+                        batt.addEventListener('levelchange', updateBatt);
+                        batt.addEventListener('chargingchange', updateBatt);
+                    });
+                } else {
+                    elBat.innerHTML = 'PWR'; // Fallback if mobile browser blocks battery API
                 }
-            };
 
-            // Listeners for standard events (Works on ALL devices)
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
+                // Slot 2: HARDWARE (Replaces Network)
+                // "8Cr 4GB" - Compact for mobile
+                elNet.innerHTML = `${cores}Cr ${ram}`;
+                elNet.style.color = '#7c5cff';
+                elNet.title = `CPU: ${cores} Cores\nRAM: ~${ram}`;
             
-            // Listener for detailed changes (Chrome/Android only)
-            if ('connection' in navigator) {
-                navigator.connection.addEventListener('change', updateOnlineStatus);
-            }
+            } else {
+                // --- DESKTOP MODE ---
+                // Slot 1: LIVE MEMORY (Replaces Battery)
+                const updateMemory = () => {
+                    if (performance && performance.memory) {
+                        const usedBytes = performance.memory.usedJSHeapSize;
+                        const usedMB = (usedBytes / 1024 / 1024).toFixed(1);
+                        
+                        let color = '#00ff88'; 
+                        if (usedMB > 50) color = '#ffcc00';
+                        if (usedMB > 100) color = '#ff4444';
 
-            // Run once on load
-            updateOnlineStatus();
+                        elBat.innerHTML = `<span style="opacity:0.6">MEM:</span> ${usedMB} MB`;
+                        elBat.style.color = color;
+                        elBat.title = "Live RAM usage of this dashboard tab";
+                    } else {
+                        elBat.style.display = 'none';
+                    }
+                };
+                setInterval(updateMemory, 2000);
+                updateMemory();
+
+                // Slot 2: SYSTEM SPECS (Replaces Network)
+                // "SYS: 12 Cr / 8GB+" - Detailed for Desktop
+                elNet.innerHTML = `<span style="opacity:0.6">SYS:</span> ${cores} Cr / ${ram}+`;
+                elNet.style.color = '#7c5cff';
+                elNet.title = `Logical CPU Cores: ${cores}\nSystem Memory: >=${ram}`;
+            }
         }
 
         /* =========================================
            WELCOME MODAL LOGIC
            ========================================= */
         function initWelcome() {
-            const hasSeen = localStorage.getItem('lyrn-welcome-v039');
+            const hasSeen = localStorage.getItem('lyrn-welcome-v041');
             if (!hasSeen) {
                 document.getElementById('welcome-overlay').style.display = 'flex';
             }
@@ -713,7 +712,7 @@
         function closeWelcome() {
             const checkbox = document.getElementById('dont-show-welcome');
             if (checkbox.checked) {
-                localStorage.setItem('lyrn-welcome-v039', 'true');
+                localStorage.setItem('lyrn-welcome-v041', 'true');
             }
             const overlay = document.getElementById('welcome-overlay');
             overlay.style.opacity = '0';
