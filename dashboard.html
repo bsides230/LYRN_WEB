@@ -658,6 +658,8 @@
             handle.addEventListener('touchstart', startDrag, {passive: false});
 
             function startDrag(e) {
+                if(e.type === 'touchstart') e.preventDefault();
+
                 isDragging = true;
                 hasMoved = false; 
                 dock.classList.add('is-dragging');
