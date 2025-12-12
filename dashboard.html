@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.52 (Smart Dock)</title>
+    <title>LYRN Dashboard v0.55 (Center Dock)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -154,97 +154,140 @@
         .lyrn-window:hover .resize-handle { opacity: 1; }
 
         /* =========================================
-           FLOATING DOCK - CORE
+           FLOATING DOCK (WEBSITE STYLE)
            ========================================= */
+        
+        /* The main container - Acts as the Anchor */
         #floating-dock {
-            position: fixed; z-index: 20000; 
+            position: fixed;
+            /* Default position (will be overridden by JS) */
+            bottom: 30px;
+            right: 30px;
             display: flex;
-            background: var(--dock-bg);
-            backdrop-filter: blur(var(--dock-blur));
-            -webkit-backdrop-filter: blur(var(--dock-blur));
-            border: 1px solid var(--dock-border);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            padding: 8px;
-            gap: 8px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end; /* Align to bottom so handle stays put */
+            
+            background: transparent; /* Main container is transparent */
+            border: none;
+            box-shadow: none;
+            z-index: 20000;
+            
+            /* Allow buttons to pop UP outside the container */
+            overflow: visible; 
+            width: 50px;
+            height: 30px; /* Base height matches handle height */
             
             /* Disable Selection on Dock */
             user-select: none;
             -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            touch-action: none;
+            
+            /* Transition for snapping */
+            transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1), top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        
-        /* Dragging State */
-        #floating-dock.is-dragging { 
-            transition: none; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6); 
-            border-color: var(--brand-purple); 
+
+        #floating-dock.is-dragging {
+            transition: none !important;
             cursor: grabbing;
         }
 
-        /* LAYOUT MODES */
-        #floating-dock.horizontal-mode { flex-direction: row; align-items: center; }
-        #floating-dock.vertical-mode { flex-direction: column; align-items: center; }
-
-        /* CONTENT CONTAINER */
+        /* The content area - Absolute positioned ABOVE the handle */
         #dock-content {
-            display: flex; gap: 8px;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            max-width: 500px; /* Default open max width */
-            max-height: 500px;
-            opacity: 1;
-        }
-        #floating-dock.horizontal-mode #dock-content { flex-direction: row; }
-        #floating-dock.vertical-mode #dock-content { flex-direction: column; }
-        
-        /* COLLAPSED STATE (Smooth iOS style collapse) */
-        #floating-dock.dock-collapsed #dock-content {
-            max-width: 0; max-height: 0; opacity: 0; padding: 0; margin: 0; pointer-events: none;
-        }
-        #floating-dock.vertical-mode.dock-collapsed #dock-content { max-width: 0; max-height: 0; }
-
-        /* HANDLE */
-        #dock-handle {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            cursor: grab;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-            transition: background 0.2s, transform 0.2s;
-        }
-        #dock-handle:hover { background: rgba(255,255,255,0.15); }
-        #dock-handle:active { cursor: grabbing; background: var(--brand-purple-dim); transform: scale(0.95); }
-
-        /* Handle Dimensions per Mode */
-        #floating-dock.horizontal-mode #dock-handle { width: 32px; height: 50px; order: 2; }
-        #floating-dock.vertical-mode #dock-handle { width: 50px; height: 32px; order: 2; }
-
-        .handle-bar { background: rgba(255,255,255,0.5); border-radius: 10px; pointer-events: none; }
-        #floating-dock.horizontal-mode .handle-bar { width: 4px; height: 20px; }
-        #floating-dock.vertical-mode .handle-bar { width: 20px; height: 4px; }
-
-        /* DOCK BUTTONS */
-        .dock-btn {
-            background: transparent; border: none; cursor: pointer; position: relative;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-head); border-radius: 12px;
-            width: 50px; height: 50px; font-size: 24px;
-            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-            background: rgba(255,255,255,0.03);
-            border: 1px solid transparent;
+            position: absolute;
+            bottom: 100%; /* Push upwards above handle */
+            left: 0;
+            width: 100%;
             
-            /* Disable Selection/Drag on Icons */
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-user-drag: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 8px;
+            padding-bottom: 12px; /* Visual gap above handle */
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 5px;
+
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            transform-origin: bottom center;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy pop */
+            pointer-events: auto;
         }
-        .dock-btn:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-4px); }
+
+        /* Collapsed State */
+        #floating-dock.dock-collapsed #dock-content {
+            opacity: 0;
+            transform: translateY(10px) scale(0.8);
+            pointer-events: none;
+        }
+
+        /* Buttons styling */
+        .dock-btn {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 6px !important;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            padding: 0 !important;
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .dock-btn:hover {
+            background: var(--brand-purple-dim);
+            color: var(--brand-purple);
+            border-color: var(--brand-purple);
+        }
+
+        /* The Handle Container */
+        #dock-handle {
+            width: 50px; /* Matches container width */
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 15px; /* Pill shape */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: background 0.2s, transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        #dock-handle:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        /* The Glowing LED Bar */
+        .handle-bar {
+            width: 20px;
+            height: 4px;
+            background-color: #ffffff; /* Hot center */
+            border-radius: 2px;
+            opacity: 1;
+            /* Purple LED Glow Effect */
+            box-shadow: 0 0 6px var(--brand-purple), 0 0 12px var(--brand-purple);
+            transition: all 0.3s;
+        }
+
+        #floating-dock:hover .handle-bar {
+            background-color: #fff;
+            box-shadow: 0 0 8px var(--brand-purple), 0 0 16px var(--brand-purple), 0 0 24px var(--brand-purple);
+        }
         
-        /* WIGGLE ANIMATION */
+        /* WIGGLE ANIMATION (Edit Mode) */
         @keyframes wiggle {
             0% { transform: rotate(0deg); }
             25% { transform: rotate(-3deg); }
@@ -262,8 +305,8 @@
         .dock-btn.wiggle:hover { transform: scale(1.05); }
 
         .active-dot {
-            position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
-            width: 4px; height: 4px; border-radius: 50%;
+            position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+            width: 3px; height: 3px; border-radius: 50%;
             background-color: var(--brand-purple);
             box-shadow: 0 0 6px var(--brand-purple); display: none;
         }
@@ -297,6 +340,32 @@
             transition: all 0.2s;
         }
         .btn-full-width:hover { background: var(--brand-purple); border-color: var(--brand-purple); }
+
+        /* WELCOME POPUP */
+        #welcome-popup {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 320px; background: var(--bg-panel);
+            border: 1px solid var(--brand-purple);
+            box-shadow: 0 0 30px rgba(124, 92, 255, 0.2);
+            border-radius: 12px; z-index: 22000;
+            display: none; flex-direction: column;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        
+        .welcome-content { padding: 20px; color: var(--text-body); font-size: 13px; line-height: 1.5; }
+        .welcome-footer { padding: 10px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-dim); }
+        .welcome-title { font-family: 'JetBrains Mono'; color: var(--text-head); font-size: 14px; margin-bottom: 10px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+
+        .cta-btn {
+            background: var(--brand-purple); color: #fff; border: none;
+            padding: 6px 12px; border-radius: 4px;
+            font-family: 'JetBrains Mono'; font-size: 11px;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+        .cta-btn:hover { background: #fff; color: var(--brand-purple); box-shadow: 0 0 10px var(--brand-purple-glow); }
+
 
         /* EDIT POPUP */
         .edit-popup {
@@ -361,6 +430,7 @@
             <span class="system-text" id="sys-battery"></span>
         </div>
         <div class="bar-section">
+            <button class="bar-btn" title="Help" onclick="openWelcome()">?</button>
             <button class="bar-btn" title="Reset Dock" onclick="resetDock()">⚓</button>
             <button class="bar-btn" title="Fullscreen" onclick="toggleDashboardFullscreen()">⛶</button>
             <button class="bar-btn close-iframe-btn" id="btn-close-iframe" onclick="closeDashboard()">✕</button>
@@ -373,6 +443,25 @@
     </div>
 
     <div id="desktop-area"></div>
+
+    <div id="welcome-popup">
+        <div class="window-header">
+            <span class="window-title">System Welcome</span>
+            <button class="win-btn" onclick="closeWelcome()">✕</button>
+        </div>
+        <div class="welcome-content">
+            <span class="welcome-title">LYRN Dock System</span>
+            <p>The floating dock is your main navigation tool. You can drag the glowing handle to move it anywhere on the screen. Click the handle to toggle collapse.</p>
+            <p><strong>Lost the dock?</strong> Click the anchor (⚓) icon in the top system bar to reset its position to the center.</p>
+        </div>
+        <div class="welcome-footer">
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="chk-hide-welcome" onchange="toggleHideWelcome(this.checked)">
+                Don't show on startup
+            </label>
+            <button class="cta-btn" onclick="closeWelcome()">INITIALIZE</button>
+        </div>
+    </div>
 
     <div id="settings-popup">
         <div class="settings-header">General</div>
@@ -392,13 +481,13 @@
         </div>
         
         <div class="settings-header" style="margin-top:5px;">Layout</div>
-        <button class="btn-full-width" onclick="enableEditMode()">Edit Dock Layout</button>
+        <button class="btn-full-width" onclick="enableEditMode()">Edit Dock Order</button>
         
         <div class="settings-header" style="margin-top:5px;">Modules</div>
         <div id="module-list-container"></div>
     </div>
 
-    <div id="floating-dock" class="horizontal-mode">
+    <div id="floating-dock">
         <div id="dock-content"></div>
 
         <div id="dock-handle" title="Drag to Move | Click to Toggle">
@@ -419,7 +508,7 @@
         let appSettings = {
             activeModules: ['mod_builder', 'mod_job_manager', 'mod_asset_shop'],
             dockPinned: true, 
-            dockPos: { x: '50%', y: '90%', orientation: 'horizontal' },
+            dockPos: null, // Initial null to trigger center calculation
             theme: 'dark'
         };
 
@@ -437,6 +526,7 @@
             startCpuMonitor();
             initSystemMonitor(); 
             checkIfIframe();
+            checkWelcome();
             
             document.getElementById('setting-dock-pin').checked = appSettings.dockPinned;
             document.getElementById('setting-theme').checked = (appSettings.theme === 'dark');
@@ -515,23 +605,14 @@
                 const popup = document.getElementById('settings-popup');
                 
                 const dockRect = document.getElementById('floating-dock').getBoundingClientRect();
-                const isVert = document.getElementById('floating-dock').classList.contains('vertical-mode');
                 
-                // Smart Position for Settings
-                const popupW = 260; // Approximate width
-                if (isVert) {
-                    let leftPos = dockRect.right + 15;
-                    // If going right overflows window, flip to left
-                    if (leftPos + popupW > window.innerWidth) {
-                        leftPos = dockRect.left - popupW - 15;
-                    }
-                    popup.style.top = dockRect.top + 'px';
-                    popup.style.left = leftPos + 'px';
-                } else {
-                    popup.style.left = (dockRect.left) + 'px';
-                    popup.style.top = (dockRect.top - popup.offsetHeight - 15) + 'px';
-                    if (dockRect.top < 300) popup.style.top = (dockRect.bottom + 15) + 'px';
-                }
+                // Position Settings Popup relative to dock
+                const popupW = 260; 
+                let leftPos = dockRect.left - popupW - 15;
+                if(leftPos < 10) leftPos = dockRect.right + 15;
+
+                popup.style.top = (dockRect.top - 100) + 'px';
+                popup.style.left = leftPos + 'px';
                 
                 popup.classList.toggle('show');
             };
@@ -541,161 +622,134 @@
         }
 
         /* =========================================
-           SMART SNAPPING DOCK DRAG (STRICT BOUNDS)
+           WEBSITE STYLE DRAG (GRID SNAP)
            ========================================= */
         function initDockDrag() {
             const dock = document.getElementById('floating-dock');
             const handle = document.getElementById('dock-handle');
             
-            if(appSettings.dockPos) {
-                applyDockState(appSettings.dockPos);
+            // Apply saved position OR CENTER DEFAULT
+            if (appSettings.dockPos) {
+                 dock.style.bottom = 'auto';
+                 dock.style.right = 'auto';
+                 dock.style.left = appSettings.dockPos.left + 'px';
+                 dock.style.top = appSettings.dockPos.top + 'px';
+            } else {
+                 // Calculate Center
+                 const startLeft = (window.innerWidth / 2) - 25; // 50px width / 2
+                 const startTop = (window.innerHeight / 2) - 15; // 30px height / 2
+                 
+                 dock.style.bottom = 'auto';
+                 dock.style.right = 'auto';
+                 dock.style.left = startLeft + 'px';
+                 dock.style.top = startTop + 'px';
             }
-
-            let isDrag = false;
-            let startX, startY, offsetX, offsetY;
-
-            // Handle Click (Toggle Collapse)
-            handle.onclick = (e) => {
-                if(!isDrag) {
-                    dock.classList.toggle('dock-collapsed');
-                }
-            };
-
-            const onDragStart = (e) => {
-                if(e.target.closest('.dock-btn')) return;
-                
-                // PREVENT TEXT SELECTION HIGHLIGHTING
-                if(e.type !== 'touchstart') {
-                    e.preventDefault();
-                }
-
-                isDrag = false;
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                
-                startX = clientX; startY = clientY;
-                
-                dock.classList.add('is-dragging');
-                dock.classList.remove('dock-collapsed'); 
-                
-                const rect = dock.getBoundingClientRect();
-                offsetX = clientX - rect.left;
-                offsetY = clientY - rect.top;
-
-                window.addEventListener('mousemove', onDragMove);
-                window.addEventListener('mouseup', onDragEnd);
-                window.addEventListener('touchmove', onDragMove, {passive:false});
-                window.addEventListener('touchend', onDragEnd);
-            };
-
-            const onDragMove = (e) => {
-                e.preventDefault();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                
-                if (Math.abs(clientX - startX) > 5 || Math.abs(clientY - startY) > 5) {
-                    isDrag = true;
-                }
-                if (!isDrag) return;
-
-                // Calculate Raw Position
-                let newX = clientX - offsetX;
-                let newY = clientY - offsetY;
-
-                // --- STRICT BOUNDS (During Drag) ---
-                const rect = dock.getBoundingClientRect();
-                const winW = window.innerWidth;
-                const winH = window.innerHeight;
-                
-                newX = Math.max(0, Math.min(newX, winW - rect.width));
-                newY = Math.max(32, Math.min(newY, winH - rect.height));
-
-                dock.style.left = newX + 'px';
-                dock.style.top = newY + 'px';
-                dock.style.transform = 'none'; 
-            };
-
-            const onDragEnd = (e) => {
-                dock.classList.remove('is-dragging');
-                window.removeEventListener('mousemove', onDragMove);
-                window.removeEventListener('mouseup', onDragEnd);
-                window.removeEventListener('touchmove', onDragMove);
-                window.removeEventListener('touchend', onDragEnd);
-
-                if(!isDrag) return;
-
-                const rect = dock.getBoundingClientRect();
-                const winW = window.innerWidth;
-                const winH = window.innerHeight;
-
-                // --- MAGNETIC SNAP LOGIC ---
-                const SNAP_THRESHOLD = 15;
-                const PADDING = 10;
-                
-                let finalX = rect.left;
-                let finalY = rect.top;
-                let orient = appSettings.dockPos.orientation || 'horizontal'; 
-                let snapped = false;
-
-                if (Math.abs(winH - rect.bottom) < SNAP_THRESHOLD) {
-                    orient = 'horizontal'; finalY = winH - rect.height - PADDING; snapped = true;
-                } else if (Math.abs(rect.top - 32) < SNAP_THRESHOLD) {
-                    orient = 'horizontal'; finalY = 32 + PADDING; snapped = true;
-                } else if (Math.abs(rect.left) < SNAP_THRESHOLD) {
-                    orient = 'vertical'; finalX = PADDING; snapped = true;
-                } else if (Math.abs(winW - rect.right) < SNAP_THRESHOLD) {
-                    orient = 'vertical'; finalX = winW - rect.width - PADDING; snapped = true;
-                }
-
-                // --- ROTATION SAFETY CHECK ---
-                const currentOrient = dock.classList.contains('vertical-mode') ? 'vertical' : 'horizontal';
-                let predWidth = rect.width;
-                let predHeight = rect.height;
-
-                if (orient !== currentOrient) {
-                    predWidth = rect.height;
-                    predHeight = rect.width;
-                }
-
-                // --- FINAL BOUNDS CLAMPING ---
-                if (finalX < 0) finalX = PADDING;
-                if (finalX + predWidth > winW) finalX = winW - predWidth - PADDING;
-
-                if (finalY < 32) finalY = 32 + PADDING;
-                if (finalY + predHeight > winH) finalY = winH - predHeight - PADDING;
-
-                if(snapped && orient === 'horizontal') {
-                    if(Math.abs((winW/2) - (finalX + predWidth/2)) < 50) {
-                        finalX = (winW/2) - (predWidth/2);
-                    }
-                }
-
-                const newState = { x: finalX + 'px', y: finalY + 'px', orientation: orient };
-                
-                appSettings.dockPos = newState;
-                saveSettings();
-                applyDockState(newState);
-            };
-
-            handle.addEventListener('mousedown', onDragStart);
-            handle.addEventListener('touchstart', onDragStart, {passive:false});
-        }
-
-        function applyDockState(pos) {
-            const dock = document.getElementById('floating-dock');
-            
-            dock.className = ''; // reset
-            dock.classList.add(pos.orientation + '-mode');
             
             if(!appSettings.dockPinned) {
-               dock.classList.add('dock-collapsed');
-            } else {
-               dock.classList.remove('dock-collapsed');
+                dock.classList.add('dock-collapsed');
             }
 
-            dock.style.left = pos.x;
-            dock.style.top = pos.y;
-            dock.style.transform = 'none';
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+            let hasMoved = false;
+
+            // 1. Drag Functionality
+            handle.addEventListener('mousedown', startDrag);
+            handle.addEventListener('touchstart', startDrag, {passive: false});
+
+            function startDrag(e) {
+                isDragging = true;
+                hasMoved = false; 
+                dock.classList.add('is-dragging');
+
+                const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+                startX = clientX;
+                startY = clientY;
+
+                const rect = dock.getBoundingClientRect();
+                initialLeft = rect.left;
+                initialTop = rect.top;
+
+                // Ensure absolute positioning
+                dock.style.bottom = 'auto';
+                dock.style.right = 'auto';
+                dock.style.left = `${initialLeft}px`;
+                dock.style.top = `${initialTop}px`;
+
+                document.addEventListener('mousemove', onDrag);
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchmove', onDrag, {passive: false});
+                document.addEventListener('touchend', stopDrag);
+            }
+
+            function onDrag(e) {
+                if (!isDragging) return;
+                if(e.cancelable) e.preventDefault(); 
+
+                const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+
+                if (Math.abs(dx) + Math.abs(dy) > 5) hasMoved = true;
+
+                let newLeft = initialLeft + dx;
+                let newTop = initialTop + dy;
+
+                const maxLeft = window.innerWidth - dock.offsetWidth;
+                const maxTop = window.innerHeight - dock.offsetHeight;
+
+                if (newLeft < 0) newLeft = 0;
+                if (newLeft > maxLeft) newLeft = maxLeft;
+                if (newTop < 32) newTop = 32; // Respect top bar
+                if (newTop > maxTop) newTop = maxTop;
+
+                dock.style.left = `${newLeft}px`;
+                dock.style.top = `${newTop}px`;
+            }
+
+            function stopDrag() {
+                isDragging = false;
+                dock.classList.remove('is-dragging');
+
+                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchmove', onDrag);
+                document.removeEventListener('touchend', stopDrag);
+
+                if (hasMoved) {
+                    // Snap to Grid
+                    const rect = dock.getBoundingClientRect();
+                    const gridSize = 40; 
+                    const safeMargin = 20; 
+
+                    let currentLeft = rect.left;
+                    let currentTop = rect.top;
+
+                    let finalLeft = Math.round(currentLeft / gridSize) * gridSize;
+                    let finalTop = Math.round(currentTop / gridSize) * gridSize;
+
+                    const maxLeft = window.innerWidth - rect.width - safeMargin;
+                    const maxTop = window.innerHeight - rect.height - safeMargin;
+
+                    if (finalLeft < safeMargin) finalLeft = safeMargin;
+                    if (finalLeft > maxLeft) finalLeft = maxLeft;
+                    if (finalTop < 32 + safeMargin) finalTop = 32 + safeMargin;
+                    if (finalTop > maxTop) finalTop = maxTop;
+
+                    dock.style.left = `${finalLeft}px`;
+                    dock.style.top = `${finalTop}px`;
+                    
+                    appSettings.dockPos = { left: finalLeft, top: finalTop };
+                    saveSettings();
+                } else {
+                    // It was a click, not a drag
+                    dock.classList.toggle('dock-collapsed');
+                }
+            }
         }
 
         /* =========================================
@@ -725,9 +779,9 @@
             const popup = document.createElement('div');
             popup.className = 'edit-popup';
             
-            const isVert = document.getElementById('floating-dock').classList.contains('vertical-mode');
-            const prev = isVert ? '↑' : '←';
-            const next = isVert ? '↓' : '→';
+            // Vertical Stack logic
+            const prev = '↑';
+            const next = '↓';
 
             popup.innerHTML = `
                 <button class="edit-popup-btn" onclick="moveApp('${mod.id}', -1)">${prev}</button>
@@ -739,22 +793,14 @@
             document.body.appendChild(popup);
             
             const btnRect = e.currentTarget.getBoundingClientRect();
-            let top = btnRect.top - 60;
-            let left = btnRect.left;
+            let top = btnRect.top;
+            let left = btnRect.left - 160;
 
-            // Vertical adjustment
-            if(top < 40) top = btnRect.bottom + 10;
+            if (left < 10) left = btnRect.right + 10;
             
-            // Horizontal Safety (Right Edge)
-            const popupW = 150; // Approx width
-            if (left + popupW > window.innerWidth) {
-                left = btnRect.right - popupW;
-            }
-
             popup.style.top = top + 'px';
             popup.style.left = left + 'px';
             
-            // Prevent click from immediately closing it
             e.stopPropagation();
         }
 
@@ -768,7 +814,6 @@
                 appSettings.activeModules[idx] = appSettings.activeModules[newIdx];
                 appSettings.activeModules[newIdx] = temp;
                 saveSettings(); renderDock();
-                // Close popup so user sees the move
                 document.querySelectorAll('.edit-popup').forEach(p => p.remove());
             }
         }
@@ -909,10 +954,21 @@
         }
 
         function resetDock() {
-            appSettings.dockPos = { x: '50%', y: '90%', orientation: 'horizontal' };
+            // Recalculate center
+            const startLeft = (window.innerWidth / 2) - 25; 
+            const startTop = (window.innerHeight / 2) - 15;
+            
+            appSettings.dockPos = { left: startLeft, top: startTop };
             appSettings.dockPinned = true;
             document.getElementById('setting-dock-pin').checked = true;
-            saveSettings(); applyDockState(appSettings.dockPos);
+            
+            const dock = document.getElementById('floating-dock');
+            dock.style.bottom = 'auto';
+            dock.style.right = 'auto';
+            dock.style.left = startLeft + 'px';
+            dock.style.top = startTop + 'px';
+            dock.classList.remove('dock-collapsed');
+            saveSettings(); 
         }
         function toggleTheme(isDark) { document.body.setAttribute('data-theme', isDark ? 'dark' : 'light'); appSettings.theme = isDark ? 'dark' : 'light'; saveSettings(); }
         
@@ -946,7 +1002,6 @@
         function startCpuMonitor() {
             const el = document.getElementById('sys-cpu');
             if(!el) return;
-            // Real CPU usage isn't available in standard JS, so we display Core count + simulated load for visual effect
             const cores = navigator.hardwareConcurrency || 4; 
             
             setInterval(() => {
@@ -955,10 +1010,38 @@
             }, 2000);
         }
 
-        function initSystemMonitor() { if('getBattery' in navigator) navigator.getBattery().then(b => { const update = () => document.getElementById('sys-battery').innerText = Math.round(b.level*100) + '%'; update(); b.addEventListener('levelchange', update); }); }
+        function initSystemMonitor() { 
+            if('getBattery' in navigator) {
+                navigator.getBattery().then(b => { 
+                    const update = () => {
+                        const icon = b.charging ? '⚡' : '';
+                        document.getElementById('sys-battery').innerText = icon + Math.round(b.level*100) + '%';
+                    };
+                    update(); 
+                    b.addEventListener('levelchange', update); 
+                    b.addEventListener('chargingchange', update);
+                }); 
+            }
+        }
         function toggleDashboardFullscreen() { !document.fullscreenElement ? document.documentElement.requestFullscreen() : document.exitFullscreen(); }
         function checkIfIframe() { if(window.self !== window.top) document.getElementById('btn-close-iframe').style.display = 'flex'; }
         function closeDashboard() { window.parent.postMessage({ type: 'CLOSE_DASHBOARD' }, '*'); }
+
+        /* Welcome Popup Logic */
+        function checkWelcome() {
+            const hidden = localStorage.getItem('lyrn-welcome-hidden');
+            document.getElementById('chk-hide-welcome').checked = (hidden === 'true');
+            if(hidden !== 'true') openWelcome();
+        }
+        function openWelcome() {
+            document.getElementById('welcome-popup').style.display = 'flex';
+        }
+        function closeWelcome() {
+            document.getElementById('welcome-popup').style.display = 'none';
+        }
+        function toggleHideWelcome(isChecked) {
+            localStorage.setItem('lyrn-welcome-hidden', isChecked);
+        }
     </script>
 </body>
 </html>
