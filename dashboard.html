@@ -539,6 +539,10 @@
                 <span class="toggle-slider"></span>
             </label>
         </div>
+        <div class="settings-row">
+            <span id="font-size-label">Font Size: 12px</span>
+            <input type="range" id="setting-font-size" min="10" max="16" step="1" style="width: 100px; accent-color: var(--brand-purple);" oninput="updateFontSize(this.value)">
+        </div>
         
         <div class="settings-header" style="margin-top:5px;">Layout</div>
         <button class="btn-full-width" onclick="enableEditMode()">Edit Dock Order</button>
@@ -569,7 +573,8 @@
             activeModules: ['mod_builder', 'mod_job_manager', 'mod_asset_shop'],
             dockPinned: true, 
             dockPos: null, // Initial null to trigger center calculation
-            theme: 'dark'
+            theme: 'dark',
+            fontSize: 12
         };
 
         let zIndexCounter = 100;
@@ -591,6 +596,9 @@
             document.getElementById('setting-dock-pin').checked = appSettings.dockPinned;
             document.getElementById('setting-theme').checked = (appSettings.theme === 'dark');
             
+            // Apply saved font size without saving again
+            if (appSettings.fontSize) updateFontSize(appSettings.fontSize, false);
+
             // Handle clicking outside
             document.addEventListener('click', (e) => {
                 // Settings Popup
@@ -937,12 +945,22 @@
                 </div>
                 <div class="window-content">
                     <div class="iframe-shield"></div>
-                    <iframe src="modules/${mod.file}"></iframe>
+                    <iframe src="${mod.file}"></iframe>
                 </div>
                 <div class="resize-handle"></div>
                 <div class="mobile-resize-handle"></div>
             `;
             
+            const iframe = win.querySelector('iframe');
+            if (iframe) {
+                iframe.onload = () => {
+                     // Sync font size to new window
+                     iframe.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: appSettings.fontSize }, '*');
+                     // Sync theme to new window
+                     iframe.contentWindow.postMessage({ type: 'THEME_CHANGE', theme: appSettings.theme }, '*');
+                };
+            }
+
             setupWindowDrag(win);
             setupWindowResize(win);
             setupMobileResize(win);
@@ -993,7 +1011,7 @@
             const startResize = (e) => {
                 e.preventDefault(); e.stopPropagation();
                 // For mobile touches use first touch, fallback to mouse for testing
-                const startY = e.touches ? e.touches[0].clientY : e.clientY;
+                const startY = e.touches ? e.touches[0].clientX : e.clientY;
                 const startH = win.offsetHeight;
                 
                 win.classList.add('is-resizing');
@@ -1083,6 +1101,24 @@
             saveSettings(); 
         }
         
+        function updateFontSize(size, save=true) {
+            size = parseInt(size);
+            document.documentElement.style.setProperty('--font-size-base', size + 'px');
+            document.getElementById('font-size-label').innerText = `Font Size: ${size}px`;
+            document.getElementById('setting-font-size').value = size;
+
+            // Broadcast to frames
+            const frames = document.querySelectorAll('iframe');
+            frames.forEach(frame => {
+                frame.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: size }, '*');
+            });
+
+            if (save) {
+                appSettings.fontSize = size;
+                saveSettings();
+            }
+        }
+
         function toggleModuleActive(modId, active) { if(active) { if(!appSettings.activeModules.includes(modId)) appSettings.activeModules.push(modId); } else { appSettings.activeModules = appSettings.activeModules.filter(m => m !== modId); } saveSettings(); renderDock(); }
         function toggleMaximize(btn) { const win = btn.closest('.lyrn-window'); if(win.classList.contains('maximized')) { win.classList.remove('maximized'); win.style.cssText = win.dataset.cache || ''; } else { win.dataset.cache = win.style.cssText; win.classList.add('maximized'); win.style.top = '32px'; win.style.left = '0'; win.style.width = '100%'; win.style.height = 'calc(100% - 32px)'; } }
         function saveSettings() { localStorage.setItem('lyrn-settings', JSON.stringify(appSettings)); }
