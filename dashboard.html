@@ -153,6 +153,18 @@
         }
         .lyrn-window:hover .resize-handle { opacity: 1; }
 
+        /* New Mobile Resize Handle */
+        .mobile-resize-handle {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 24px;
+            z-index: 20; display: none; align-items: center; justify-content: center;
+            cursor: ns-resize; padding-top: 4px;
+        }
+        .mobile-resize-handle::after {
+            content: ''; width: 40px; height: 4px; background: var(--border-color); border-radius: 2px;
+            transition: background 0.2s;
+        }
+        .mobile-resize-handle:active::after { background: var(--brand-purple); }
+
         /* =========================================
            FLOATING DOCK (WEBSITE STYLE)
            ========================================= */
@@ -437,7 +449,7 @@
                 
                 /* Card Dimensions */
                 width: 100% !important;
-                height: 65vh !important; /* Open height */
+                height: 65vh; /* Open height - Removed !important for resizing */
                 min-height: 200px;
                 
                 /* Visual Style */
@@ -461,6 +473,8 @@
             
             /* Hide Resize/Drag UI */
             .resize-handle { display: none !important; }
+            .mobile-resize-handle { display: flex; } /* Show mobile handle */
+            
             .window-header { cursor: default !important; }
             .win-controls .win-btn:first-child { display: none; } /* Hide Maximize */
         }
@@ -900,13 +914,18 @@
             win.id = id;
             win.style.zIndex = ++zIndexCounter;
             
-            const startW = isTouch ? '90%' : '800px';
-            const startH = isTouch ? '80%' : '600px';
-            win.style.width = startW; win.style.height = startH;
+            const isMobileWidth = window.innerWidth <= 600;
+            const startW = isMobileWidth ? '100%' : (isTouch ? '90%' : '800px');
+            const startH = isMobileWidth ? '65vh' : (isTouch ? '80%' : '600px');
+            
+            win.style.width = startW; 
+            win.style.height = startH;
             
             const offset = (activeWindows.size * 30) + 50;
-            win.style.left = isTouch ? '5%' : offset + 'px';
-            win.style.top = isTouch ? '10%' : offset + 'px';
+            if(!isMobileWidth) {
+                 win.style.left = isTouch ? '5%' : offset + 'px';
+                 win.style.top = isTouch ? '10%' : offset + 'px';
+            }
 
             win.innerHTML = `
                 <div class="window-header">
@@ -921,10 +940,12 @@
                     <iframe src="modules/${mod.file}"></iframe>
                 </div>
                 <div class="resize-handle"></div>
+                <div class="mobile-resize-handle"></div>
             `;
             
             setupWindowDrag(win);
             setupWindowResize(win);
+            setupMobileResize(win);
             win.onmousedown = () => { win.style.zIndex = ++zIndexCounter; updateDockIndicators(); };
             win.ontouchstart = () => { win.style.zIndex = ++zIndexCounter; updateDockIndicators(); };
             area.appendChild(win);
@@ -963,6 +984,41 @@
                 window.addEventListener('touchmove', doResize, {passive:false}); window.addEventListener('touchend', stopResize);
             };
             handle.addEventListener('mousedown', startResize); handle.addEventListener('touchstart', startResize, {passive:false});
+        }
+        
+        function setupMobileResize(win) {
+            const handle = win.querySelector('.mobile-resize-handle');
+            if(!handle) return;
+            
+            const startResize = (e) => {
+                e.preventDefault(); e.stopPropagation();
+                // For mobile touches use first touch, fallback to mouse for testing
+                const startY = e.touches ? e.touches[0].clientY : e.clientY;
+                const startH = win.offsetHeight;
+                
+                win.classList.add('is-resizing');
+                
+                const doResize = (ev) => {
+                    // Prevent page scroll
+                    if(ev.cancelable) ev.preventDefault(); 
+                    const curY = ev.touches ? ev.touches[0].clientY : ev.clientY;
+                    const newH = startH + (curY - startY);
+                    
+                    if(newH > 150) win.style.height = newH + 'px';
+                };
+                
+                const stopResize = () => {
+                    win.classList.remove('is-resizing');
+                    window.removeEventListener('touchmove', doResize); window.removeEventListener('touchend', stopResize);
+                    window.removeEventListener('mousemove', doResize); window.removeEventListener('mouseup', stopResize);
+                };
+                
+                window.addEventListener('touchmove', doResize, {passive: false}); window.addEventListener('touchend', stopResize);
+                window.addEventListener('mousemove', doResize); window.addEventListener('mouseup', stopResize);
+            };
+            
+            handle.addEventListener('touchstart', startResize, {passive: false});
+            handle.addEventListener('mousedown', startResize);
         }
 
         function setupWindowDrag(win) {
