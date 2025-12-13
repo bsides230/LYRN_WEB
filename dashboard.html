@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LYRN Dashboard v0.55 (Center Dock)</title>
+    <title>LYRN Dashboard v0.56 (Center Dock)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -353,6 +353,20 @@
         }
         .btn-full-width:hover { background: var(--brand-purple); border-color: var(--brand-purple); }
 
+        /* SLIDER STYLES */
+        input[type="range"] {
+            -webkit-appearance: none; width: 100px; height: 4px; background: var(--border-color);
+            border-radius: 2px; outline: none; opacity: 0.7; transition: opacity .2s;
+        }
+        input[type="range"]:hover { opacity: 1; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 12px; height: 12px; border-radius: 50%; 
+            background: var(--brand-purple); cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 12px; height: 12px; border-radius: 50%; background: var(--brand-purple); cursor: pointer;
+        }
+
         /* WELCOME POPUP */
         #welcome-popup {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -540,8 +554,8 @@
             </label>
         </div>
         <div class="settings-row">
-            <span id="font-size-label">Font Size: 12px</span>
-            <input type="range" id="setting-font-size" min="10" max="16" step="1" style="width: 100px; accent-color: var(--brand-purple);" oninput="updateFontSize(this.value)">
+            <span>Font Size: <b id="font-size-display">12</b>px</span>
+            <input type="range" id="setting-font-size" min="10" max="18" step="1" value="12" oninput="updateFontSize(this.value)">
         </div>
         
         <div class="settings-header" style="margin-top:5px;">Layout</div>
@@ -596,8 +610,9 @@
             document.getElementById('setting-dock-pin').checked = appSettings.dockPinned;
             document.getElementById('setting-theme').checked = (appSettings.theme === 'dark');
             
-            // Apply saved font size without saving again
-            if (appSettings.fontSize) updateFontSize(appSettings.fontSize, false);
+            // Initialize Font Size Slider
+            document.getElementById('setting-font-size').value = appSettings.fontSize;
+            updateFontSize(appSettings.fontSize, false); // False = don't save yet, just apply
 
             // Handle clicking outside
             document.addEventListener('click', (e) => {
@@ -945,21 +960,18 @@
                 </div>
                 <div class="window-content">
                     <div class="iframe-shield"></div>
-                    <iframe src="${mod.file}"></iframe>
+                    <iframe src="modules/${mod.file}"></iframe>
                 </div>
                 <div class="resize-handle"></div>
                 <div class="mobile-resize-handle"></div>
             `;
             
             const iframe = win.querySelector('iframe');
-            if (iframe) {
-                iframe.onload = () => {
-                     // Sync font size to new window
-                     iframe.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: appSettings.fontSize }, '*');
-                     // Sync theme to new window
-                     iframe.contentWindow.postMessage({ type: 'THEME_CHANGE', theme: appSettings.theme }, '*');
-                };
-            }
+            // Inject Font Size on Load
+            iframe.onload = () => {
+                iframe.contentWindow.postMessage({ type: 'THEME_CHANGE', theme: appSettings.theme }, '*');
+                iframe.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: appSettings.fontSize }, '*');
+            };
 
             setupWindowDrag(win);
             setupWindowResize(win);
@@ -1011,7 +1023,7 @@
             const startResize = (e) => {
                 e.preventDefault(); e.stopPropagation();
                 // For mobile touches use first touch, fallback to mouse for testing
-                const startY = e.touches ? e.touches[0].clientX : e.clientY;
+                const startY = e.touches ? e.touches[0].clientY : e.clientY;
                 const startH = win.offsetHeight;
                 
                 win.classList.add('is-resizing');
@@ -1092,7 +1104,30 @@
             dock.classList.remove('dock-collapsed');
             saveSettings(); 
         }
-        function toggleTheme(isDark) { document.body.setAttribute('data-theme', isDark ? 'dark' : 'light'); appSettings.theme = isDark ? 'dark' : 'light'; saveSettings(); }
+        function toggleTheme(isDark) { 
+            const theme = isDark ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', theme); 
+            appSettings.theme = theme; 
+            saveSettings();
+            
+            // Broadcast
+            document.querySelectorAll('iframe').forEach(f => {
+                f.contentWindow.postMessage({ type: 'THEME_CHANGE', theme: theme }, '*');
+            });
+        }
+        
+        function updateFontSize(size, save = true) {
+            document.documentElement.style.setProperty('--font-size-base', size + 'px');
+            document.getElementById('font-size-display').innerText = size;
+            
+            appSettings.fontSize = parseInt(size);
+            if(save) saveSettings();
+            
+            // Broadcast to all active windows
+            document.querySelectorAll('iframe').forEach(f => {
+                f.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: size }, '*');
+            });
+        }
         
         function toggleDockPin(pinned) { 
             appSettings.dockPinned = pinned; 
@@ -1101,24 +1136,6 @@
             saveSettings(); 
         }
         
-        function updateFontSize(size, save=true) {
-            size = parseInt(size);
-            document.documentElement.style.setProperty('--font-size-base', size + 'px');
-            document.getElementById('font-size-label').innerText = `Font Size: ${size}px`;
-            document.getElementById('setting-font-size').value = size;
-
-            // Broadcast to frames
-            const frames = document.querySelectorAll('iframe');
-            frames.forEach(frame => {
-                frame.contentWindow.postMessage({ type: 'FONT_CHANGE', fontSize: size }, '*');
-            });
-
-            if (save) {
-                appSettings.fontSize = size;
-                saveSettings();
-            }
-        }
-
         function toggleModuleActive(modId, active) { if(active) { if(!appSettings.activeModules.includes(modId)) appSettings.activeModules.push(modId); } else { appSettings.activeModules = appSettings.activeModules.filter(m => m !== modId); } saveSettings(); renderDock(); }
         function toggleMaximize(btn) { const win = btn.closest('.lyrn-window'); if(win.classList.contains('maximized')) { win.classList.remove('maximized'); win.style.cssText = win.dataset.cache || ''; } else { win.dataset.cache = win.style.cssText; win.classList.add('maximized'); win.style.top = '32px'; win.style.left = '0'; win.style.width = '100%'; win.style.height = 'calc(100% - 32px)'; } }
         function saveSettings() { localStorage.setItem('lyrn-settings', JSON.stringify(appSettings)); }
